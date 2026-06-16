@@ -13,6 +13,7 @@ dependencies = [
 
 [project.scripts]
 peakpredict-scrape = "peakpredict.scraper.runner:main"
+peakpredict-build = "peakpredict.pipeline.build:main"
 
 [project.optional-dependencies]
 scraper = ["selenium>=4.20", "beautifulsoup4>=4.12", "requests>=2.31"]
