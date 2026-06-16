@@ -11,6 +11,9 @@ dependencies = [
     "numpy>=1.26",
 ]
 
+[project.scripts]
+peakpredict-scrape = "peakpredict.scraper.runner:main"
+
 [project.optional-dependencies]
 scraper = ["selenium>=4.20", "beautifulsoup4>=4.12", "requests>=2.31"]
 pipeline = ["statsmodels>=0.14", "scikit-learn>=1.4"]
