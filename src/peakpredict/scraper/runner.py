@@ -111,6 +111,27 @@ def ingest_roster(con, session, events: list[str], sexes: list[int], indoor: boo
     return total
 
 
+# markers of a dead browser/driver (the chromedriver process itself can die, which
+# surfaces as a urllib3/requests connection error, not a WebDriverException)
+_SESSION_DEAD_MARKERS = (
+    "invalid session id",
+    "session deleted",
+    "no such window",
+    "max retries exceeded",
+    "connection refused",
+    "not reachable",
+    "disconnected",
+    "failed to establish",
+)
+
+
+def _is_session_dead(exc: Exception) -> bool:
+    if isinstance(exc, WebDriverException):
+        return True
+    msg = str(exc).lower()
+    return any(marker in msg for marker in _SESSION_DEAD_MARKERS)
+
+
 def _scrape_one(con, session, pid: int, sex: int) -> str:
     """Scrape+store one athlete. Returns 'done', 'failed', or 'session_dead'."""
     try:
@@ -119,13 +140,13 @@ def _scrape_one(con, session, pid: int, sex: int) -> str:
         _mark_state(con, pid, "done", None)
         log.info("athlete %s -> %d performances", pid, len(rows))
         return "done"
-    except WebDriverException as exc:
-        _mark_state(con, pid, "failed", str(exc)[:300])
-        log.warning("athlete %s failed (browser session): %s", pid, str(exc).splitlines()[0][:120])
-        return "session_dead"
     except Exception as exc:  # noqa: BLE001 - record and continue, do not abort the run
         _mark_state(con, pid, "failed", str(exc)[:300])
-        log.warning("athlete %s failed: %s", pid, str(exc).splitlines()[0][:120])
+        line = str(exc).splitlines()[0][:120]
+        if _is_session_dead(exc):
+            log.warning("athlete %s failed (browser/driver down): %s", pid, line)
+            return "session_dead"
+        log.warning("athlete %s failed: %s", pid, line)
         return "failed"
 
 
@@ -141,14 +162,21 @@ def _recover_session(session) -> bool:
         return False
 
 
-def ingest_careers(con, session, *, throttle: float, limit: int | None) -> int:
+def ingest_careers(
+    con, session, *, throttle: float, limit: int | None, restart_every: int = 400
+) -> int:
     pend = pending_athletes(con, limit=limit)
     log.info("career scrape: %d athlete(s) pending", len(pend))
     done = 0
-    for pid, sex in pend:
+    for i, (pid, sex) in enumerate(pend):
+        # proactively recycle the browser to avoid the slow memory leak that kills
+        # chromedriver on very long runs
+        if i and restart_every and i % restart_every == 0:
+            log.info("recycling browser session after %d athletes", i)
+            _recover_session(session)
         status = _scrape_one(con, session, int(pid), int(sex))
         if status == "session_dead":
-            # the browser crashed; recover and retry this athlete once
+            # the browser/driver died; recover and retry this athlete once
             time.sleep(throttle * 2)
             if _recover_session(session):
                 status = _scrape_one(con, session, int(pid), int(sex))

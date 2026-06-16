@@ -114,3 +114,13 @@ def test_ingest_careers_recovers_from_dead_session(tmp_path, monkeypatch):
     assert sess.logins == 1  # re-authenticated exactly once
     assert con.execute("SELECT status FROM raw.scrape_state WHERE pid=1").fetchone()[0] == "done"
     con.close()
+
+
+def test_connection_level_driver_death_is_session_dead():
+    from peakpredict.scraper.runner import _is_session_dead
+
+    # a fully dead chromedriver surfaces as a urllib3/requests connection error,
+    # not a WebDriverException — it must still be treated as a dead session
+    exc = Exception("HTTPConnectionPool(host='localhost', port=60311): Max retries exceeded")
+    assert _is_session_dead(exc)
+    assert not _is_session_dead(ValueError("bad mark format"))
