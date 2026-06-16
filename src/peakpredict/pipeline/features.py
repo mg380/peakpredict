@@ -31,6 +31,9 @@ _FIELDS: tuple[tuple[str, str, str], ...] = (
 )
 
 
+FEATURE_NAMES: tuple[str, ...] = tuple(n for n, _, _ in _FIELDS)
+
+
 def feature_schema() -> FeatureSchema:
     """The versioned schema describing the engineered model features."""
     return FeatureSchema(
