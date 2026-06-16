@@ -1,0 +1,36 @@
+[project]
+name = "peakpredict"
+version = "0.1.0"
+description = "Athletics peak-performance prediction platform (scraper + analysis pipeline + dashboard)"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.5",
+    "duckdb>=1.0",
+    "pyarrow>=15",
+    "pandas>=2.1",
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+scraper = ["selenium>=4.20", "beautifulsoup4>=4.12", "requests>=2.31"]
+pipeline = ["statsmodels>=0.14", "scikit-learn>=1.4"]
+dashboard = ["streamlit>=1.40", "plotly>=5.20", "streamlit-authenticator>=0.3"]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
