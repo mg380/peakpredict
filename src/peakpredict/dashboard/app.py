@@ -65,24 +65,33 @@ def _descriptive_prediction(series: pd.DataFrame) -> PeakPrediction | None:
 
 def page_explore(art: service.Artifacts) -> None:
     st.header("Explore athletes")
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3, c4 = st.columns(4)
     event = c1.selectbox("Event", EVENTS, format_func=_event_label)
-    sex_label = c2.selectbox("Sex", list(SEXES))
-    sex = SEXES[sex_label]
-    query = c3.text_input("Search name")
+    sex = SEXES[c2.selectbox("Sex", list(SEXES))]
+    sort_by = c3.selectbox("Sort by", list(service.DIRECTORY_SORTS))
+    query = c4.text_input("Search name")
 
-    present = art.season_bests
-    present = present[(present["event_id"] == event) & (present["sex"] == sex)]["pid"].unique()
-    roster = art.athletes[art.athletes["pid"].isin(present)][["pid", "name"]]
+    directory = service.athlete_directory(art, event, sex, sort_by)
     if query:
-        roster = roster[roster["name"].str.contains(query, case=False, na=False)]
-    if roster.empty:
+        directory = directory[directory["name"].str.contains(query, case=False, na=False)]
+    if directory.empty:
         st.info("No athletes match. Try another event/sex or clear the search.")
         return
 
-    label = roster["name"] + "  (#" + roster["pid"].astype(str) + ")"
-    choice = st.selectbox("Athlete", label.tolist())
-    pid = int(choice.split("#")[-1].rstrip(")"))
+    # browse the full roster: click a row to view that athlete
+    st.caption(f"{len(directory)} athletes — click a row to view")
+    selection = st.dataframe(
+        directory,
+        hide_index=True,
+        width="stretch",
+        on_select="rerun",
+        selection_mode="single-row",
+        column_config={"pid": None},  # hide the internal id column
+    )
+    rows = selection.selection.rows if selection and selection.selection else []
+    chosen = directory.iloc[rows[0] if rows else 0]
+    pid = int(chosen["pid"])
+    choice = f"{chosen['name']}  (#{pid})"
 
     series = service.athlete_series(art, pid, event, sex)
     if series.empty:

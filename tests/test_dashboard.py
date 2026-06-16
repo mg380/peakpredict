@@ -5,7 +5,9 @@ from tests.test_publish import _make_processed
 from peakpredict.common.schemas import UploadedAthlete, UploadedResult
 from peakpredict.dashboard.charting import hero_chart
 from peakpredict.dashboard.service import (
+    DIRECTORY_SORTS,
     IncompatibleArtifactError,
+    athlete_directory,
     athlete_series,
     check_compatible,
     load_bundle,
@@ -84,6 +86,22 @@ def test_normalization_parity(bundle):
 def test_explore_series_and_overlay(bundle):
     assert not athlete_series(bundle, 1, "70", 2).empty
     assert not population_overlay(bundle, "70", 2).empty
+
+
+def test_athlete_directory_lists_and_sorts(bundle):
+    d = athlete_directory(bundle, "70", 2, "Name (A–Z)")
+    assert not d.empty
+    assert list(d.columns) == ["name", "country", "seasons", "best_score", "peak_age", "pid"]
+    assert set(d["pid"]) == set(bundle.season_bests[bundle.season_bests["sex"] == 2]["pid"])
+    # name sort is ascending
+    assert list(d["name"]) == sorted(d["name"])
+    # "Most seasons" sorts descending by season count
+    by_seasons = athlete_directory(bundle, "70", 2, "Most seasons")
+    assert by_seasons["seasons"].is_monotonic_decreasing
+
+
+def test_athlete_directory_sort_labels_cover_ui():
+    assert "Name (A–Z)" in DIRECTORY_SORTS and "Most seasons" in DIRECTORY_SORTS
 
 
 def test_hero_chart_builds(bundle):

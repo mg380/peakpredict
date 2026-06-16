@@ -149,6 +149,41 @@ def predict_uploaded(
 
 
 # -- Explore helpers ------------------------------------------------------
+# (label shown in the UI -> (column, ascending)) for browsing the athlete directory
+DIRECTORY_SORTS: dict[str, tuple[str, bool]] = {
+    "Name (A–Z)": ("name", True),
+    "Best performance": ("best_score", False),
+    "Most seasons": ("seasons", False),
+    "Earliest peak": ("peak_age", True),
+    "Latest peak": ("peak_age", False),
+}
+
+
+def athlete_directory(
+    art: Artifacts, event_id: str, sex: int, sort_by: str = "Name (A–Z)"
+) -> pd.DataFrame:
+    """All athletes for an (event, sex) with summary stats, sorted for browsing.
+
+    Columns: name, country, seasons, best_score, peak_age, pid.
+    """
+    sb = art.season_bests
+    g = sb[(sb["event_id"] == event_id) & (sb["sex"] == sex)]
+    if g.empty:
+        return pd.DataFrame(columns=["name", "country", "seasons", "best_score", "peak_age", "pid"])
+    agg = (
+        g.groupby("pid").agg(seasons=("season", "count"), best_score=("score", "max")).reset_index()
+    )
+    agg = agg.merge(art.athletes[["pid", "name", "country"]], on="pid", how="left")
+    lab = art.labels
+    lab = lab[(lab["event_id"] == event_id) & (lab["sex"] == sex)][["pid", "peak_age"]]
+    agg = agg.merge(lab, on="pid", how="left")
+    agg["best_score"] = agg["best_score"].round(2)
+    agg["peak_age"] = agg["peak_age"].round(1)
+    col, ascending = DIRECTORY_SORTS.get(sort_by, ("name", True))
+    agg = agg.sort_values(col, ascending=ascending, na_position="last").reset_index(drop=True)
+    return agg[["name", "country", "seasons", "best_score", "peak_age", "pid"]]
+
+
 def athlete_series(art: Artifacts, pid: int, event_id: str, sex: int) -> pd.DataFrame:
     sb = art.season_bests
     g = sb[(sb["pid"] == pid) & (sb["event_id"] == event_id) & (sb["sex"] == sex)]
