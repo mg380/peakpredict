@@ -167,6 +167,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--throttle", type=float, default=2.0, help="seconds between athletes")
     parser.add_argument("--roster-only", action="store_true")
     parser.add_argument("--career-only", action="store_true")
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="resume (this is the default): athletes already marked done are always skipped",
+    )
     parser.add_argument("--db", default=str(RAW_DB_PATH), help="DuckDB path")
     args = parser.parse_args(argv)
 
