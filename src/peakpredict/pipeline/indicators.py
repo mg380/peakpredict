@@ -29,9 +29,12 @@ def compute_indicators(features: pd.DataFrame) -> dict:
     for feature in NUMERIC:
         x = one[feature].to_numpy(dtype=float)
         y = one[TARGET].to_numpy(dtype=float)
-        if len(x) < 3 or np.std(x) == 0:
+        # correlation is undefined when either side has no variance (constant feature)
+        if len(x) < 3 or np.ptp(x) == 0 or np.ptp(y) == 0:
             continue
         r, p = pearsonr(x, y)
+        if np.isnan(r):
+            continue
         out.append(
             {"feature": feature, "pearson_r": float(r), "p_value": float(p), "n": int(len(one))}
         )
