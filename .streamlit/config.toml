@@ -1,0 +1,8 @@
+# Base theme — colours for widget accents the injected CSS can't reach
+# (radio dot, checkboxes, focus rings). Full styling lives in dashboard/theme.py.
+[theme]
+base = "light"
+primaryColor = "#FF4D17"
+backgroundColor = "#F4F2EC"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#14161B"

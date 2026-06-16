@@ -1,8 +1,10 @@
 """C5 — the shared Plotly hero chart used identically by Explore and Upload.
 
 Layers (back to front): population percentile band -> population average ->
-athlete's observed scores -> predicted peak window + peak line. Colour roles are
-fixed (design spec) so the two pages render identically.
+athlete's observed scores + fitted trajectory -> predicted peak window + peak
+line. Colour roles are fixed so the two pages render identically; the palette
+mirrors dashboard.theme (kept here as plain values so charting stays a pure
+Plotly module with no Streamlit dependency).
 """
 
 from __future__ import annotations
@@ -16,11 +18,16 @@ import plotly.graph_objects as go
 from ..common.schemas import PeakPrediction
 from ..pipeline.trajectory import fit_trajectory
 
-COL_ATHLETE = "#1F6FEB"
-COL_PEAK = "#E8590C"
-COL_REFERENCE = "#9AA5B1"
-COL_BAND = "rgba(154,165,177,0.20)"
-COL_PEAK_WINDOW = "rgba(232,89,12,0.12)"
+COL_ATHLETE = "#16263A"
+COL_PEAK = "#FF4D17"
+COL_REFERENCE = "#B7B0A2"
+COL_BAND = "rgba(183,176,162,0.22)"
+COL_PEAK_WINDOW = "rgba(255,77,23,0.10)"
+_INK = "#14161B"
+_MUTED = "#60656F"
+_GRID = "#E8E3D9"
+_FONT = "IBM Plex Sans, system-ui, sans-serif"
+_MONO = "IBM Plex Mono, monospace"
 
 _DRAWN_CONFIDENCES = {"ok", "low", "out_of_distribution"}
 
@@ -41,29 +48,29 @@ def hero_chart(
         ))
         fig.add_trace(go.Scatter(
             x=overlay["age_bin"], y=overlay["p10"], mode="lines", fill="tonexty",
-            fillcolor=COL_BAND, line={"width": 0}, name="population 10-90%",
+            fillcolor=COL_BAND, line={"width": 0}, name="population 10–90%",
+            hoverinfo="skip",
         ))
         fig.add_trace(go.Scatter(
             x=overlay["age_bin"], y=overlay["p50"], mode="lines",
-            line={"color": COL_REFERENCE, "dash": "dash"}, name="population avg",
+            line={"color": COL_REFERENCE, "dash": "dash", "width": 1.5}, name="population avg",
         ))
 
     # athlete observed scores + fitted trajectory
-    fig.add_trace(go.Scatter(
-        x=series["age"], y=series["score"], mode="markers",
-        marker={"color": COL_ATHLETE, "size": 9}, name="athlete",
-    ))
-    # draw the same trajectory the pipeline fits (not an independent polyfit),
-    # and only when ages vary enough to fit a parabola
     if len(series) >= 3 and series["age"].nunique() >= 3:
         fit = fit_trajectory(series["age"].to_numpy(), series["score"].to_numpy())
         if fit is not None:
-            xs = np.linspace(series["age"].min(), series["age"].max(), 50)
+            xs = np.linspace(series["age"].min(), series["age"].max(), 60)
             ys = fit.a * xs**2 + fit.b * xs + fit.c
             fig.add_trace(go.Scatter(
-                x=xs, y=ys, mode="lines",
-                line={"color": COL_ATHLETE}, name="fitted trajectory",
+                x=xs, y=ys, mode="lines", line={"color": COL_ATHLETE, "width": 2.5},
+                name="fitted trajectory", hoverinfo="skip",
             ))
+    fig.add_trace(go.Scatter(
+        x=series["age"], y=series["score"], mode="markers",
+        marker={"color": COL_ATHLETE, "size": 10, "line": {"color": "#FFFFFF", "width": 1.5}},
+        name="athlete",
+    ))
 
     if prediction is not None and prediction.confidence in _DRAWN_CONFIDENCES:
         if math.isfinite(prediction.window_lo) and math.isfinite(prediction.window_hi):
@@ -74,12 +81,38 @@ def hero_chart(
         if math.isfinite(prediction.peak_age):
             fig.add_vline(
                 x=prediction.peak_age, line={"color": COL_PEAK, "width": 2},
-                annotation_text=f"peak ~{prediction.peak_age:.1f}y",
+                annotation_text=f"PEAK ~{prediction.peak_age:.1f}y",
+                annotation_position="top",
+                annotation_font_color=COL_PEAK,
+                annotation_font_size=12,
+                annotation_font_family=_MONO,
             )
 
-    fig.update_layout(
-        title=title, template="plotly_white",
-        xaxis_title="age (years)", yaxis_title="performance score (higher = better)",
-        legend={"orientation": "h", "y": -0.2},
-    )
+    layout = {
+        "template": "plotly_white",
+        "font": {"family": _FONT, "color": _INK, "size": 13},
+        "paper_bgcolor": "rgba(0,0,0,0)",
+        "plot_bgcolor": "rgba(0,0,0,0)",
+        "xaxis": {
+            "title": {"text": "AGE (YEARS)",
+                      "font": {"size": 11, "color": _MUTED, "family": _MONO}},
+            "gridcolor": _GRID, "zeroline": False, "showline": True, "linecolor": _GRID,
+            "ticks": "outside", "tickcolor": _GRID,
+        },
+        "yaxis": {
+            "title": {
+                "text": "PERFORMANCE SCORE · HIGHER = BETTER",
+                "font": {"size": 11, "color": _MUTED, "family": _MONO},
+            },
+            "gridcolor": _GRID, "zeroline": False,
+        },
+        "legend": {"orientation": "h", "y": -0.24, "x": 0, "font": {"size": 11},
+                   "bgcolor": "rgba(0,0,0,0)"},
+        "hovermode": "x unified",
+        "margin": {"l": 56, "r": 24, "t": 44 if title else 14, "b": 52},
+    }
+    if title:
+        layout["title"] = {"text": title, "font": {"family": "Bricolage Grotesque, " + _FONT,
+                                                    "size": 18, "color": _INK}}
+    fig.update_layout(**layout)
     return fig

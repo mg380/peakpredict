@@ -4,39 +4,37 @@
 
 ## 1. Design System
 
-**Aesthetic:** Light, analytical/scientific. Data-ink first, generous whitespace, restrained accent. Legibility of charts and numbers over decoration.
+**Aesthetic:** Precision-instrument / track-timing. Warm paper ground, near-black ink, a single hot vermilion accent, and a dark "instrument-panel" sidebar. Editorial structure via monospace eyebrow labels (a stopwatch/scoreboard cue). Data-ink first; the accent is reserved almost entirely for the peak.
 
-**Framework / theming:** Streamlit native theming via `.streamlit/config.toml`. No external CSS framework. Minimal custom CSS only where Streamlit cannot express a need.
+**Framework / theming:** Streamlit `.streamlit/config.toml` for base colours + a single injected CSS block (`dashboard/theme.py`) for fonts, variables, and component styling. Fonts loaded via Google Fonts `@import`.
 
 ```toml
 # .streamlit/config.toml
 [theme]
 base = "light"
-primaryColor = "#1F6FEB"          # analytical blue — interactive elements + athlete's own data
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F4F6F9"  # sidebar / cards / form surfaces
-textColor = "#1A1F24"
-font = "sans serif"
+primaryColor = "#FF4D17"               # vermilion accent (peak / interactive)
+backgroundColor = "#F4F2EC"            # warm paper
+secondaryBackgroundColor = "#FFFFFF"   # cards / surfaces
+textColor = "#14161B"
 ```
+
+**Typography:** **Bricolage Grotesque** (display — page headings, wordmark), **IBM Plex Sans** (body/UI), **IBM Plex Mono** (data values, metric labels, eyebrow section labels, chart axis titles). The mono numerals deliberately evoke a stopwatch/scoreboard.
 
 **Color palette (semantic):**
 | Token | Hex | Use |
 |-------|-----|-----|
-| `bg` | `#FFFFFF` | page background |
-| `surface` | `#F4F6F9` | cards, sidebar, form panels |
-| `text` | `#1A1F24` | primary text |
-| `text-muted` | `#5B6770` | secondary text, axis labels |
-| `athlete` | `#1F6FEB` | the subject athlete's observed points + fitted trajectory |
-| `peak` | `#E8590C` | predicted/estimated peak marker, peak line, peak label |
-| `peak-window` | `rgba(232,89,12,0.12)` | shaded vertical span for the peak window |
-| `reference` | `#9AA5B1` | population average trajectory (dashed) |
-| `band` | `rgba(154,165,177,0.20)` | percentile band fills (nested, lighter = wider band) |
-| `peer` | `rgba(31,111,235,0.18)` | similar-athlete trace lines (thin, translucent) |
-| `success` | `#2E7D32` | valid input, confirmations |
-| `warning` | `#ED6C02` | low-confidence / extrapolation / out-of-distribution |
-| `error` | `#C62828` | validation errors, incompatible artifact |
+| `paper` | `#F4F2EC` | page background (warm off-white) |
+| `surface` | `#FFFFFF` | metric cards, tables |
+| `ink` | `#14161B` | primary text, sidebar ground |
+| `ink-soft` | `#60656F` | secondary text, axis/eyebrow labels |
+| `line` | `#E5E0D6` | hairline borders |
+| `accent` | `#FF4D17` | predicted peak line/marker, selected nav, button hover |
+| `athlete` | `#16263A` | the subject athlete's observed points + fitted trajectory |
+| `reference` | `#B7B0A2` | population average trajectory (dashed) |
+| `band` | `rgba(183,176,162,0.22)` | percentile band fill |
+| `peak-window` | `rgba(255,77,23,0.10)` | shaded vertical span for the peak window |
 
-**Typography:** Streamlit default sans for UI. Tabular numbers preferred for data tables/metrics. Heading scale: page title (h1) → section (h2) → card title (h3). No more than 3 levels per screen.
+**Layout signatures:** dark sidebar with the `PEAK`**`PREDICTOR`** wordmark + nav; a slim top context bar (tagline + `DATA · <version>` pill) with a 2px ink rule; mono **eyebrow** labels above each section; bordered mono metric cards; ink buttons that flip to accent on hover.
 
 **Spacing:** Streamlit default vertical rhythm; group related controls in `st.container`/cards on `surface`. Use `st.columns` for side-by-side layout, not custom CSS grids.
 

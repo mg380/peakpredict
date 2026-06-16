@@ -20,7 +20,7 @@ from pydantic import ValidationError
 # loaded as part of the package and cannot use relative imports.
 from peakpredict.common.event_maps import SUPPORTED_V1_EVENTS, event_name
 from peakpredict.common.schemas import PeakPrediction, UploadedAthlete, UploadedResult
-from peakpredict.dashboard import service
+from peakpredict.dashboard import service, theme
 from peakpredict.dashboard.auth import require_auth
 from peakpredict.dashboard.charting import hero_chart
 from peakpredict.pipeline.features import compute_features
@@ -79,6 +79,7 @@ def page_explore(art: service.Artifacts) -> None:
         return
 
     # browse the full roster: click a row to view that athlete
+    theme.eyebrow("roster")
     st.caption(f"{len(directory)} athletes — click a row to view")
     selection = st.dataframe(
         directory,
@@ -91,7 +92,6 @@ def page_explore(art: service.Artifacts) -> None:
     rows = selection.selection.rows if selection and selection.selection else []
     chosen = directory.iloc[rows[0] if rows else 0]
     pid = int(chosen["pid"])
-    choice = f"{chosen['name']}  (#{pid})"
 
     series = service.athlete_series(art, pid, event, sex)
     if series.empty:
@@ -100,12 +100,12 @@ def page_explore(art: service.Artifacts) -> None:
     pred = _descriptive_prediction(series) if len(series) >= service.MIN_POINTS else None
     overlay = service.population_overlay(art, event, sex)
 
-    left, right = st.columns([3, 2])
-    left.plotly_chart(
-        hero_chart(series, pred, overlay, title=choice), width="stretch"
-    )
+    left, right = st.columns([3, 2], gap="large")
+    with left:
+        theme.eyebrow(f"performance trajectory · {chosen['name']}")
+        st.plotly_chart(hero_chart(series, pred, overlay, title=""), width="stretch")
     with right:
-        st.subheader("Summary")
+        theme.eyebrow("summary")
         st.metric("Seasons", len(series))
         st.metric("Age range", f"{series['age'].min():.0f}-{series['age'].max():.0f}")
         st.metric("Best score", f"{series['score'].max():.2f}")
@@ -123,7 +123,7 @@ def page_explore(art: service.Artifacts) -> None:
             art.athletes[["pid", "name"]], on="pid", how="left"
         )
         if not peers.empty:
-            st.subheader("Similar athletes")
+            theme.eyebrow("similar athletes")
             st.dataframe(peers[["name", "pid", "distance"]].head(5), hide_index=True)
 
 
@@ -132,7 +132,8 @@ def page_upload(art: service.Artifacts) -> None:
     c1, c2 = st.columns(2)
     event = c1.selectbox("Event", EVENTS, format_func=_event_label, key="up_event")
     sex = SEXES[c2.selectbox("Sex", list(SEXES), key="up_sex")]
-    st.caption("Enter the athlete's season results (age in years, mark, optional wind).")
+    theme.eyebrow("enter results")
+    st.caption("Age in years, mark, optional wind. Add a row per season.")
     starter = pd.DataFrame(
         {"age": [18.0, 19.0, 20.0], "mark": [0.0, 0.0, 0.0], "wind": [None, None, None]}
     )
@@ -166,9 +167,8 @@ def page_upload(art: service.Artifacts) -> None:
         st.warning("Inputs fall outside the model's training range — shown with low confidence.")
 
     overlay = service.population_overlay(art, event, sex)
-    st.plotly_chart(
-        hero_chart(series, pred, overlay, title="Predicted peak"), width="stretch"
-    )
+    theme.eyebrow("projection")
+    st.plotly_chart(hero_chart(series, pred, overlay, title=""), width="stretch")
     cols = st.columns(3)
     cols[0].metric("Predicted peak age", f"{pred.peak_age:.1f}y")
     cols[1].metric("80% interval", f"{pred.interval_lo:.1f}-{pred.interval_hi:.1f}")
@@ -179,19 +179,21 @@ def page_indicators(art: service.Artifacts) -> None:
     st.header("Peak-performance indicators")
     val = art.validation
     if isinstance(val.get("ridge"), dict):
+        theme.eyebrow("model validation")
         c = st.columns(3)
         c[0].metric("Model MAE (years)", f"{val['ridge']['mae']:.2f}")
         c[1].metric("Baseline MAE", f"{val['baseline']['mae']:.2f}")
         c[2].metric("80% coverage", f"{val['ridge']['interval_coverage']:.0%}")
     ind = pd.DataFrame(art.indicators.get("indicators", []))
     if not ind.empty:
-        st.subheader("Feature correlations with peak age")
+        theme.eyebrow("feature correlations with peak age")
         st.dataframe(ind, hide_index=True, width="stretch")
     st.caption(art.indicators.get("literature_note", ""))
 
 
 def main() -> None:
-    st.set_page_config(page_title="PeakPredictor", layout="wide")
+    st.set_page_config(page_title="PeakPredictor", layout="wide", page_icon="◆")
+    theme.inject()
     require_auth()
     bundle = _resolve_bundle()
     if bundle is None:
@@ -203,9 +205,17 @@ def main() -> None:
         st.error(f"Incompatible artifact bundle — refusing to serve predictions.\n\n{exc}")
         st.stop()
 
-    st.sidebar.title("PeakPredictor")
-    st.sidebar.caption(f"Data version: {art.manifest.get('version', '?')}")
-    page = st.sidebar.radio("Page", ["Explore", "Upload & Predict", "Indicators"])
+    version = art.manifest.get("version", "?")
+    theme.sidebar_brand()
+    with st.sidebar:
+        theme.eyebrow("navigate")
+    page = st.sidebar.radio("Page", ["Explore", "Upload & Predict", "Indicators"],
+                            label_visibility="collapsed")
+    with st.sidebar:
+        theme.eyebrow("model bundle")
+        st.sidebar.caption(f"version · {version}")
+
+    theme.header(version)
     if page == "Explore":
         page_explore(art)
     elif page == "Upload & Predict":
