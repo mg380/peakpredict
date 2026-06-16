@@ -24,7 +24,10 @@ _MONTHS = {
     )
 }
 _SECTIONS = ("Outdoor", "Indoor")
-_WIND_RE = re.compile(r"^[+-]\d+(?:\.\d+)?$")
+# wind reading: signed or unsigned decimal (e.g. "+1.7", "-0.8", "0.0")
+_WIND_RE = re.compile(r"^[+-]?\d+\.\d+$")
+# record codes are short all-caps tokens (WR, AR, NR, =WR), NOT 'A'/'h'/'i' markers
+_RECORD_RE = re.compile(r"^=?[A-Z]{2,}$")
 # leading time/number: optional minutes (e.g. "1:43.20") then seconds/value
 _MARK_RE = re.compile(r"^(?:(\d+):)?(\d+(?:\.\d+)?)")
 
@@ -44,7 +47,7 @@ def parse_mark_cell(cell_text: str) -> tuple[str, float | None, float | None, st
         for tok in tokens[1:]:
             if _WIND_RE.match(tok):
                 wind = float(tok)
-            elif tok.strip("=").isalpha():  # WR, AR, =WR, NR, PB, SB ...
+            elif _RECORD_RE.match(tok):  # WR, AR, =WR, NR, PB, SB ... (not 'A'/'h')
                 records.append(tok)
     return raw, mark, wind, (" ".join(records) or None)
 

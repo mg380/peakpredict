@@ -27,7 +27,10 @@ log = get_logger("scraper.runner")
 
 
 def _stable_perf_id(row: dict) -> int:
-    key = f"{row['pid']}|{row['event_id']}|{row['perf_date']}|{row['mark_raw']}|{row['round_pos']}"
+    key = (
+        f"{row['pid']}|{row['event_id']}|{row['indoor']}|{row['perf_date']}"
+        f"|{row['mark_raw']}|{row['round_pos']}"
+    )
     return int(hashlib.sha1(key.encode()).hexdigest()[:15], 16)  # 60 bits, fits BIGINT
 
 

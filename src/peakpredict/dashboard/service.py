@@ -17,15 +17,23 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from ..common.io import read_parquet
 from ..common.normalization import ZScoreNormalizer
 from ..common.schemas import PeakPrediction, UploadedAthlete
-from ..pipeline.features import FEATURE_NAMES, FEATURE_SCHEMA_VERSION, compute_features
+from ..pipeline.features import (
+    DEFAULT_CUTOFFS,
+    FEATURE_NAMES,
+    FEATURE_SCHEMA_VERSION,
+    compute_features,
+)
 from ..pipeline.season_best import LEGAL_WIND_MAX
 from ..pipeline.trajectory import fit_trajectory
 
 MIN_POINTS = 3
+MAX_TRAINED_SEASONS = max(DEFAULT_CUTOFFS)  # model is trained on first-k features, k <= this
 PLAUSIBLE_PEAK_AGE = (14.0, 42.0)
 WIDE_INTERVAL = 8.0
+_EMPTY_SERIES_COLS = ["age", "score", "mark"]
 
 
 class IncompatibleArtifactError(RuntimeError):
@@ -54,13 +62,13 @@ def load_bundle(path: str | Path) -> Artifacts:
         predictor=joblib.load(p / "predictor.pkl"),
         normalizer=ZScoreNormalizer.from_dict(json.loads((p / "normalization.json").read_text())),
         feature_schema=json.loads((p / "feature_schema.json").read_text()),
-        aggregates=pd.read_parquet(p / "aggregates.parquet"),
-        similar_index=pd.read_parquet(p / "similar_index.parquet"),
+        aggregates=read_parquet(p / "aggregates.parquet"),
+        similar_index=read_parquet(p / "similar_index.parquet"),
         indicators=json.loads((p / "indicators.json").read_text()),
         validation=json.loads((p / "validation.json").read_text()),
-        season_bests=pd.read_parquet(p / "season_bests.parquet"),
-        labels=pd.read_parquet(p / "labels.parquet"),
-        athletes=pd.read_parquet(p / "athletes.parquet"),
+        season_bests=read_parquet(p / "season_bests.parquet"),
+        labels=read_parquet(p / "labels.parquet"),
+        athletes=read_parquet(p / "athletes.parquet"),
     )
 
 
@@ -86,22 +94,29 @@ def _flag(confidence: str) -> PeakPrediction:
     )
 
 
-def _confidence(peak_age: float, lo: float, hi: float) -> str:
+def _confidence(peak_age: float, lo: float, hi: float, n_seasons: int) -> str:
     if not (PLAUSIBLE_PEAK_AGE[0] <= peak_age <= PLAUSIBLE_PEAK_AGE[1]):
         return "out_of_distribution"
-    if (hi - lo) > WIDE_INTERVAL:
+    # more observed seasons than the model was trained on -> extrapolation
+    if n_seasons > MAX_TRAINED_SEASONS or (hi - lo) > WIDE_INTERVAL:
         return "low"
     return "ok"
 
 
 def upload_to_series(art: Artifacts, athlete: UploadedAthlete) -> pd.DataFrame:
-    """Normalize an upload's wind-legal results into an (age, score) frame."""
+    """Normalize an upload's wind-legal results into an (age, score) frame.
+
+    Returns an empty frame (with the expected columns) if no legal results
+    remain. Assumes the (event, sex) is present in the normalizer.
+    """
     rows = []
     for r in athlete.results:
         if r.wind is not None and r.wind > LEGAL_WIND_MAX:
             continue
         score = art.normalizer.transform(r.mark, athlete.event_id, int(athlete.sex))
         rows.append({"age": float(r.age), "score": float(score), "mark": r.mark})
+    if not rows:
+        return pd.DataFrame(columns=_EMPTY_SERIES_COLS)
     return pd.DataFrame(rows).sort_values("age").reset_index(drop=True)
 
 
@@ -109,23 +124,26 @@ def predict_uploaded(
     art: Artifacts, athlete: UploadedAthlete
 ) -> tuple[PeakPrediction, pd.DataFrame]:
     """Predict an uploaded athlete's peak; returns (prediction, normalized series)."""
-    try:
-        series = upload_to_series(art, athlete)
-    except KeyError:
-        # the bundle has no data for this (event, sex) -> cannot score
-        return _flag("unsupported_event"), pd.DataFrame(columns=["age", "score", "mark"])
+    # event/sex absent from the bundle -> cannot score (distinct from too-few points)
+    if not art.normalizer.has(athlete.event_id, int(athlete.sex)):
+        return _flag("unsupported_event"), pd.DataFrame(columns=_EMPTY_SERIES_COLS)
+    series = upload_to_series(art, athlete)
     if len(series) < MIN_POINTS:
         return _flag("insufficient"), series
     feats = compute_features(series)
     peak_age, lo, hi = art.predictor["model"].predict_one(feats, athlete.event_id, int(athlete.sex))
+    # the peak window is curvature-derived; only defined when the fit has an interior max,
+    # otherwise leave it undefined rather than conflating it with the prediction interval
     fit = fit_trajectory(series["age"].to_numpy(), series["score"].to_numpy())
-    window_lo = fit.window_lo if fit and fit.window_lo is not None else lo
-    window_hi = fit.window_hi if fit and fit.window_hi is not None else hi
+    if fit is not None and fit.has_interior_max:
+        window_lo, window_hi = float(fit.window_lo), float(fit.window_hi)
+    else:
+        window_lo = window_hi = float("nan")
     pred = PeakPrediction(
         peak_age=peak_age, interval_lo=lo, interval_hi=hi,
         peak_score=float(series["score"].max()),
-        window_lo=float(window_lo), window_hi=float(window_hi),
-        confidence=_confidence(peak_age, lo, hi),
+        window_lo=window_lo, window_hi=window_hi,
+        confidence=_confidence(peak_age, lo, hi, len(series)),
     )
     return pred, series
 

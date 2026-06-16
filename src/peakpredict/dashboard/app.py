@@ -109,7 +109,7 @@ def page_explore(art: service.Artifacts) -> None:
 
     if len(series) >= service.MIN_POINTS:
         feats = compute_features(series)
-        peers = service.similar_athletes(art, feats, event, sex)
+        peers = service.similar_athletes(art, feats, event, sex, k=6)  # +1 to drop self
         peers = peers[peers["pid"] != pid].merge(
             art.athletes[["pid", "name"]], on="pid", how="left"
         )
@@ -146,6 +146,9 @@ def page_upload(art: service.Artifacts) -> None:
         return
 
     pred, series = service.predict_uploaded(art, athlete)
+    if pred.confidence == "unsupported_event":
+        st.error("This event/sex is not available in the current model bundle.")
+        return
     if pred.confidence == "insufficient":
         st.warning(f"Need at least {service.MIN_POINTS} valid results to predict.")
         st.dataframe(series, hide_index=True)

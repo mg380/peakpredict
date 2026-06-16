@@ -43,6 +43,10 @@ class ZScoreNormalizer:
     def __init__(self, params: dict[str, tuple[float, float]] | None = None) -> None:
         self.params: dict[str, tuple[float, float]] = dict(params or {})
 
+    def has(self, event_id: str, sex: int) -> bool:
+        """True if this normalizer was fit for the given (event, sex)."""
+        return _key(event_id, sex) in self.params
+
     # -- fitting -----------------------------------------------------------
     def fit(self, df) -> ZScoreNormalizer:
         """Fit mean/std per (event_id, sex) from a frame with those columns + 'mark'."""

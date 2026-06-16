@@ -29,7 +29,9 @@ def temporal_evaluate(features: pd.DataFrame, n_splits: int = 5) -> dict:
         train, test = features.iloc[tr], features.iloc[te]
         assert not (set(train["pid"]) & set(test["pid"])), "athlete leakage across split"
         for name, Factory in MODEL_FACTORIES.items():
-            model = Factory().fit(train, calibrate=False)
+            # calibrate=True so the fold's prediction intervals match what production
+            # ships (out-of-fold residual std), making reported coverage faithful
+            model = Factory().fit(train, calibrate=True)
             for _, r in test.iterrows():
                 feats = {k: r[k] for k in NUMERIC}
                 pred, lo, hi = model.predict_one(feats, r["event_id"], int(r["sex"]))

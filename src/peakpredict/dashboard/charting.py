@@ -14,6 +14,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 from ..common.schemas import PeakPrediction
+from ..pipeline.trajectory import fit_trajectory
 
 COL_ATHLETE = "#1F6FEB"
 COL_PEAK = "#E8590C"
@@ -52,13 +53,17 @@ def hero_chart(
         x=series["age"], y=series["score"], mode="markers",
         marker={"color": COL_ATHLETE, "size": 9}, name="athlete",
     ))
-    if len(series) >= 3:
-        a, b, c = np.polyfit(series["age"], series["score"], 2)
-        xs = np.linspace(series["age"].min(), series["age"].max(), 50)
-        fig.add_trace(go.Scatter(
-            x=xs, y=a * xs**2 + b * xs + c, mode="lines",
-            line={"color": COL_ATHLETE}, name="fitted trajectory",
-        ))
+    # draw the same trajectory the pipeline fits (not an independent polyfit),
+    # and only when ages vary enough to fit a parabola
+    if len(series) >= 3 and series["age"].nunique() >= 3:
+        fit = fit_trajectory(series["age"].to_numpy(), series["score"].to_numpy())
+        if fit is not None:
+            xs = np.linspace(series["age"].min(), series["age"].max(), 50)
+            ys = fit.a * xs**2 + fit.b * xs + fit.c
+            fig.add_trace(go.Scatter(
+                x=xs, y=ys, mode="lines",
+                line={"color": COL_ATHLETE}, name="fitted trajectory",
+            ))
 
     if prediction is not None and prediction.confidence in _DRAWN_CONFIDENCES:
         if math.isfinite(prediction.window_lo) and math.isfinite(prediction.window_hi):

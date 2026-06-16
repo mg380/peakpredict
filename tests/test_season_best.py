@@ -55,3 +55,22 @@ def test_age_is_computed():
     sb = build_season_bests(_perf(), _athletes())
     row = sb[(sb["event_id"] == "70") & (sb["season"] == 2020)].iloc[0]
     assert 20.0 < row["age"] < 21.0  # born 2000, perf mid-2020
+
+
+def test_add_scores_drops_unfittable_groups():
+    from peakpredict.pipeline.normalize import add_scores, fit_normalizer
+
+    sb = pd.DataFrame(
+        {
+            "event_id": ["70", "70", "70", "40"],  # event 40 has a single row -> not fittable
+            "sex": [2, 2, 2, 2],
+            "season": [2020, 2021, 2022, 2020],
+            "age": [20.0, 21.0, 22.0, 20.0],
+            "mark": [52.0, 53.0, 54.0, 11.0],
+            "wind": [None, None, None, None],
+        }
+    )
+    scored = add_scores(sb, fit_normalizer(sb))
+    # the unfittable single-row group is dropped, not crashed on
+    assert set(scored["event_id"]) == {"70"}
+    assert len(scored) == 3
