@@ -184,6 +184,35 @@ def athlete_directory(
     return agg[["name", "country", "seasons", "best_score", "peak_age", "pid"]]
 
 
+def apply_directory_filters(
+    df: pd.DataFrame,
+    *,
+    countries: list[str] | None = None,
+    seasons: tuple[float, float] | None = None,
+    best_score: tuple[float, float] | None = None,
+    peak_age: tuple[float, float] | None = None,
+    include_no_peak: bool = True,
+) -> pd.DataFrame:
+    """Filter an athlete directory by column values (all filters optional, AND-ed).
+
+    ``peak_age`` filtering keeps athletes whose peak is in range; athletes with no
+    peak estimate (NaN) are kept only when ``include_no_peak`` is True.
+    """
+    out = df
+    if countries:
+        out = out[out["country"].isin(countries)]
+    if seasons is not None:
+        out = out[out["seasons"].between(seasons[0], seasons[1])]
+    if best_score is not None:
+        out = out[out["best_score"].between(best_score[0], best_score[1])]
+    if peak_age is not None:
+        in_range = out["peak_age"].between(peak_age[0], peak_age[1])
+        out = out[in_range | out["peak_age"].isna()] if include_no_peak else out[in_range]
+    elif not include_no_peak:
+        out = out[out["peak_age"].notna()]
+    return out.reset_index(drop=True)
+
+
 def athlete_series(art: Artifacts, pid: int, event_id: str, sex: int) -> pd.DataFrame:
     sb = art.season_bests
     g = sb[(sb["pid"] == pid) & (sb["event_id"] == event_id) & (sb["sex"] == sex)]

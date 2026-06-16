@@ -63,6 +63,32 @@ def _descriptive_prediction(series: pd.DataFrame) -> PeakPrediction | None:
     )
 
 
+def _filter_roster(df: pd.DataFrame) -> pd.DataFrame:
+    """Render per-column filter controls and return the filtered directory."""
+    if df.empty:
+        return df
+    f: dict = {}
+    with st.expander("Filter roster"):
+        countries = st.multiselect("Country", sorted(df["country"].dropna().unique()))
+        f["countries"] = countries or None
+        smin, smax = int(df["seasons"].min()), int(df["seasons"].max())
+        if smin < smax:
+            f["seasons"] = st.slider("Seasons", smin, smax, (smin, smax))
+        bmin = round(float(df["best_score"].min()), 2)
+        bmax = round(float(df["best_score"].max()), 2)
+        if bmin < bmax:
+            f["best_score"] = st.slider("Best score", bmin, bmax, (bmin, bmax))
+        peaks = df["peak_age"].dropna()
+        if not peaks.empty:
+            f["include_no_peak"] = st.checkbox(
+                "Include athletes without a peak estimate", value=True
+            )
+            pmin, pmax = round(float(peaks.min()), 1), round(float(peaks.max()), 1)
+            if pmin < pmax:
+                f["peak_age"] = st.slider("Peak age", pmin, pmax, (pmin, pmax))
+    return service.apply_directory_filters(df, **f)
+
+
 def page_explore(art: service.Artifacts) -> None:
     st.header("Explore athletes")
     c1, c2, c3, c4 = st.columns(4)
@@ -74,8 +100,9 @@ def page_explore(art: service.Artifacts) -> None:
     directory = service.athlete_directory(art, event, sex, sort_by)
     if query:
         directory = directory[directory["name"].str.contains(query, case=False, na=False)]
+    directory = _filter_roster(directory)
     if directory.empty:
-        st.info("No athletes match. Try another event/sex or clear the search.")
+        st.info("No athletes match the current filters.")
         return
 
     # browse the full roster: click a row to view that athlete

@@ -1,3 +1,4 @@
+import pandas as pd
 import plotly.graph_objects as go
 import pytest
 from tests.test_publish import _make_processed
@@ -7,6 +8,7 @@ from peakpredict.dashboard.charting import hero_chart
 from peakpredict.dashboard.service import (
     DIRECTORY_SORTS,
     IncompatibleArtifactError,
+    apply_directory_filters,
     athlete_directory,
     athlete_series,
     check_compatible,
@@ -102,6 +104,35 @@ def test_athlete_directory_lists_and_sorts(bundle):
 
 def test_athlete_directory_sort_labels_cover_ui():
     assert "Name (A–Z)" in DIRECTORY_SORTS and "Most seasons" in DIRECTORY_SORTS
+
+
+def test_apply_directory_filters():
+    import numpy as np
+
+    df = pd.DataFrame(
+        {
+            "name": ["A", "B", "C", "D"],
+            "country": ["USA", "GBR", "USA", "JAM"],
+            "seasons": [3, 8, 5, 12],
+            "best_score": [0.5, 1.2, 0.9, 2.0],
+            "peak_age": [24.0, np.nan, 27.0, 30.0],
+            "pid": [1, 2, 3, 4],
+        }
+    )
+    # country filter
+    assert set(apply_directory_filters(df, countries=["USA"])["name"]) == {"A", "C"}
+    # seasons range
+    assert set(apply_directory_filters(df, seasons=(4, 10))["name"]) == {"B", "C"}
+    # best_score range
+    assert set(apply_directory_filters(df, best_score=(1.0, 2.0))["name"]) == {"B", "D"}
+    # peak_age range, keeping the NaN-peak athlete (B)
+    kept = apply_directory_filters(df, peak_age=(23.0, 28.0), include_no_peak=True)
+    assert set(kept["name"]) == {"A", "C", "B"}
+    # peak_age range, excluding NaN-peak athletes
+    strict = apply_directory_filters(df, peak_age=(23.0, 28.0), include_no_peak=False)
+    assert set(strict["name"]) == {"A", "C"}
+    # no filters -> unchanged
+    assert len(apply_directory_filters(df)) == 4
 
 
 def test_hero_chart_builds(bundle):
