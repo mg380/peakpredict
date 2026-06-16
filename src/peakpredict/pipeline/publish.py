@@ -71,7 +71,14 @@ def publish(
     out.mkdir(parents=True, exist_ok=True)
 
     joblib.dump({"primary": primary, "model": model}, out / "predictor.pkl")
-    for fname in ("normalization.json", "feature_schema.json"):
+    # bundle the shared contracts AND the processed per-athlete data Explore needs
+    for fname in (
+        "normalization.json",
+        "feature_schema.json",
+        "season_bests.parquet",
+        "labels.parquet",
+        "athletes.parquet",
+    ):
         shutil.copyfile(processed_dir / fname, out / fname)
     write_parquet(aggregates, out / "aggregates.parquet")
     write_parquet(similar, out / "similar_index.parquet")

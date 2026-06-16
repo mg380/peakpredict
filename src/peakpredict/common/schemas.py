@@ -40,9 +40,13 @@ class PerformanceRow(BaseModel):
 
 
 class UploadedResult(BaseModel):
-    """One manually-entered result row from the dashboard Upload form."""
+    """One manually-entered result row from the dashboard Upload form.
 
-    date_or_age: str = Field(min_length=1)
+    Age (years) is entered directly, since the model works in age space; this
+    avoids requiring a date of birth for an uploaded prospect.
+    """
+
+    age: float = Field(gt=0)
     mark: float = Field(gt=0)
     wind: float | None = None
     competition: str | None = None

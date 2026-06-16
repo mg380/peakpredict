@@ -39,10 +39,17 @@ def build_processed(db_path: str | Path = RAW_DB_PATH, out_dir: Path = PROCESSED
     labels = build_labels(scored)
     features = build_features(scored, labels)
 
+    athletes_dir = (
+        athletes[athletes["pid"].isin(scored["pid"].unique())][["pid", "name", "country", "sex"]]
+        .drop_duplicates("pid")
+        .reset_index(drop=True)
+    )
+
     out_dir.mkdir(parents=True, exist_ok=True)
     write_parquet(scored, out_dir / "season_bests.parquet")
     write_parquet(labels, out_dir / "labels.parquet")
     write_parquet(features, out_dir / "features.parquet")
+    write_parquet(athletes_dir, out_dir / "athletes.parquet")
     (out_dir / "normalization.json").write_text(json.dumps(normalizer.to_dict()))
     (out_dir / "feature_schema.json").write_text(feature_schema().model_dump_json(indent=2))
 

@@ -27,8 +27,16 @@ def _make_processed(tmp_path):
         }
     )
     features = make_features(20)
+    labels = pd.DataFrame(
+        {"pid": np.arange(1, 21), "event_id": "70", "sex": 2, "peak_age": rng.normal(24, 1.5, 20)}
+    )
+    athletes = pd.DataFrame(
+        {"pid": np.arange(1, 21), "name": [f"A{i}" for i in range(20)], "country": "USA", "sex": 2}
+    )
     sb.to_parquet(d / "season_bests.parquet", index=False)
     features.to_parquet(d / "features.parquet", index=False)
+    labels.to_parquet(d / "labels.parquet", index=False)
+    athletes.to_parquet(d / "athletes.parquet", index=False)
     norm = ZScoreNormalizer().fit(sb[["event_id", "sex", "mark"]])
     (d / "normalization.json").write_text(json.dumps(norm.to_dict()))
     (d / "feature_schema.json").write_text(feature_schema().model_dump_json())

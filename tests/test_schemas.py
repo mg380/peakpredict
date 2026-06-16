@@ -15,7 +15,7 @@ def test_uploaded_athlete_valid():
     a = UploadedAthlete(
         sex=1,
         event_id="40",
-        results=[UploadedResult(date_or_age="2021", mark=10.1)],
+        results=[UploadedResult(age=23.0, mark=10.1)],
     )
     assert a.event_id == "40"
     assert a.results[0].mark == 10.1
@@ -24,20 +24,20 @@ def test_uploaded_athlete_valid():
 def test_uploaded_athlete_rejects_bad_sex():
     with pytest.raises(ValidationError):
         UploadedAthlete(
-            sex=3, event_id="40", results=[UploadedResult(date_or_age="2021", mark=10.1)]
+            sex=3, event_id="40", results=[UploadedResult(age=23.0, mark=10.1)]
         )
 
 
 def test_uploaded_athlete_rejects_unsupported_event():
     with pytest.raises(ValidationError):
         UploadedAthlete(
-            sex=1, event_id="60", results=[UploadedResult(date_or_age="2021", mark=10.1)]
+            sex=1, event_id="60", results=[UploadedResult(age=23.0, mark=10.1)]
         )
 
 
 def test_uploaded_result_requires_positive_mark():
     with pytest.raises(ValidationError):
-        UploadedResult(date_or_age="2021", mark=0)
+        UploadedResult(age=23.0, mark=0)
 
 
 def test_uploaded_athlete_requires_at_least_one_result():
