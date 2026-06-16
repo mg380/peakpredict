@@ -68,3 +68,49 @@ def test_performance_upsert_is_idempotent(tmp_path):
 def test_stable_perf_id_is_deterministic():
     assert _stable_perf_id(_perf()) == _stable_perf_id(_perf())
     assert _stable_perf_id(_perf(1)) != _stable_perf_id(_perf(2))
+
+
+def test_stable_perf_id_distinguishes_indoor_outdoor():
+    outdoor = _perf()
+    indoor = {**_perf(), "indoor": True}
+    assert _stable_perf_id(outdoor) != _stable_perf_id(indoor)
+
+
+def test_ingest_careers_recovers_from_dead_session(tmp_path, monkeypatch):
+    from selenium.common.exceptions import WebDriverException
+
+    from peakpredict.scraper import runner
+
+    con = _con(tmp_path)
+    upsert_athletes(
+        con,
+        [{"pid": 1, "name": "A", "country": "US", "sex": 2, "dob": date(2000, 1, 1), "url": "u"}],
+    )
+
+    calls = {"n": 0}
+
+    def fake_scrape(session, pid, sex):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise WebDriverException("invalid session id")  # browser crashes once
+        return [_perf(pid)]
+
+    monkeypatch.setattr(runner, "scrape_career", fake_scrape)
+
+    class FakeSession:
+        def __init__(self):
+            self.logins = 0
+
+        def close(self):
+            pass
+
+        def login(self):
+            self.logins += 1
+            return self
+
+    sess = FakeSession()
+    done = runner.ingest_careers(con, sess, throttle=0, limit=None)
+    assert done == 1  # recovered and succeeded on retry
+    assert sess.logins == 1  # re-authenticated exactly once
+    assert con.execute("SELECT status FROM raw.scrape_state WHERE pid=1").fetchone()[0] == "done"
+    con.close()

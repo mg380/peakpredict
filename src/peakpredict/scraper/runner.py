@@ -15,6 +15,7 @@ import hashlib
 import time
 
 import duckdb
+from selenium.common.exceptions import WebDriverException
 
 from ..common.event_maps import event_name
 from ..common.io import RAW_DB_PATH, connect, init_raw_store
@@ -110,21 +111,49 @@ def ingest_roster(con, session, events: list[str], sexes: list[int], indoor: boo
     return total
 
 
+def _scrape_one(con, session, pid: int, sex: int) -> str:
+    """Scrape+store one athlete. Returns 'done', 'failed', or 'session_dead'."""
+    try:
+        rows = scrape_career(session, pid, sex)
+        upsert_performances(con, rows)
+        _mark_state(con, pid, "done", None)
+        log.info("athlete %s -> %d performances", pid, len(rows))
+        return "done"
+    except WebDriverException as exc:
+        _mark_state(con, pid, "failed", str(exc)[:300])
+        log.warning("athlete %s failed (browser session): %s", pid, str(exc).splitlines()[0][:120])
+        return "session_dead"
+    except Exception as exc:  # noqa: BLE001 - record and continue, do not abort the run
+        _mark_state(con, pid, "failed", str(exc)[:300])
+        log.warning("athlete %s failed: %s", pid, str(exc).splitlines()[0][:120])
+        return "failed"
+
+
+def _recover_session(session) -> bool:
+    """Tear down and re-authenticate a dead Selenium session."""
+    try:
+        session.close()
+        session.login()
+        log.warning("re-authenticated after a browser session failure")
+        return True
+    except Exception as exc:  # noqa: BLE001
+        log.error("re-authentication failed: %s", exc)
+        return False
+
+
 def ingest_careers(con, session, *, throttle: float, limit: int | None) -> int:
     pend = pending_athletes(con, limit=limit)
     log.info("career scrape: %d athlete(s) pending", len(pend))
     done = 0
     for pid, sex in pend:
-        try:
-            rows = scrape_career(session, int(pid), int(sex))
-            upsert_performances(con, rows)
-            _mark_state(con, int(pid), "done", None)
-            done += 1
-            log.info("athlete %s -> %d performances", pid, len(rows))
-        except Exception as exc:  # noqa: BLE001 - record and continue, do not abort the run
-            _mark_state(con, int(pid), "failed", str(exc)[:300])
-            log.warning("athlete %s failed: %s", pid, exc)
+        status = _scrape_one(con, session, int(pid), int(sex))
+        if status == "session_dead":
+            # the browser crashed; recover and retry this athlete once
             time.sleep(throttle * 2)
+            if _recover_session(session):
+                status = _scrape_one(con, session, int(pid), int(sex))
+        if status == "done":
+            done += 1
         time.sleep(throttle)
     return done
 
