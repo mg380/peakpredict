@@ -1,0 +1,28 @@
+# --- secrets (never commit) ---
+.secrets
+.env
+**/.env
+
+# --- data: kept on disk, excluded from git (large / regenerable) ---
+/Data/
+/data/
+*.db
+*.h5
+
+# --- python ---
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+**/.venv/
+
+# --- selenium / binaries / archives ---
+**/chromedriver*
+*.zip
+
+# --- scraped debug output ---
+**/debug_html/
+
+# --- editor / OS / session ---
+.DS_Store
+.Q/

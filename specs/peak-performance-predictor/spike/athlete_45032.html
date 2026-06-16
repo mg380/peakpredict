@@ -1,0 +1,1311 @@
+<html><head><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-95HH6N92RL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-95HH6N92RL');
+</script>
+
+
+<meta name="viewport" content="width=device-width">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="Description" content="Track and field statistics, athletics statistics, results.">
+<title>Tilastopaja Oy Track and field statistics</title>
+<link rel="stylesheet" type="text/css" href="../main.css">
+<link href="defaultat.css?v=3" rel="stylesheet" type="text/css" media="screen">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+function changeme(id) {
+       if (document.getElementById(id).style.display == "none") {
+            document.getElementById(id).style.display = "block";
+       } else {
+            document.getElementById(id).style.display = "none";
+       }
+}
+function show(part){
+x = document.getElementById(part+'Div').style;
+if(x.display != 'none'){
+document.getElementById(part+'Div').style.display='none';
+document.getElementById(part+'Icon').innerHTML='&#9660;';
+}
+else{
+document.getElementById(part+'Div').style.display='block';
+document.getElementById(part+'Icon').innerHTML='&#9650;';
+}
+}
+</script>
+<script>
+function seasonRes(year){
+document.getElementById('seasonDiv').style.display='block';
+var id='45032';
+var sex='1';
+$('#seasonDiv').load('https://www.tilastopaja.info/db/seasonres.php?sex=' + sex + '&id='+ id + '&Season=' + year);
+document.getElementById("seasonHead").innerHTML="<span id='seasonIcon'>&#9650;</span> IN "+ year;
+}
+</script>
+<script language="JavaScript" type="text/javascript">
+function SetLoginFocus() {
+  var mq = window.matchMedia("(min-width: 761px)");
+  if(mq.matches){
+  document.getElementById("search1").focus();
+  }
+  else{
+  show("pb");
+  show("progression");
+  show("averages");
+  show("season");
+  show("winstreaks");
+  show("worldlist");
+  show("major");
+  }
+}
+</script>
+</head>
+<body onload="SetLoginFocus();">
+<script>
+function load(){
+	document.getElementById("siteLoader").style.display="block";
+}
+</script>
+<div class="wrapper">
+<div class="top">
+			<div class="logo"><h1><a ref="https://www.tilastopaja.info">TILASTOPAJA</a></h1>
+			</div>
+		<div class="container">
+            <ul id="nav">
+				<li class="haku"><div>SEARCH FOR AN ATHLETE<form method="GET" action="https://www.tilastopaja.info/db/ats2.php">
+			<input class="text" name="Name" size="20" style="font-weight: normal;">
+			<input class="button" type="submit" value="Go!"></form></div></li>
+                <li id="home"><a href="https://www.tilastopaja.info/">Home</a></li>
+                <li><a href="#s1">Free</a>
+                    <span id="s1"></span>
+                    <ul class="subs">
+                        <li><a href="https://www.tilastopaja.info/db/worldtop20.php">World Top 20</a>
+                        </li>
+						<li><a href="https://www.tilastopaja.info/db/europetop20.php">Europe Top 20</a>
+                        </li>
+                        <li><a href="https://www.tilastopaja.info/db/allt30.php?Sex=1&amp;Event=All&amp;Age=99&amp;Ind=0">World Alltime Top 30</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="#s2">Member lists</a>
+                    <span id="s2"></span>
+                    <ul class="subs">
+                        <li><a href="https://www.tilastopaja.info/db/resultservice.php">Results</a>
+				<ul>
+				<li><a href="https://www.tilastopaja.info/db/resultsshort.php">Recently added results</a></li>
+				<li><a href="https://www.tilastopaja.info/db/resultscountry.php">Results by country</a></li>
+				</ul>
+                        </li>
+                        <li><a href="https://www.tilastopaja.info/db/topeventall.php">Year lists</a>
+                        </li>
+                        <li><a href="https://www.tilastopaja.info/db/alltfull.php">Deep Alltime lists</a>
+                        </li>
+                        <li><a href="https://www.tilastopaja.info/db/headtohead.php">Head to head</a>
+                        </li>
+                        <li><a href="https://www.tilastopaja.info/db/placings.php">Best results by placings</a>
+                        </li>
+                        <li><a href="https://www.tilastopaja.info/db/national.php">National records</a>
+                        </li>
+                        <li><a href="https://www.tilastopaja.info/db/leaderprog.php">Progression of World List Positions (1996-)</a>
+                        </li>						
+                    </ul>
+                </li>
+                <li><a href="#s3">Members</a>
+                    <span id="s3"></span>
+                    <ul class="subs">
+                        <li><a href="https://www.tilastopaja.info/login.php">Log in</a>
+                        </li>
+                        <li><a href="https://www.tilastopaja.info/logout.php">Log out</a>
+                        </li>
+                        <li><a href="https://www.tilastopaja.info/register.php">Register</a>
+				<ul>
+				<li><a href="https://www.tilastopaja.info/register.php">Register with us</a></li>
+				<li><a href="https://www.tilastopaja.info/renew.php">Renew subscription</a></li>	
+				<li><a href="https://www.tilastopaja.info/prices.php">Services and prices</a></li>	
+				</ul>
+                        </li>
+                        <li><a href="https://www.tilastopaja.info/members.php">Member info</a>
+                        </li>		
+                    </ul>
+                </li>
+                <li><a href="https://www.tilastopaja.info/about.php">About us</a>
+                </li>
+                <li><a href="https://www.tilastopaja.info/fi/">Suomeksi</a></li>
+				<li class="haku"><div>SEARCH FOR RESULTS<form method="POST" action="https://www.tilastopaja.info/db/resultservice.php">
+			<input class="text" name="Search" size="20" style="font-weight: normal;">
+			<input class="button" type="submit" value="Go!"></form></div></li>
+            </ul>
+        </div>
+</div><div id="bottom">
+<div class="center" id="personal" style="border: 4px ridge #06ab6d" ;="" width:="" auto=""><div style="float: left"><table align="center" valign="top">
+<tbody><tr><td><font size="3"><b>Usain Bolt</b> JAM&nbsp;&nbsp;&nbsp;<img border="0" src="/images/countries/JAM.gif" width="43" height="27"></font></td></tr><tr>
+</tr><tr><td><font size="2"><b>Date of birth: </b>21 August 86</font></td></tr>
+<tr><td><font size="2"><b>Age: </b>39 years 299 days</font></td></tr>
+<tr><td><b>Height:</b> 196 cm</td></tr>
+<tr><td><b>Weight: </b>88 kg</td></tr>
+<tr><td><b>Place of birth: </b>Trelawny</td></tr>
+<tr><td><b>Club/team: </b>Puma</td></tr>
+</tbody></table></div><div style="float: left; margin-right: 10px"><a target="_blank" href="images/sam45032.jpg"><img border="0" src="images/sam45032.jpg" width="134"></a><br><br>
+<a target="_blank" href="images/sm45032.jpg"><img border="0" src="images/sm45032.jpg" width="134"><br><br></a>
+</div><div style="float: left"><table>
+<tbody><tr><td style="background-color: gold"><b>8 Olympic Golds</b></td></tr>
+<tr><td style="background-color: gold">
+ <b>2008: </b>100, 200 <b>2012: </b>100, 200, 4x1 <b>2016: </b>100, 200, 4x1</td></tr>
+<tr><td style="background-color: gold"><b>11 World Titles </b></td></tr>
+<tr><td style="background-color: gold">
+ <b>2009: </b>100, 200, 4x1 <b>2011: </b>200, 4x1 <b>2013: </b>100, 200, 4x1 <b>2015: </b>100, 200, 4x1</td></tr>
+<tr><td style="background-color: silver"><b>2 World Championships Silvers </b></td></tr>
+<tr><td style="background-color: silver">
+ <b>2007: </b>200, 4x1</td></tr>
+<tr><td style="background-color: #F5A75A"><b>100m World Championships Bronze Medallist 2017</b></td></tr>
+<tr><td style="background-color: lightblue"><b>200m 8th at World Championships 2005</b></td></tr>
+<tr><td style="background-color: lightblue"><b>200m World Junior Champion 2002</b></td></tr>
+<tr><td style="background-color: lightblue"><b>200m World Youth Champion 2003</b></td></tr>
+<tr><td style="background-color: lightblue"><b>4 x 100m World Junior Championships Silver Medallist 2002</b></td></tr>
+<tr><td style="background-color: lightblue"><b>4 x 400m World Junior Championships Silver Medallist 2002</b></td></tr>
+<tr><td style="background-color: lightblue"><b>Medley Relay 4th at World Youth Championships 2001</b></td></tr>
+<tr><td style="background-color: lightgrey"><b>8 National Titles</b></td></tr>
+<tr><td><b><font color="darkgreen">200m3 20.13 Bridgetown 20 Jul 2003</font></b></td></tr>
+<tr><td><b><font color="darkgreen">400m12 45.35 Kingston 5 Apr 2003</font></b></td></tr>
+<tr><td><b><font color="darkgreen">400m World  Alltime no. 732 45.28 Kingston 5 May 2007</font></b></td></tr>
+<tr><td><b><font color="darkgreen">400m World Junior  Alltime no. 93 45.35 Kingston 5 Apr 2003</font></b></td></tr>
+<tr><td><b><font color="darkgreen">300m World  Alltime no. 5 30.97 Ostrava 27 May 2010</font></b></td></tr>
+<tr><td><b><font color="darkgreen">200m World Junior  Alltime no. 3 19.93 Hamilton 11 Apr 2004</font></b></td></tr>
+<tr><td><b><font color="darkgreen">400m World  Alltime no. 735 45.28 Kingston 5 May 2007</font></b></td></tr>
+<tr><td><b><font color="darkgreen">300m World  Alltime no. 5 30.97 Ostrava 27 May 2010</font></b></td></tr>
+<tr><td><b><font color="darkgreen">100m World  Alltime no. 1 9.58 Berlin 16 Aug 2009</font></b></td></tr>
+<tr><td><b><font color="darkgreen">200m World  Alltime no. 1 19.19 Berlin 20 Aug 2009</font></b></td></tr>
+<tr><td><b><font color="darkgreen">100m World  Alltime no. 1 9.58 Berlin 16 Aug 2009</font></b></td></tr>
+<tr><td><b><font color="darkgreen">200m World  Alltime no. 1 19.19 Berlin 20 Aug 2009</font></b></td></tr>
+</tbody></table></div>
+</div><div class="wrapleft"><div class="left">
+<h1 onmousedown="show('progression')"><span id="progressionIcon">▲</span>PROGRESSION</h1>
+<div id="progressionDiv" class="desktop"><p>Personal bests in <b>BOLD</b>.</p><table valign="top" width="380">
+<tbody><tr><td colspan="8" valign="top">&nbsp;</td></tr>
+<tr><td colspan="8"><b>100y</b></td></tr>
+<tr><td colspan="8"><b>Outdoor&nbsp;</b>Alltime
+&nbsp;<span onclick="changeme('Outdoorxxx39');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr><tr><td colspan="8"><div id="Outdoorxxx39" style="display: none;"><table><tbody><tr><td colspan="7"><b> </b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td colspan="7"><font size="2"><b>2011</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>9.14+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>31 May</td></tr>
+<tr><td colspan="7"><font size="2"><b>2012</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>9.29+&nbsp;-0.8&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>25 May</td></tr>
+</tbody></table></div></td></tr><tr><td><b>2011</b>&nbsp;
+<b>9.14+<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td>1</td><td>Ostrava</td><td>31 May</td></tr>
+<tr><td><b>2012</b>&nbsp;
+9.29+<span style="visibility: hidden">w</span>&nbsp;-0.8&nbsp;<b></b>&nbsp;</td><td>1</td><td>Ostrava</td><td>25 May</td></tr>
+<tr><td colspan="8" valign="top">&nbsp;</td></tr>
+<tr><td colspan="8"><b>100m</b></td></tr>
+<tr><td colspan="8"><b>Outdoor&nbsp;</b>Alltime
+&nbsp;<span onclick="changeme('Outdoorxxx40');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr><tr><td colspan="8"><div id="Outdoorxxx40" style="display: none;"><table><tbody><tr><td colspan="7"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=40&amp;ind=0">3 World Records </a></b></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 53</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td colspan="7"><font size="2"><b>2007</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>10.03&nbsp;&nbsp;+0.7&nbsp;&nbsp;&nbsp;</td><td>1r1</td><td>Vard</td><td>Réthimno</td><td>18 Jul</td></tr>
+<tr><td colspan="7"><font size="2"><b>2008</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 10</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>10.03&nbsp;&nbsp;+1.8&nbsp;&nbsp;&nbsp;</td><td>1r1</td><td>Classics</td><td>Spanish Town</td><td>8 Mar</td></tr>
+<tr><td>9.76&nbsp;&nbsp;+1.8&nbsp;&nbsp;&nbsp;</td><td>1r2</td><td>Jamaica Inv</td><td>Kingston</td><td>3 May</td></tr>
+<tr><td>9.92&nbsp;&nbsp;+0.6&nbsp;&nbsp;&nbsp;</td><td>1r2</td><td>HamptonG</td><td>Port of Spain</td><td>17 May</td></tr>
+<tr><td>9.72&nbsp;&nbsp;+1.7&nbsp;&nbsp;WR&nbsp;</td><td>1</td><td>Reebok</td><td>New York NY</td><td>31 May</td></tr>
+<tr><td>10.19&nbsp;&nbsp;+1.0&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>NC</td><td>Kingston</td><td>27 Jun</td></tr>
+<tr><td>10.40&nbsp;-2.0&nbsp;&nbsp;&nbsp;</td><td>1s2</td><td>NC</td><td>Kingston</td><td>28 Jun</td></tr>
+<tr><td>9.85&nbsp;-0.1&nbsp;&nbsp;&nbsp;</td><td>1</td><td>NC</td><td>Kingston</td><td>28 Jun</td></tr>
+<tr><td>9.89&nbsp;&nbsp;+0.4&nbsp;&nbsp;&nbsp;</td><td>2</td><td>DNG</td><td>Stockholm/S</td><td>22 Jul</td></tr>
+<tr><td>10.20&nbsp;-0.2&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>OG</td><td>Beijing</td><td>15 Aug</td></tr>
+<tr><td>9.92&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1q4</td><td>OG</td><td>Beijing</td><td>15 Aug</td></tr>
+<tr><td>9.85&nbsp;-0.1&nbsp;&nbsp;&nbsp;</td><td>1s1</td><td>OG</td><td>Beijing</td><td>16 Aug</td></tr>
+<tr><td>9.69&nbsp;&nbsp;0.0&nbsp;&nbsp;WR&nbsp;</td><td>1</td><td>OG</td><td>Beijing</td><td>16 Aug</td></tr>
+<tr><td>9.83&nbsp;-0.5&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WK</td><td>Zürich</td><td>29 Aug</td></tr>
+<tr><td>9.77&nbsp;-1.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>VD</td><td>Bruxelles</td><td>5 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2009</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=40&amp;ind=0">1 World Record</a></b></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 7</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>9.93&nbsp;&nbsp;+2.3&nbsp;&nbsp;&nbsp;</td><td>1r1</td><td>Classics</td><td>Spanish Town</td><td>14 Mar</td></tr>
+<tr><td>9.91+&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1</td><td>CityGames</td><td>Manchester</td><td>17 May</td></tr>
+<tr><td>10.00&nbsp;-0.9&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Excellence</td><td>Toronto</td><td>11 Jun</td></tr>
+<tr><td>9.77&nbsp;&nbsp;+2.1&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>17 Jun</td></tr>
+<tr><td>10.14&nbsp;-1.6&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>NC</td><td>Kingston</td><td>26 Jun</td></tr>
+<tr><td>10.11&nbsp;-0.6&nbsp;&nbsp;&nbsp;</td><td>1s1</td><td>NC</td><td>Kingston</td><td>27 Jun</td></tr>
+<tr><td>9.86&nbsp;-0.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>NC</td><td>Kingston</td><td>27 Jun</td></tr>
+<tr><td>9.79&nbsp;-0.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Areva</td><td>Paris</td><td>17 Jul</td></tr>
+<tr><td>10.31&nbsp;-2.9&nbsp;&nbsp;&nbsp;</td><td>2h2</td><td>Aviva</td><td>London</td><td>24 Jul</td></tr>
+<tr><td>9.91&nbsp;-1.7&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Aviva</td><td>London</td><td>24 Jul</td></tr>
+<tr><td>10.20&nbsp;-0.5&nbsp;&nbsp;&nbsp;</td><td>1h9</td><td>WC</td><td>Berlin</td><td>15 Aug</td></tr>
+<tr><td>10.03&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>2q5</td><td>WC</td><td>Berlin</td><td>15 Aug</td></tr>
+<tr><td>9.89&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>1s1</td><td>WC</td><td>Berlin</td><td>16 Aug</td></tr>
+<tr><td>9.58&nbsp;&nbsp;+0.9&nbsp;WR&nbsp;&nbsp;</td><td>1</td><td>WC</td><td>Berlin</td><td>16 Aug</td></tr>
+<tr><td>9.81&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WK</td><td>Zürich</td><td>28 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2010</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 4</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>9.86&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Colorful</td><td>Daegu</td><td>19 May</td></tr>
+<tr><td>9.82&nbsp;&nbsp;+0.5&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Athl</td><td>Lausanne</td><td>8 Jul</td></tr>
+<tr><td>9.84&nbsp;-0.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Areva</td><td>Paris</td><td>16 Jul</td></tr>
+<tr><td>9.97&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>2</td><td>DNG</td><td>Stockholm/S</td><td>6 Aug</td></tr>
+<tr><td>10.10&nbsp;-0.7&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>DNG</td><td>Stockholm/S</td><td>6 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2011</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 5</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>9.91&nbsp;&nbsp;+0.6&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GGala</td><td>Roma</td><td>26 May</td></tr>
+<tr><td>9.91&nbsp;-0.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>31 May</td></tr>
+<tr><td>9.88&nbsp;&nbsp;+1.0&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Herc</td><td>Monaco</td><td>22 Jul</td></tr>
+<tr><td>10.10&nbsp;-0.7&nbsp;&nbsp;&nbsp;</td><td>1h6</td><td>WC</td><td>Daegu</td><td>27 Aug</td></tr>
+<tr><td>10.05&nbsp;-1.0&nbsp;&nbsp;&nbsp;</td><td>1s2</td><td>WC</td><td>Daegu</td><td>28 Aug</td></tr>
+<tr><td>&nbsp;-1.4&nbsp;&nbsp;&nbsp;DQ</td><td></td><td>WC</td><td>Daegu</td><td>28 Aug</td></tr>
+<tr><td>9.85&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Hanzekovic</td><td>Zagreb</td><td>13 Sep</td></tr>
+<tr><td>9.76&nbsp;&nbsp;+1.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>VD</td><td>Bruxelles</td><td>16 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2012</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 7</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>9.82&nbsp;&nbsp;+1.8&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Jam Inv</td><td>Kingston</td><td>5 May</td></tr>
+<tr><td>10.04&nbsp;-0.8&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>25 May</td></tr>
+<tr><td>9.76&nbsp;-0.1&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GGala</td><td>Roma</td><td>31 May</td></tr>
+<tr><td>9.79&nbsp;&nbsp;+0.6&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Bislett</td><td>Oslo</td><td>7 Jun</td></tr>
+<tr><td>10.06&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>NC</td><td>Kingston</td><td>28 Jun</td></tr>
+<tr><td>10.01&nbsp;&nbsp;+1.0&nbsp;&nbsp;&nbsp;</td><td>1s2</td><td>NC</td><td>Kingston</td><td>29 Jun</td></tr>
+<tr><td>9.86&nbsp;&nbsp;+1.1&nbsp;&nbsp;&nbsp;</td><td>2</td><td>NC</td><td>Kingston</td><td>29 Jun</td></tr>
+<tr><td>10.09&nbsp;&nbsp;+0.4&nbsp;&nbsp;&nbsp;</td><td>1h4</td><td>OG</td><td>London</td><td>4 Aug</td></tr>
+<tr><td>9.87&nbsp;&nbsp;+1.0&nbsp;&nbsp;&nbsp;</td><td>1s2</td><td>OG</td><td>London</td><td>5 Aug</td></tr>
+<tr><td>9.63&nbsp;&nbsp;+1.5&nbsp;&nbsp;&nbsp;</td><td>1</td><td>OG</td><td>London</td><td>5 Aug</td></tr>
+<tr><td>9.86&nbsp;&nbsp;+0.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>VD</td><td>Bruxelles</td><td>7 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2013</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 7</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>10.09&nbsp;&nbsp;+0.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Cayman Inv</td><td>George Town</td><td>8 May</td></tr>
+<tr><td>9.95&nbsp;&nbsp;+0.8&nbsp;&nbsp;&nbsp;</td><td>2</td><td>GGala</td><td>Roma</td><td>6 Jun</td></tr>
+<tr><td>10.00&nbsp;&nbsp;+0.5&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>NC</td><td>Kingston</td><td>20 Jun</td></tr>
+<tr><td>10.03&nbsp;-0.2&nbsp;&nbsp;&nbsp;</td><td>1s1</td><td>NC</td><td>Kingston</td><td>21 Jun</td></tr>
+<tr><td>9.94&nbsp;-1.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>NC</td><td>Kingston</td><td>21 Jun</td></tr>
+<tr><td>9.85&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Sainsbury's</td><td>London</td><td>26 Jul</td></tr>
+<tr><td>10.07&nbsp;-0.4&nbsp;&nbsp;&nbsp;</td><td>1h7</td><td>WC</td><td>Moskva</td><td>10 Aug</td></tr>
+<tr><td>9.92&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1s3</td><td>WC</td><td>Moskva</td><td>11 Aug</td></tr>
+<tr><td>9.77&nbsp;-0.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WC</td><td>Moskva</td><td>11 Aug</td></tr>
+<tr><td>9.90&nbsp;-0.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WK</td><td>Zürich</td><td>29 Aug</td></tr>
+<tr><td>9.80&nbsp;&nbsp;+0.6&nbsp;&nbsp;&nbsp;</td><td>1</td><td>VD</td><td>Bruxelles</td><td>6 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2014</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 1</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>9.98&nbsp;-0.6&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Skolimowska</td><td>Warszawa</td><td>23 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2015</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 5</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>10.12&nbsp;-1.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td></td><td>Rio de Janeiro</td><td>19 Apr</td></tr>
+<tr><td>9.87&nbsp;-1.2&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>Sainsbury's</td><td>London</td><td>24 Jul</td></tr>
+<tr><td>9.87&nbsp;-0.8&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Sainsbury's</td><td>London</td><td>24 Jul</td></tr>
+<tr><td>9.96&nbsp;-0.2&nbsp;&nbsp;&nbsp;</td><td>1h7</td><td>WC</td><td>Beijing</td><td>22 Aug</td></tr>
+<tr><td>9.96&nbsp;-0.4&nbsp;&nbsp;&nbsp;</td><td>1s1</td><td>WC</td><td>Beijing</td><td>23 Aug</td></tr>
+<tr><td>9.79&nbsp;-0.5&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WC</td><td>Beijing</td><td>23 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2016</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 4</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>10.05&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Cayman Inv</td><td>George Town</td><td>14 May</td></tr>
+<tr><td>9.98&nbsp;-0.4&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>20 May</td></tr>
+<tr><td>9.88&nbsp;&nbsp;+1.0&nbsp;&nbsp;&nbsp;</td><td>1</td><td></td><td>Kingston</td><td>11 Jun</td></tr>
+<tr><td>10.15&nbsp;&nbsp;+0.3&nbsp;&nbsp;&nbsp;</td><td>1h4</td><td>NC</td><td>Kingston</td><td>30 Jun</td></tr>
+<tr><td>10.04&nbsp;-0.9&nbsp;&nbsp;&nbsp;</td><td>1s1</td><td>NC</td><td>Kingston</td><td>1 Jul</td></tr>
+<tr><td>10.07&nbsp;-0.4&nbsp;&nbsp;&nbsp;</td><td>1h7</td><td>OG</td><td>Rio de Janeiro</td><td>13 Aug</td></tr>
+<tr><td>9.86&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>1s2</td><td>OG</td><td>Rio de Janeiro</td><td>14 Aug</td></tr>
+<tr><td>9.81&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>OG</td><td>Rio de Janeiro</td><td>14 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2017</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 10 seconds (legal): 3</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>10.03&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td></td><td>Kingston</td><td>10 Jun</td></tr>
+<tr><td>10.06&nbsp;-0.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>28 Jun</td></tr>
+<tr><td>9.95&nbsp;&nbsp;+0.7&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Herc</td><td>Monaco</td><td>21 Jul</td></tr>
+<tr><td>10.07&nbsp;&nbsp;+0.3&nbsp;&nbsp;&nbsp;</td><td>1h6</td><td>WC</td><td>London</td><td>4 Aug</td></tr>
+<tr><td>9.98&nbsp;&nbsp;+0.4&nbsp;&nbsp;&nbsp;</td><td>2s3</td><td>WC</td><td>London</td><td>5 Aug</td></tr>
+<tr><td>9.95&nbsp;-0.8&nbsp;&nbsp;&nbsp;</td><td>3</td><td>WC</td><td>London</td><td>5 Aug</td></tr>
+</tbody></table></div></td></tr><tr><td><b>2007</b>&nbsp;
+10.03<span style="visibility: hidden">w</span>&nbsp;&nbsp;+0.7&nbsp;<b></b>&nbsp;</td><td>1r1</td><td>Réthimno</td><td>18 Jul</td></tr>
+<tr><td><b>2008</b>&nbsp;
+9.69<span style="visibility: hidden">w</span>&nbsp;&nbsp;0.0&nbsp;<b></b>&nbsp;WR</td><td>1</td><td>Beijing</td><td>16 Aug</td></tr>
+<tr><td><b>2009</b>&nbsp;
+<b>9.58<span style="visibility: hidden">w</span>&nbsp;&nbsp;+0.9&nbsp;WR&nbsp;</b></td><td>1</td><td>Berlin</td><td>16 Aug</td></tr>
+<tr><td><b>2010</b>&nbsp;
+9.82<span style="visibility: hidden">w</span>&nbsp;&nbsp;+0.5&nbsp;<b></b>&nbsp;</td><td>1</td><td>Lausanne</td><td>8 Jul</td></tr>
+<tr><td><b>2011</b>&nbsp;
+9.76<span style="visibility: hidden">w</span>&nbsp;&nbsp;+1.3&nbsp;<b></b>&nbsp;</td><td>1</td><td>Bruxelles</td><td>16 Sep</td></tr>
+<tr><td><b>2012</b>&nbsp;
+9.63<span style="visibility: hidden">w</span>&nbsp;&nbsp;+1.5&nbsp;<b></b>&nbsp;</td><td>1</td><td>London</td><td>5 Aug</td></tr>
+<tr><td><b>2013</b>&nbsp;
+9.77<span style="visibility: hidden">w</span>&nbsp;-0.3&nbsp;<b></b>&nbsp;</td><td>1</td><td>Moskva</td><td>11 Aug</td></tr>
+<tr><td><b>2014</b>&nbsp;
+9.98<span style="visibility: hidden">w</span>&nbsp;-0.6&nbsp;<b></b>&nbsp;</td><td>1</td><td>Warszawa</td><td>23 Aug</td></tr>
+<tr><td><b>2015</b>&nbsp;
+9.79<span style="visibility: hidden">w</span>&nbsp;-0.5&nbsp;<b></b>&nbsp;</td><td>1</td><td>Beijing</td><td>23 Aug</td></tr>
+<tr><td><b>2016</b>&nbsp;
+9.81<span style="visibility: hidden">w</span>&nbsp;&nbsp;+0.2&nbsp;<b></b>&nbsp;</td><td>1</td><td>Rio de Janeiro</td><td>14 Aug</td></tr>
+<tr><td><b>2017</b>&nbsp;
+9.95<span style="visibility: hidden">w</span>&nbsp;&nbsp;+0.7&nbsp;<b></b>&nbsp;</td><td>1</td><td>Monaco</td><td>21 Jul</td></tr>
+<tr><td colspan="8" valign="top">&nbsp;</td></tr>
+<tr><td colspan="8"><b>150m</b></td></tr>
+<tr><td colspan="8"><b>Outdoor&nbsp;</b>Alltime
+&nbsp;<span onclick="changeme('Outdoorxxx48');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr><tr><td colspan="8"><div id="Outdoorxxx48" style="display: none;"><table><tbody><tr><td colspan="7"><b> </b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td colspan="7"><font size="2"><b>2017</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>15.28&nbsp;-0.9&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Nitro</td><td>Melbourne</td><td>11 Feb</td></tr>
+</tbody></table></div></td></tr><tr><td><b>2017</b>&nbsp;
+<b>15.28<span style="visibility: hidden">w</span>&nbsp;-0.9&nbsp;&nbsp;</b></td><td>1</td><td>Melbourne</td><td>11 Feb</td></tr>
+<tr><td colspan="8" valign="top">&nbsp;</td></tr>
+<tr><td colspan="8"><b>150m Straight</b></td></tr>
+<tr><td colspan="8"><b>Outdoor&nbsp;</b>Alltime
+&nbsp;<span onclick="changeme('Outdoorxxx49');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr><tr><td colspan="8"><div id="Outdoorxxx49" style="display: none;"><table><tbody><tr><td colspan="7"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=49&amp;ind=0">1 World Best</a></b></td></tr>
+<tr><td colspan="7"><b> </b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td colspan="7"><font size="2"><b>2009</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>14.35&nbsp;&nbsp;+1.1&nbsp;WB&nbsp;&nbsp;</td><td>1</td><td>CityGames</td><td>Manchester</td><td>17 May</td></tr>
+<tr><td colspan="7"><font size="2"><b>2013</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>14.42&nbsp;&nbsp;+1.4&nbsp;&nbsp;&nbsp;</td><td>1</td><td></td><td>Rio de Janeiro</td><td>31 Mar</td></tr>
+</tbody></table></div></td></tr><tr><td><b>2009</b>&nbsp;
+<b>14.35<span style="visibility: hidden">w</span>&nbsp;&nbsp;+1.1&nbsp;WB&nbsp;</b></td><td>1</td><td>Manchester</td><td>17 May</td></tr>
+<tr><td><b>2013</b>&nbsp;
+14.42<span style="visibility: hidden">w</span>&nbsp;&nbsp;+1.4&nbsp;<b></b>&nbsp;</td><td>1</td><td>Rio de Janeiro</td><td>31 Mar</td></tr>
+<tr><td colspan="8" valign="top">&nbsp;</td></tr>
+<tr><td colspan="8"><b>200m</b></td></tr>
+<tr><td colspan="8"><b>Outdoor&nbsp;</b>Alltime
+&nbsp;<span onclick="changeme('Outdoorxxx50');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr><tr><td colspan="8"><div id="Outdoorxxx50" style="display: none;"><table><tbody><tr><td colspan="7"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=50&amp;ind=0">2 World Records </a></b></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 67</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td colspan="7"><font size="2"><b>2001</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>22.04&nbsp;&nbsp;+1.0&nbsp;&nbsp;&nbsp;</td><td>2-17</td><td>HS Ch</td><td>Kingston</td><td>7 Apr</td></tr>
+<tr><td>21.96&nbsp;-1.4&nbsp;&nbsp;&nbsp;</td><td>2h1-17</td><td>CarG</td><td>Bridgetown</td><td>16 Apr</td></tr>
+<tr><td>21.81&nbsp;-1.7&nbsp;&nbsp;&nbsp;</td><td>2-17</td><td>CarG</td><td>Bridgetown</td><td>16 Apr</td></tr>
+<tr><td>21.94&nbsp;&nbsp;+0.6&nbsp;&nbsp;&nbsp;</td><td>1h8-17</td><td>WY</td><td>Debrecen</td><td>14 Jul</td></tr>
+<tr><td>21.73&nbsp;&nbsp;+0.6&nbsp;&nbsp;&nbsp;</td><td>5s2-17</td><td>WY</td><td>Debrecen</td><td>14 Jul</td></tr>
+<tr><td colspan="7"><font size="2"><b>2002</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>21.25&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1h1-17</td><td>CarG</td><td>Nassau</td><td>31 Mar</td></tr>
+<tr><td>21.12&nbsp;-0.5&nbsp;&nbsp;&nbsp;</td><td>1-17</td><td>CarG</td><td>Nassau</td><td>1 Apr</td></tr>
+<tr><td>21.61&nbsp;-2.0&nbsp;&nbsp;&nbsp;</td><td>1-17</td><td>HS Ch</td><td>Kingston</td><td>20 Apr</td></tr>
+<tr><td>21.13&nbsp;-0.7&nbsp;&nbsp;&nbsp;</td><td>1-19</td><td>NC</td><td>Kingston</td><td>22 Jun</td></tr>
+<tr><td>21.34&nbsp;&nbsp;+0.3&nbsp;&nbsp;&nbsp;</td><td>1h2-17</td><td>CAC</td><td>Bridgetown</td><td>6 Jul</td></tr>
+<tr><td>20.61&nbsp;-0.4&nbsp;&nbsp;&nbsp;</td><td>1-17</td><td>CAC</td><td>Bridgetown</td><td>7 Jul</td></tr>
+<tr><td>20.58&nbsp;&nbsp;+1.4&nbsp;WYB15&nbsp;&nbsp;</td><td>1h4-19</td><td>WJ</td><td>Kingston</td><td>18 Jul</td></tr>
+<tr><td>20.85&nbsp;-2.5&nbsp;&nbsp;&nbsp;</td><td>1s2-19</td><td>WJ</td><td>Kingston</td><td>19 Jul</td></tr>
+<tr><td>20.61&nbsp;&nbsp;+0.9&nbsp;&nbsp;&nbsp;</td><td>1-19</td><td>WJ</td><td>Kingston</td><td>19 Jul</td></tr>
+<tr><td colspan="7"><font size="2"><b>2003</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 3</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>20.3h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td></td><td>Montego Bay</td><td>18 Feb</td></tr>
+<tr><td>21.33&nbsp;&nbsp;+2.2&nbsp;&nbsp;&nbsp;</td><td>1-19</td><td></td><td>Spanish Town</td><td>1 Mar</td></tr>
+<tr><td>21.42&nbsp;&nbsp;+4.2&nbsp;&nbsp;&nbsp;</td><td>1h1-19</td><td></td><td>Spanish Town</td><td>1 Mar</td></tr>
+<tr><td>20.81&nbsp;&nbsp;+1.3&nbsp;&nbsp;&nbsp;</td><td>1h6-18</td><td>HS Ch</td><td>Kingston</td><td>2 Apr</td></tr>
+<tr><td>21.28&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>1s2-18</td><td>HS Ch</td><td>Kingston</td><td>5 Apr</td></tr>
+<tr><td>20.25&nbsp;&nbsp;+1.9&nbsp;&nbsp;&nbsp;</td><td>1-18</td><td>HS Ch</td><td>Kingston</td><td>5 Apr</td></tr>
+<tr><td>21.02&nbsp;&nbsp;+5.0&nbsp;&nbsp;&nbsp;</td><td>1h2-19</td><td>CarG</td><td>Port of Spain</td><td>20 Apr</td></tr>
+<tr><td>20.43&nbsp;-1.1&nbsp;&nbsp;&nbsp;</td><td>1-19</td><td>CarG</td><td>Port of Spain</td><td>21 Apr</td></tr>
+<tr><td>21.1h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td></td><td>Spanish Town</td><td>14 Jun</td></tr>
+<tr><td>20.80&nbsp;-1.8&nbsp;&nbsp;&nbsp;</td><td>1h2</td><td>NC</td><td>Kingston</td><td>21 Jun</td></tr>
+<tr><td>20.28&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>NC</td><td>Kingston</td><td>21 Jun</td></tr>
+<tr><td>21.12&nbsp;-0.4&nbsp;&nbsp;&nbsp;</td><td>1h1-17</td><td>WY</td><td>Sherbrooke</td><td>12 Jul</td></tr>
+<tr><td>21.08&nbsp;-3.2&nbsp;&nbsp;&nbsp;</td><td>1s3-17</td><td>WY</td><td>Sherbrooke</td><td>13 Jul</td></tr>
+<tr><td>20.40&nbsp;-1.1&nbsp;&nbsp;&nbsp;</td><td>1-17</td><td>WY</td><td>Sherbrooke</td><td>13 Jul</td></tr>
+<tr><td>20.67&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>1h1-19</td><td>PanAmC</td><td>Bridgetown</td><td>20 Jul</td></tr>
+<tr><td>20.13&nbsp;&nbsp;0.0&nbsp;&nbsp;WU20R WU18B&nbsp;</td><td>1-19</td><td>PanAmC</td><td>Bridgetown</td><td>20 Jul</td></tr>
+<tr><td colspan="7"><font size="2"><b>2004</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 1</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>21.28&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1h4-19</td><td></td><td>Spanish Town</td><td>13 Mar</td></tr>
+<tr><td>20.78&nbsp;&nbsp;+1.7&nbsp;&nbsp;&nbsp;</td><td>1-19</td><td></td><td>Spanish Town</td><td>13 Mar</td></tr>
+<tr><td>19.93&nbsp;&nbsp;+1.4&nbsp;WU20R&nbsp;&nbsp;</td><td>1-19</td><td>CarG</td><td>Hamilton</td><td>11 Apr</td></tr>
+<tr><td>21.05&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>5h4</td><td>OG</td><td>Athína</td><td>24 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2005</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 4</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>20.51&nbsp;&nbsp;+1.4&nbsp;&nbsp;&nbsp;</td><td>1r1</td><td>Seminole</td><td>Tallahassee FL</td><td>9 Apr</td></tr>
+<tr><td>20.14&nbsp;&nbsp;+0.9&nbsp;&nbsp;&nbsp;</td><td>1</td><td></td><td>Kingston</td><td>7 May</td></tr>
+<tr><td>20.31&nbsp;-0.6&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Reebok</td><td>New York NY</td><td>11 Jun</td></tr>
+<tr><td>20.90&nbsp;-0.7&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>NC</td><td>Kingston</td><td>24 Jun</td></tr>
+<tr><td>20.91&nbsp;-1.6&nbsp;&nbsp;&nbsp;</td><td>1s1</td><td>NC</td><td>Kingston</td><td>26 Jun</td></tr>
+<tr><td>20.27&nbsp;&nbsp;+0.5&nbsp;&nbsp;&nbsp;</td><td>1</td><td>NC</td><td>Kingston</td><td>26 Jun</td></tr>
+<tr><td>21.00&nbsp;-0.4&nbsp;&nbsp;&nbsp;</td><td>1h4</td><td>CAC</td><td>Nassau</td><td>10 Jul</td></tr>
+<tr><td>20.69&nbsp;&nbsp;+0.3&nbsp;&nbsp;&nbsp;</td><td>2s1</td><td>CAC</td><td>Nassau</td><td>10 Jul</td></tr>
+<tr><td>20.03&nbsp;&nbsp;+1.8&nbsp;&nbsp;&nbsp;</td><td>1</td><td>CAC</td><td>Nassau</td><td>11 Jul</td></tr>
+<tr><td>19.99&nbsp;&nbsp;+1.8&nbsp;&nbsp;&nbsp;</td><td>2</td><td>Norw Union</td><td>London</td><td>22 Jul</td></tr>
+<tr><td>20.80&nbsp;-0.4&nbsp;&nbsp;&nbsp;</td><td>1h5</td><td>WC</td><td>Helsinki</td><td>9 Aug</td></tr>
+<tr><td>20.87&nbsp;-3.7&nbsp;&nbsp;&nbsp;</td><td>2q3</td><td>WC</td><td>Helsinki</td><td>10 Aug</td></tr>
+<tr><td>20.68&nbsp;-0.1&nbsp;&nbsp;&nbsp;</td><td>4s1</td><td>WC</td><td>Helsinki</td><td>10 Aug</td></tr>
+<tr><td>26.27&nbsp;-0.5&nbsp;&nbsp;&nbsp;</td><td>8</td><td>WC</td><td>Helsinki</td><td>11 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2006</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 7</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>20.08&nbsp;&nbsp;+1.5&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Conseil</td><td>Fort-de-France</td><td>29 Apr</td></tr>
+<tr><td>20.10&nbsp;&nbsp;+1.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td></td><td>Kingston</td><td>6 May</td></tr>
+<tr><td>20.28&nbsp;&nbsp;+0.5&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>30 May</td></tr>
+<tr><td>20.25&nbsp;&nbsp;+0.4&nbsp;&nbsp;&nbsp;</td><td>2</td><td>Reebok</td><td>New York NY</td><td>3 Jun</td></tr>
+<tr><td>20.69&nbsp;&nbsp;+1.9&nbsp;&nbsp;&nbsp;</td><td>1r1</td><td>IslandG</td><td>New York NY</td><td>11 Jun</td></tr>
+<tr><td>19.88&nbsp;&nbsp;+0.4&nbsp;&nbsp;&nbsp;</td><td>3</td><td>Athletissima</td><td>Lausanne</td><td>11 Jul</td></tr>
+<tr><td>20.29&nbsp;&nbsp;+2.5&nbsp;&nbsp;&nbsp;</td><td>2r1</td><td>Vard</td><td>Réthimno</td><td>21 Jul</td></tr>
+<tr><td>20.54&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>4</td><td>Norw Union</td><td>London</td><td>28 Jul</td></tr>
+<tr><td>20.51&nbsp;-0.5&nbsp;&nbsp;&nbsp;</td><td>2-22</td><td>WK</td><td>Zürich</td><td>18 Aug</td></tr>
+<tr><td>20.49&nbsp;-0.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Zagreb 2006</td><td>Zagreb</td><td>31 Aug</td></tr>
+<tr><td>20.10&nbsp;-0.1&nbsp;&nbsp;&nbsp;</td><td>3</td><td>WAF</td><td>Stuttgart</td><td>10 Sep</td></tr>
+<tr><td>19.96&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>2</td><td>WCp</td><td>Athína</td><td>17 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2007</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 12</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>19.96&nbsp;&nbsp;+1.0&nbsp;&nbsp;&nbsp;</td><td>1r2</td><td>HamptonG</td><td>Port of Spain</td><td>27 May</td></tr>
+<tr><td>19.89&nbsp;&nbsp;+1.3&nbsp;&nbsp;&nbsp;</td><td>2</td><td>Reebok</td><td>Randalls Island NY</td><td>2 Jun</td></tr>
+<tr><td>19.75&nbsp;&nbsp;+0.2&nbsp;&nbsp;AR&nbsp;</td><td>1</td><td>NC</td><td>Kingston</td><td>24 Jun</td></tr>
+<tr><td>20.50&nbsp;-2.7&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>NC</td><td>Kingston</td><td>24 Jun</td></tr>
+<tr><td>20.11&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>2</td><td>Athletissima</td><td>Lausanne</td><td>10 Jul</td></tr>
+<tr><td>20.08&nbsp;&nbsp;+1.2&nbsp;&nbsp;&nbsp;</td><td>2</td><td>Norw Union</td><td>Sheffield</td><td>15 Jul</td></tr>
+<tr><td>20.06&nbsp;-0.1&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Norw Union</td><td>London</td><td>3 Aug</td></tr>
+<tr><td>20.12&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>2h4</td><td>WC</td><td>Osaka</td><td>28 Aug</td></tr>
+<tr><td>20.13&nbsp;-0.3&nbsp;&nbsp;&nbsp;</td><td>1q2</td><td>WC</td><td>Osaka</td><td>28 Aug</td></tr>
+<tr><td>20.03&nbsp;-0.4&nbsp;&nbsp;&nbsp;</td><td>1s1</td><td>WC</td><td>Osaka</td><td>29 Aug</td></tr>
+<tr><td>19.91&nbsp;-0.8&nbsp;&nbsp;&nbsp;</td><td>2</td><td>WC</td><td>Osaka</td><td>30 Aug</td></tr>
+<tr><td>20.19&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>2</td><td>WK</td><td>Zürich</td><td>7 Sep</td></tr>
+<tr><td>20.14&nbsp;&nbsp;+0.7&nbsp;&nbsp;&nbsp;</td><td>3</td><td>VD</td><td>Bruxelles</td><td>14 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2008</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 8</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>19.83&nbsp;&nbsp;+0.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>12 Jun</td></tr>
+<tr><td>20.66&nbsp;-1.6&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>NC</td><td>Kingston</td><td>29 Jun</td></tr>
+<tr><td>19.97&nbsp;&nbsp;+1.7&nbsp;&nbsp;&nbsp;</td><td>1</td><td>NC</td><td>Kingston</td><td>29 Jun</td></tr>
+<tr><td>19.67&nbsp;-0.5&nbsp;&nbsp;AR&nbsp;</td><td>1</td><td>Tsiklitiria</td><td>Athína</td><td>13 Jul</td></tr>
+<tr><td>19.76&nbsp;-0.4&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Aviva</td><td>London</td><td>26 Jul</td></tr>
+<tr><td>20.29&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1q1</td><td>OG</td><td>Beijing</td><td>18 Aug</td></tr>
+<tr><td>20.64&nbsp;-0.1&nbsp;&nbsp;&nbsp;</td><td>2h5</td><td>OG</td><td>Beijing</td><td>18 Aug</td></tr>
+<tr><td>20.09&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1s2</td><td>OG</td><td>Beijing</td><td>19 Aug</td></tr>
+<tr><td>19.30&nbsp;-0.9&nbsp;&nbsp;WR&nbsp;</td><td>1</td><td>OG</td><td>Beijing</td><td>20 Aug</td></tr>
+<tr><td>19.63&nbsp;-0.9&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Athletissima</td><td>Lausanne</td><td>2 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2009</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=50&amp;ind=0">1 World Record</a></b></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 6</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>20.75&nbsp;-3.6&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>NC</td><td>Kingston</td><td>28 Jun</td></tr>
+<tr><td>20.25&nbsp;-2.4&nbsp;&nbsp;&nbsp;</td><td>1</td><td>NC</td><td>Kingston</td><td>28 Jun</td></tr>
+<tr><td>19.59&nbsp;-0.9&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Athletissima</td><td>Lausanne</td><td>7 Jul</td></tr>
+<tr><td>20.70&nbsp;-0.2&nbsp;&nbsp;&nbsp;</td><td>1h5</td><td>WC</td><td>Berlin</td><td>18 Aug</td></tr>
+<tr><td>20.41&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>1q1</td><td>WC</td><td>Berlin</td><td>18 Aug</td></tr>
+<tr><td>20.08&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>1s1</td><td>WC</td><td>Berlin</td><td>19 Aug</td></tr>
+<tr><td>19.19&nbsp;-0.3&nbsp;WR&nbsp;&nbsp;</td><td>1</td><td>WC</td><td>Berlin</td><td>20 Aug</td></tr>
+<tr><td>19.57&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>1</td><td>VD</td><td>Bruxelles</td><td>4 Sep</td></tr>
+<tr><td>19.68&nbsp;-0.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WAF</td><td>Thessaloníki</td><td>13 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2010</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 2</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>19.56&nbsp;-0.8&nbsp;&nbsp;&nbsp;</td><td>1</td><td></td><td>Kingston</td><td>1 May</td></tr>
+<tr><td>19.76&nbsp;-0.8&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Diamond</td><td>Shanghai</td><td>23 May</td></tr>
+<tr><td colspan="7"><font size="2"><b>2011</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 4</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>19.86&nbsp;&nbsp;+0.7&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Bislett</td><td>Oslo</td><td>9 Jun</td></tr>
+<tr><td>20.03&nbsp;-0.6&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Areva</td><td>Paris</td><td>8 Jul</td></tr>
+<tr><td>20.03&nbsp;-1.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>DNG</td><td>Stockholm/S</td><td>29 Jul</td></tr>
+<tr><td>20.30&nbsp;-0.3&nbsp;&nbsp;&nbsp;</td><td>1h2</td><td>WC</td><td>Daegu</td><td>2 Sep</td></tr>
+<tr><td>20.31&nbsp;-1.0&nbsp;&nbsp;&nbsp;</td><td>1s2</td><td>WC</td><td>Daegu</td><td>2 Sep</td></tr>
+<tr><td>19.40&nbsp;&nbsp;+0.8&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WC</td><td>Daegu</td><td>3 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2012</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 6</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>21.21&nbsp;-2.2&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>NC</td><td>Kingston</td><td>30 Jun</td></tr>
+<tr><td>20.26&nbsp;&nbsp;+1.3&nbsp;&nbsp;&nbsp;</td><td>1s3</td><td>NC</td><td>Kingston</td><td>30 Jun</td></tr>
+<tr><td>19.83&nbsp;-0.5&nbsp;&nbsp;&nbsp;</td><td>2</td><td>NC</td><td>Kingston</td><td>1 Jul</td></tr>
+<tr><td>20.39&nbsp;&nbsp;+0.9&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>OG</td><td>London</td><td>7 Aug</td></tr>
+<tr><td>20.18&nbsp;-0.6&nbsp;&nbsp;&nbsp;</td><td>1s2</td><td>OG</td><td>London</td><td>8 Aug</td></tr>
+<tr><td>19.32&nbsp;&nbsp;+0.4&nbsp;&nbsp;&nbsp;</td><td>1</td><td>OG</td><td>London</td><td>9 Aug</td></tr>
+<tr><td>19.58&nbsp;&nbsp;+1.4&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Athletissima</td><td>Lausanne</td><td>23 Aug</td></tr>
+<tr><td>19.66&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WK</td><td>Zürich</td><td>30 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2013</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 4</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>19.79&nbsp;&nbsp;+1.7&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Bislett</td><td>Oslo</td><td>13 Jun</td></tr>
+<tr><td>19.73&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Areva</td><td>Paris</td><td>6 Jul</td></tr>
+<tr><td>20.66&nbsp;&nbsp;+0.2&nbsp;&nbsp;&nbsp;</td><td>1h7</td><td>WC</td><td>Moskva</td><td>16 Aug</td></tr>
+<tr><td>20.12&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>1s2</td><td>WC</td><td>Moskva</td><td>16 Aug</td></tr>
+<tr><td>19.66&nbsp;&nbsp;0.0&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WC</td><td>Moskva</td><td>17 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2015</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 6</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>20.20&nbsp;-0.2&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Classic</td><td>Kingston</td><td>11 Apr</td></tr>
+<tr><td>20.13&nbsp;&nbsp;+0.6&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>26 May</td></tr>
+<tr><td>20.29&nbsp;-2.8&nbsp;&nbsp;&nbsp;</td><td>1</td><td>adidas</td><td>New York NY</td><td>13 Jun</td></tr>
+<tr><td>20.28&nbsp;&nbsp;+0.1&nbsp;&nbsp;&nbsp;</td><td>1h3</td><td>WC</td><td>Beijing</td><td>25 Aug</td></tr>
+<tr><td>19.95&nbsp;&nbsp;+0.8&nbsp;&nbsp;&nbsp;</td><td>1s3</td><td>WC</td><td>Beijing</td><td>26 Aug</td></tr>
+<tr><td>19.55&nbsp;-0.1&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WC</td><td>Beijing</td><td>27 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2016</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b>races under 20.30 (legal): 4</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td>19.89&nbsp;-0.3&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Müller</td><td>London</td><td>22 Jul</td></tr>
+<tr><td>20.28&nbsp;&nbsp;+0.6&nbsp;&nbsp;&nbsp;</td><td>1h9</td><td>OG</td><td>Rio de Janeiro</td><td>16 Aug</td></tr>
+<tr><td>19.78&nbsp;-0.3&nbsp;&nbsp;&nbsp;</td><td>1s2</td><td>OG</td><td>Rio de Janeiro</td><td>17 Aug</td></tr>
+<tr><td>19.78&nbsp;-0.5&nbsp;&nbsp;&nbsp;</td><td>1</td><td>OG</td><td>Rio de Janeiro</td><td>18 Aug</td></tr>
+</tbody></table></div></td></tr><tr><td><b>2001</b>&nbsp;
+21.73<span style="visibility: hidden">w</span>&nbsp;&nbsp;+0.6&nbsp;<b></b>&nbsp;</td><td>5s2-17</td><td>Debrecen</td><td>14 Jul</td></tr>
+<tr><td><b>2002</b>&nbsp;
+20.58<span style="visibility: hidden">w</span>&nbsp;&nbsp;+1.4&nbsp;<b>WYB15</b>&nbsp;</td><td>1h4-19</td><td>Kingston</td><td>18 Jul</td></tr>
+<tr><td><b>2003</b>&nbsp;
+20.13<span style="visibility: hidden">w</span>&nbsp;&nbsp;0.0&nbsp;<b></b>&nbsp;WU20R WU18B</td><td>1-19</td><td>Bridgetown</td><td>20 Jul</td></tr>
+<tr><td><b>2004</b>&nbsp;
+19.93<span style="visibility: hidden">w</span>&nbsp;&nbsp;+1.4&nbsp;<b>WU20R</b>&nbsp;</td><td>1-19</td><td>Hamilton</td><td>11 Apr</td></tr>
+<tr><td><b>2005</b>&nbsp;
+19.99<span style="visibility: hidden">w</span>&nbsp;&nbsp;+1.8&nbsp;<b></b>&nbsp;</td><td>2</td><td>London</td><td>22 Jul</td></tr>
+<tr><td><b>2006</b>&nbsp;
+19.88<span style="visibility: hidden">w</span>&nbsp;&nbsp;+0.4&nbsp;<b></b>&nbsp;</td><td>3</td><td>Lausanne</td><td>11 Jul</td></tr>
+<tr><td><b>2007</b>&nbsp;
+19.75<span style="visibility: hidden">w</span>&nbsp;&nbsp;+0.2&nbsp;<b></b>&nbsp;AR</td><td>1</td><td>Kingston</td><td>24 Jun</td></tr>
+<tr><td><b>2008</b>&nbsp;
+19.30<span style="visibility: hidden">w</span>&nbsp;-0.9&nbsp;<b></b>&nbsp;WR</td><td>1</td><td>Beijing</td><td>20 Aug</td></tr>
+<tr><td><b>2009</b>&nbsp;
+<b>19.19<span style="visibility: hidden">w</span>&nbsp;-0.3&nbsp;WR&nbsp;</b></td><td>1</td><td>Berlin</td><td>20 Aug</td></tr>
+<tr><td><b>2010</b>&nbsp;
+19.56<span style="visibility: hidden">w</span>&nbsp;-0.8&nbsp;<b></b>&nbsp;</td><td>1</td><td>Kingston</td><td>1 May</td></tr>
+<tr><td><b>2011</b>&nbsp;
+19.40<span style="visibility: hidden">w</span>&nbsp;&nbsp;+0.8&nbsp;<b></b>&nbsp;</td><td>1</td><td>Daegu</td><td>3 Sep</td></tr>
+<tr><td><b>2012</b>&nbsp;
+19.32<span style="visibility: hidden">w</span>&nbsp;&nbsp;+0.4&nbsp;<b></b>&nbsp;</td><td>1</td><td>London</td><td>9 Aug</td></tr>
+<tr><td><b>2013</b>&nbsp;
+19.66<span style="visibility: hidden">w</span>&nbsp;&nbsp;0.0&nbsp;<b></b>&nbsp;</td><td>1</td><td>Moskva</td><td>17 Aug</td></tr>
+<tr><td><b>2015</b>&nbsp;
+19.55<span style="visibility: hidden">w</span>&nbsp;-0.1&nbsp;<b></b>&nbsp;</td><td>1</td><td>Beijing</td><td>27 Aug</td></tr>
+<tr><td><b>2016</b>&nbsp;
+19.78<span style="visibility: hidden">w</span>&nbsp;-0.3&nbsp;<b></b>&nbsp;</td><td>1s2</td><td>Rio de Janeiro</td><td>17 Aug</td></tr>
+<tr><td colspan="8" valign="top">&nbsp;</td></tr>
+<tr><td colspan="8"><b>300m</b></td></tr>
+<tr><td colspan="8"><b>Outdoor&nbsp;</b>Alltime
+&nbsp;<span onclick="changeme('Outdoorxxx60');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr><tr><td colspan="8"><div id="Outdoorxxx60" style="display: none;"><table><tbody><tr><td colspan="7"><b> </b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td colspan="7"><font size="2"><b>2010</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>30.97&nbsp;&nbsp;&nbsp;AR&nbsp;&nbsp;</td><td>1</td><td>GSpike</td><td>Ostrava</td><td>27 May</td></tr>
+</tbody></table></div></td></tr><tr><td><b>2010</b>&nbsp;
+<b>30.97<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;AR&nbsp;</b></td><td>1</td><td>Ostrava</td><td>27 May</td></tr>
+<tr><td colspan="8" valign="top">&nbsp;</td></tr>
+<tr><td colspan="8"><b>400m</b></td></tr>
+<tr><td colspan="8"><b>Outdoor&nbsp;</b>Alltime
+&nbsp;<span onclick="changeme('Outdoorxxx70');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr><tr><td colspan="8"><div id="Outdoorxxx70" style="display: none;"><table><tbody><tr><td colspan="7"><b> </b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td colspan="7"><font size="2"><b>2001</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>48.28&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2-17</td><td>CarG</td><td>Bridgetown</td><td>14 Apr</td></tr>
+<tr><td colspan="7"><font size="2"><b>2002</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>47.33&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1-17</td><td>CarG</td><td>Nassau</td><td>30 Mar</td></tr>
+<tr><td>47.4h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1-17</td><td>HS Ch</td><td>Kingston</td><td>20 Apr</td></tr>
+<tr><td>48.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1h2-17</td><td>CAC</td><td>Bridgetown</td><td>5 Jul</td></tr>
+<tr><td>47.12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1-17</td><td>CAC</td><td>Bridgetown</td><td>5 Jul</td></tr>
+<tr><td colspan="7"><font size="2"><b>2003</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>47.82&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2-19</td><td></td><td>Spanish Town</td><td>1 Mar</td></tr>
+<tr><td>47.94&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2s1-18</td><td>HS Ch</td><td>Kingston</td><td>4 Apr</td></tr>
+<tr><td>45.35&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1-18</td><td>HS Ch</td><td>Kingston</td><td>5 Apr</td></tr>
+<tr><td>48.64&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2h1-19</td><td>CarG</td><td>Port of Spain</td><td>19 Apr</td></tr>
+<tr><td>46.35&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1-19</td><td>CarG</td><td>Port of Spain</td><td>19 Apr</td></tr>
+<tr><td>48.36&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2h2-17</td><td>WY</td><td>Sherbrooke</td><td>10 Jul</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DNS</td><td>s1-17</td><td>WY</td><td>Sherbrooke</td><td>10 Jul</td></tr>
+<tr><td colspan="7"><font size="2"><b>2006</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>48.5h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td></td><td>Kirkvine</td><td>14 Jan</td></tr>
+<tr><td>47.58&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>3</td><td></td><td>Kingston</td><td>28 Jan</td></tr>
+<tr><td colspan="7"><font size="2"><b>2007</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>45.92&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1r1</td><td>Camperdown</td><td>Kingston</td><td>10 Feb</td></tr>
+<tr><td>45.62&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1rB</td><td></td><td>Baie-Mahault</td><td>1 May</td></tr>
+<tr><td>45.28&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>3r2</td><td></td><td>Kingston</td><td>5 May</td></tr>
+<tr><td colspan="7"><font size="2"><b>2008</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>46.94&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1r10</td><td>Jackson</td><td>Kingston</td><td>26 Jan</td></tr>
+<tr><td colspan="7"><font size="2"><b>2009</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>46.35&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Camperdown</td><td>Kingston</td><td>14 Feb</td></tr>
+<tr><td>45.54&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1r4</td><td>UWI Inv</td><td>Kingston</td><td>21 Feb</td></tr>
+<tr><td colspan="7"><font size="2"><b>2010</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>45.87&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1r4</td><td>Camperdown</td><td>Kingston</td><td>13 Feb</td></tr>
+<tr><td colspan="7"><font size="2"><b>2013</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>46.74&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1rC</td><td>Camperdown</td><td>Kingston</td><td>9 Feb</td></tr>
+<tr><td>46.44&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2</td><td>UWI Inv</td><td>Mona</td><td>23 Mar</td></tr>
+<tr><td colspan="7"><font size="2"><b>2015</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>46.38&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Classics</td><td>Kingston</td><td>14 Mar</td></tr>
+</tbody></table></div></td></tr><tr><td><b>2001</b>&nbsp;
+48.28<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>2-17</td><td>Bridgetown</td><td>14 Apr</td></tr>
+<tr><td><b>2002</b>&nbsp;
+47.12<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1-17</td><td>Bridgetown</td><td>5 Jul</td></tr>
+<tr><td><b>2003</b>&nbsp;
+45.35<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1-18</td><td>Kingston</td><td>5 Apr</td></tr>
+<tr><td><b>2006</b>&nbsp;
+47.58<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>3</td><td>Kingston</td><td>28 Jan</td></tr>
+<tr><td><b>2007</b>&nbsp;
+<b>45.28<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td>3r2</td><td>Kingston</td><td>5 May</td></tr>
+<tr><td><b>2008</b>&nbsp;
+46.94<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1r10</td><td>Kingston</td><td>26 Jan</td></tr>
+<tr><td><b>2009</b>&nbsp;
+45.54<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1r4</td><td>Kingston</td><td>21 Feb</td></tr>
+<tr><td><b>2010</b>&nbsp;
+45.87<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1r4</td><td>Kingston</td><td>13 Feb</td></tr>
+<tr><td><b>2013</b>&nbsp;
+46.44<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>2</td><td>Mona</td><td>23 Mar</td></tr>
+<tr><td><b>2015</b>&nbsp;
+46.38<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1</td><td>Kingston</td><td>14 Mar</td></tr>
+<tr><td colspan="8" valign="top">&nbsp;</td></tr>
+<tr><td colspan="8"><b>4 x 100m</b></td></tr>
+<tr><td colspan="8"><b>Outdoor&nbsp;</b>Alltime
+&nbsp;<span onclick="changeme('Outdoorxxx560');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr><tr><td colspan="8"><div id="Outdoorxxx560" style="display: none;"><table><tbody><tr><td colspan="7"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=560&amp;ind=0">3 World Records </a></b></td></tr>
+<tr><td colspan="7"><b> </b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td colspan="7"><font size="2"><b>2002</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>39.38&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1h1-19</td><td>WJ</td><td>Kingston</td><td>20 Jul</td></tr>
+<tr><td>39.15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2-19</td><td>WJ</td><td>Kingston</td><td>21 Jul</td></tr>
+<tr><td colspan="7"><font size="2"><b>2007</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>38.70&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>GibsonR</td><td>Kingston</td><td>24 Feb</td></tr>
+<tr><td>37.89&nbsp;&nbsp;&nbsp;&nbsp;AR&nbsp;</td><td>2</td><td>WC</td><td>Osaka</td><td>1 Sep</td></tr>
+<tr><td>38.82&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2</td><td>WK</td><td>Zürich</td><td>7 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2008</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>37.10&nbsp;&nbsp;&nbsp;&nbsp;WR&nbsp;DQ IAAF Rule 32.2.a</td><td></td><td>OG</td><td>Beijing</td><td>22 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2009</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>38.10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Gibson</td><td>Kingston</td><td>28 Feb</td></tr>
+<tr><td>37.46&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Aviva</td><td>London</td><td>25 Jul</td></tr>
+<tr><td>37.31&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WC</td><td>Berlin</td><td>22 Aug</td></tr>
+<tr><td>37.70&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WK</td><td>Zürich</td><td>28 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2010</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>38.08&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Gibson</td><td>Kingston</td><td>27 Feb</td></tr>
+<tr><td>37.90&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>PennR</td><td>Philadelphia PA</td><td>24 Apr</td></tr>
+<tr><td colspan="7"><font size="2"><b>2011</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>37.04&nbsp;&nbsp;&nbsp;&nbsp;WR&nbsp;</td><td>1</td><td>WC</td><td>Daegu</td><td>4 Sep</td></tr>
+<tr><td colspan="7"><font size="2"><b>2012</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td colspan="7"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=560&amp;ind=0">1 World Record</a></b></td></tr>
+<tr><td>37.82&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Classic</td><td>Kingston</td><td>14 Apr</td></tr>
+<tr><td>36.84&nbsp;&nbsp;&nbsp;WR&nbsp;&nbsp;</td><td>1</td><td>OG</td><td>London</td><td>11 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2013</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>37.75&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Sainsbury's</td><td>London</td><td>27 Jul</td></tr>
+<tr><td>37.36&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WC</td><td>Moskva</td><td>18 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2014</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>38.99&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1h2</td><td>CWG</td><td>Glasgow</td><td>1 Aug</td></tr>
+<tr><td>37.58&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>CWG</td><td>Glasgow</td><td>2 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2015</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>39.26&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1h4</td><td>GibsonR</td><td>Kingston</td><td>28 Feb</td></tr>
+<tr><td>38.29&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2</td><td>GibsonR</td><td>Kingston</td><td>28 Feb</td></tr>
+<tr><td>38.07&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>WorldR</td><td>Nassau</td><td>2 May</td></tr>
+<tr><td>37.68&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2</td><td>WorldR</td><td>Nassau</td><td>2 May</td></tr>
+<tr><td>37.36&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>WC</td><td>Beijing</td><td>29 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2016</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>37.27&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>OG</td><td>Rio de Janeiro</td><td>19 Aug</td></tr>
+<tr><td colspan="7"><font size="2"><b>2017</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>37.95&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1h2</td><td>WC</td><td>London</td><td>12 Aug</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DNF</td><td></td><td>WC</td><td>London</td><td>12 Aug</td></tr>
+</tbody></table></div></td></tr><tr><td><b>2002</b>&nbsp;
+<b>39.15<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td>2-19</td><td>Kingston</td><td>21 Jul</td></tr>
+<tr><td><b>2007</b>&nbsp;
+37.89<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;AR</td><td>2</td><td>Osaka</td><td>1 Sep</td></tr>
+<tr><td><b>2009</b>&nbsp;
+37.31<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1</td><td>Berlin</td><td>22 Aug</td></tr>
+<tr><td><b>2010</b>&nbsp;
+<b>37.90<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td>1</td><td>Philadelphia PA</td><td>24 Apr</td></tr>
+<tr><td><b>2011</b>&nbsp;
+37.04<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;WR</td><td>1</td><td>Daegu</td><td>4 Sep</td></tr>
+<tr><td><b>2012</b>&nbsp;
+<b>36.84<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;WR&nbsp;</b></td><td>1</td><td>London</td><td>11 Aug</td></tr>
+<tr><td><b>2013</b>&nbsp;
+37.36<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1</td><td>Moskva</td><td>18 Aug</td></tr>
+<tr><td><b>2014</b>&nbsp;
+37.58<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1</td><td>Glasgow</td><td>2 Aug</td></tr>
+<tr><td><b>2015</b>&nbsp;
+37.36<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1</td><td>Beijing</td><td>29 Aug</td></tr>
+<tr><td><b>2016</b>&nbsp;
+37.27<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1</td><td>Rio de Janeiro</td><td>19 Aug</td></tr>
+<tr><td><b>2017</b>&nbsp;
+37.95<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1h2</td><td>London</td><td>12 Aug</td></tr>
+<tr><td colspan="8" valign="top">&nbsp;</td></tr>
+<tr><td colspan="8"><b>4 x 400m</b></td></tr>
+<tr><td colspan="8"><b>Outdoor&nbsp;</b>Alltime
+&nbsp;<span onclick="changeme('Outdoorxxx580');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr><tr><td colspan="8"><div id="Outdoorxxx580" style="display: none;"><table><tbody><tr><td colspan="7"><b> </b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td colspan="7"><font size="2"><b>2002</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>3:04.06&nbsp;&nbsp;&nbsp;AU20R&nbsp;&nbsp;</td><td>2-19</td><td>WJ</td><td>Kingston</td><td>21 Jul</td></tr>
+<tr><td colspan="7"><font size="2"><b>2009</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>3:04.27&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Gibson</td><td>Kingston</td><td>28 Feb</td></tr>
+<tr><td colspan="7"><font size="2"><b>2010</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>3:05.77&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>2</td><td>Gibson</td><td>Kingston</td><td>27 Feb</td></tr>
+<tr><td colspan="7"><font size="2"><b>2013</b></font></td></tr>
+<tr><td colspan="7"><font size="2">Outdoor</font></td></tr>
+<tr><td>3:06.90&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1h1</td><td>GibsonR</td><td>Kingston</td><td>23 Feb</td></tr>
+</tbody></table></div></td></tr><tr><td><b>2002</b>&nbsp;
+<b>3:04.06<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;AU20R&nbsp;</b></td><td>2-19</td><td>Kingston</td><td>21 Jul</td></tr>
+<tr><td><b>2009</b>&nbsp;
+3:04.27<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>1</td><td>Kingston</td><td>28 Feb</td></tr>
+<tr><td><b>2010</b>&nbsp;
+3:05.77<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;<b></b>&nbsp;</td><td>2</td><td>Kingston</td><td>27 Feb</td></tr>
+<tr><td><b>2013</b>&nbsp;
+<b>3:06.90<span style="visibility: hidden">w</span>&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td>1h1</td><td>Kingston</td><td>23 Feb</td></tr>
+</tbody></table></div>
+</div><div class="left">
+<h1 onmousedown="show('major')"><span id="majorIcon">▲</span>IN MAJOR EVENTS</h1><table valign="top" width="380">
+</table><table id="majorDiv" class="desktop" width="320">
+<tbody><tr><td>&nbsp;</td></tr>
+<tr><td style="background-color: #035536; color: white; text-shadow: 2px 2px 3px black;"><b>Outdoor</b>
+</td></tr><tr><td colspan="2" style="background-color: lightgrey"><b>100m</b></td></tr>
+<tr><td style="background-color: lightblue"><b>OG</b></td>
+<td style="background-color: lightyellow">2008:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">9.69</td>
+<td style="background-color: lightblue">1s1</td><td style="background-color: lightyellow">9.85</td>
+<td style="background-color: lightblue">1q4</td><td style="background-color: lightyellow">9.92</td>
+<td style="background-color: lightblue">1h1</td><td style="background-color: lightyellow">10.20</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2009:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">9.58</td>
+<td style="background-color: lightblue">1s1</td><td style="background-color: lightyellow">9.89</td>
+<td style="background-color: lightblue">2q5</td><td style="background-color: lightyellow">10.03</td>
+<td style="background-color: lightblue">1h9</td><td style="background-color: lightyellow">10.20</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2011:</td>
+<td style="background-color: lightblue">1s2</td><td style="background-color: lightyellow">10.05</td>
+<td style="background-color: lightblue">1h6</td><td style="background-color: lightyellow">10.10</td>
+<td style="background-color: lightblue"></td><td style="background-color: lightyellow">DQ</td>
+</tr><tr><td style="background-color: lightblue"><b>OG</b></td>
+<td style="background-color: lightyellow">2012:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">9.63</td>
+<td style="background-color: lightblue">1s2</td><td style="background-color: lightyellow">9.87</td>
+<td style="background-color: lightblue">1h4</td><td style="background-color: lightyellow">10.09</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2013:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">9.77</td>
+<td style="background-color: lightblue">1s3</td><td style="background-color: lightyellow">9.92</td>
+<td style="background-color: lightblue">1h7</td><td style="background-color: lightyellow">10.07</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2015:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">9.79</td>
+<td style="background-color: lightblue">1s1</td><td style="background-color: lightyellow">9.96</td>
+<td style="background-color: lightblue">1h7</td><td style="background-color: lightyellow">9.96</td>
+</tr><tr><td style="background-color: lightblue"><b>OG</b></td>
+<td style="background-color: lightyellow">2016:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">9.81</td>
+<td style="background-color: lightblue">1s2</td><td style="background-color: lightyellow">9.86</td>
+<td style="background-color: lightblue">1h7</td><td style="background-color: lightyellow">10.07</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2017:</td>
+<td style="background-color: lightblue">3</td><td style="background-color: lightyellow">9.95</td>
+<td style="background-color: lightblue">2s3</td><td style="background-color: lightyellow">9.98</td>
+<td style="background-color: lightblue">1h6</td><td style="background-color: lightyellow">10.07</td>
+</tr>
+<tr><td colspan="2" style="background-color: lightgrey"><b>200m</b></td></tr>
+<tr><td style="background-color: lightblue"><b>WY</b></td>
+<td style="background-color: lightyellow">2001:</td>
+<td style="background-color: lightblue">5s2-17</td><td style="background-color: lightyellow">21.73</td>
+<td style="background-color: lightblue">1h8-17</td><td style="background-color: lightyellow">21.94</td>
+</tr><tr><td style="background-color: lightblue"><b>CAC</b></td>
+<td style="background-color: lightyellow">2002:</td>
+<td style="background-color: lightblue">1-17</td><td style="background-color: lightyellow">20.61</td>
+<td style="background-color: lightblue">1h2-17</td><td style="background-color: lightyellow">21.34</td>
+</tr><tr><td style="background-color: lightblue"><b>WJ</b></td>
+<td style="background-color: lightyellow">2002:</td>
+<td style="background-color: lightblue">1-19</td><td style="background-color: lightyellow">20.61</td>
+<td style="background-color: lightblue">1s2-19</td><td style="background-color: lightyellow">20.85</td>
+<td style="background-color: lightblue">1h4-19</td><td style="background-color: lightyellow">20.58</td>
+</tr><tr><td style="background-color: lightblue"><b>WY</b></td>
+<td style="background-color: lightyellow">2003:</td>
+<td style="background-color: lightblue">1-17</td><td style="background-color: lightyellow">20.40</td>
+<td style="background-color: lightblue">1s3-17</td><td style="background-color: lightyellow">21.08</td>
+<td style="background-color: lightblue">1h1-17</td><td style="background-color: lightyellow">21.12</td>
+</tr><tr><td style="background-color: lightblue"><b>OG</b></td>
+<td style="background-color: lightyellow">2004:</td>
+<td style="background-color: lightblue">5h4</td><td style="background-color: lightyellow">21.05</td>
+</tr><tr><td style="background-color: lightblue"><b>CAC</b></td>
+<td style="background-color: lightyellow">2005:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">20.03</td>
+<td style="background-color: lightblue">2s1</td><td style="background-color: lightyellow">20.69</td>
+<td style="background-color: lightblue">1h4</td><td style="background-color: lightyellow">21.00</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2005:</td>
+<td style="background-color: lightblue">8</td><td style="background-color: lightyellow">26.27</td>
+<td style="background-color: lightblue">4s1</td><td style="background-color: lightyellow">20.68</td>
+<td style="background-color: lightblue">2q3</td><td style="background-color: lightyellow">20.87</td>
+<td style="background-color: lightblue">1h5</td><td style="background-color: lightyellow">20.80</td>
+</tr><tr><td style="background-color: lightblue"><b>WCp</b></td>
+<td style="background-color: lightyellow">2006:</td>
+<td style="background-color: lightblue">2</td><td style="background-color: lightyellow">19.96</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2007:</td>
+<td style="background-color: lightblue">2</td><td style="background-color: lightyellow">19.91</td>
+<td style="background-color: lightblue">1s1</td><td style="background-color: lightyellow">20.03</td>
+<td style="background-color: lightblue">1q2</td><td style="background-color: lightyellow">20.13</td>
+<td style="background-color: lightblue">2h4</td><td style="background-color: lightyellow">20.12</td>
+</tr><tr><td style="background-color: lightblue"><b>OG</b></td>
+<td style="background-color: lightyellow">2008:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">19.30</td>
+<td style="background-color: lightblue">1s2</td><td style="background-color: lightyellow">20.09</td>
+<td style="background-color: lightblue">1q1</td><td style="background-color: lightyellow">20.29</td>
+<td style="background-color: lightblue">2h5</td><td style="background-color: lightyellow">20.64</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2009:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">19.19</td>
+<td style="background-color: lightblue">1s1</td><td style="background-color: lightyellow">20.08</td>
+<td style="background-color: lightblue">1q1</td><td style="background-color: lightyellow">20.41</td>
+<td style="background-color: lightblue">1h5</td><td style="background-color: lightyellow">20.70</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2011:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">19.40</td>
+<td style="background-color: lightblue">1s2</td><td style="background-color: lightyellow">20.31</td>
+<td style="background-color: lightblue">1h2</td><td style="background-color: lightyellow">20.30</td>
+</tr><tr><td style="background-color: lightblue"><b>OG</b></td>
+<td style="background-color: lightyellow">2012:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">19.32</td>
+<td style="background-color: lightblue">1s2</td><td style="background-color: lightyellow">20.18</td>
+<td style="background-color: lightblue">1h1</td><td style="background-color: lightyellow">20.39</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2013:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">19.66</td>
+<td style="background-color: lightblue">1s2</td><td style="background-color: lightyellow">20.12</td>
+<td style="background-color: lightblue">1h7</td><td style="background-color: lightyellow">20.66</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2015:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">19.55</td>
+<td style="background-color: lightblue">1s3</td><td style="background-color: lightyellow">19.95</td>
+<td style="background-color: lightblue">1h3</td><td style="background-color: lightyellow">20.28</td>
+</tr><tr><td style="background-color: lightblue"><b>OG</b></td>
+<td style="background-color: lightyellow">2016:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">19.78</td>
+<td style="background-color: lightblue">1s2</td><td style="background-color: lightyellow">19.78</td>
+<td style="background-color: lightblue">1h9</td><td style="background-color: lightyellow">20.28</td>
+</tr>
+<tr><td colspan="2" style="background-color: lightgrey"><b>400m</b></td></tr>
+<tr><td style="background-color: lightblue"><b>CAC</b></td>
+<td style="background-color: lightyellow">2002:</td>
+<td style="background-color: lightblue">1-17</td><td style="background-color: lightyellow">47.12</td>
+<td style="background-color: lightblue">1h2-17</td><td style="background-color: lightyellow">48.00</td>
+</tr><tr><td style="background-color: lightblue"><b>WY</b></td>
+<td style="background-color: lightyellow">2003:</td>
+<td style="background-color: lightblue">s1-17</td><td style="background-color: lightyellow">DNS</td>
+<td style="background-color: lightblue">2h2-17</td><td style="background-color: lightyellow">48.36</td>
+</tr>
+<tr><td colspan="2" style="background-color: lightgrey"><b>4 x 100m</b></td></tr>
+<tr><td style="background-color: lightblue"><b>WJ</b></td>
+<td style="background-color: lightyellow">2002:</td>
+<td style="background-color: lightblue">2-19</td><td style="background-color: lightyellow">39.15</td>
+<td style="background-color: lightblue">1h1-19</td><td style="background-color: lightyellow">39.38</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2007:</td>
+<td style="background-color: lightblue">2</td><td style="background-color: lightyellow">37.89</td>
+</tr><tr><td style="background-color: lightblue"><b>OG</b></td>
+<td style="background-color: lightyellow">2008:</td>
+<td style="background-color: lightblue"></td><td style="background-color: lightyellow">37.10DQ </td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2009:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">37.31</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2011:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">37.04</td>
+</tr><tr><td style="background-color: lightblue"><b>OG</b></td>
+<td style="background-color: lightyellow">2012:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">36.84</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2013:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">37.36</td>
+</tr><tr><td style="background-color: lightblue"><b>CWG</b></td>
+<td style="background-color: lightyellow">2014:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">37.58</td>
+<td style="background-color: lightblue">1h2</td><td style="background-color: lightyellow">38.99</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2015:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">37.36</td>
+</tr><tr><td style="background-color: lightblue"><b>OG</b></td>
+<td style="background-color: lightyellow">2016:</td>
+<td style="background-color: lightblue">1</td><td style="background-color: lightyellow">37.27</td>
+</tr><tr><td style="background-color: lightblue"><b>WC</b></td>
+<td style="background-color: lightyellow">2017:</td>
+<td style="background-color: lightblue">1h2</td><td style="background-color: lightyellow">37.95</td>
+<td style="background-color: lightblue"></td><td style="background-color: lightyellow">DNF</td>
+</tr>
+<tr><td colspan="2" style="background-color: lightgrey"><b>4 x 400m</b></td></tr>
+<tr><td style="background-color: lightblue"><b>WJ</b></td>
+<td style="background-color: lightyellow">2002:</td>
+<td style="background-color: lightblue">2-19</td><td style="background-color: lightyellow">3:04.06</td>
+</tr>
+<tr><td colspan="2" style="background-color: lightgrey"><b>Medley Relay</b></td></tr>
+<tr><td style="background-color: lightblue"><b>WY</b></td>
+<td style="background-color: lightyellow">2001:</td>
+<td style="background-color: lightblue">4-17</td><td style="background-color: lightyellow">1:52.36</td>
+<td style="background-color: lightblue">1h3-17</td><td style="background-color: lightyellow">1:56.37</td>
+</tr><tr><td style="background-color: lightblue"><b>WY</b></td>
+<td style="background-color: lightyellow">2003:</td>
+<td style="background-color: lightblue">h2-17</td><td style="background-color: lightyellow">DQ</td>
+</tr></tbody></table>
+</div></div>
+<div class="wrapcenter"><div class="center">
+<script>
+function changeme(id) {
+       if (document.getElementById(id).style.display == "none") {
+            document.getElementById(id).style.display = "block";
+       } else {
+            document.getElementById(id).style.display = "none";
+       }
+}
+</script>
+<h1 onmousedown="show('pb')"><span id="pbIcon">▲</span>PERSONAL BESTS</h1><div id="pbDiv" class="desktop">
+<p>note:<span style="display: none"> click on event name to get head to head stats against another athlete,<br></span>click on indoor/outdoor to see PB progression.</p><table valign="top">
+<tbody><tr><td colspan="9" valign="top">&nbsp;</td></tr>
+<tr><td colspan="9" valign="top"><b><a target="_blank" style="text-decoration: none" href="headtohead.asp?Event=39&amp;at1=45032&amp;at1name=Usain Bolt"><font size="2">100y</font></a></b></td></tr>
+<tr><td width="30"><span onclick="changeme('39 PB 0');" style="color: blue; text-decoration: none; cursor: pointer;">Outdoor</span></td><td>9.14+&nbsp;&nbsp;&nbsp;&nbsp;<b></b></td><td>Ostrava</td><td align="right">31 May 2011</td></tr>
+<tr><td colspan="8"><div id="39 PB 0" style="display: none;"><table></table></div></td></tr><tr><td colspan="9" valign="top">&nbsp;</td></tr>
+<tr><td colspan="9" valign="top"><b><a target="_blank" style="text-decoration: none" href="headtohead.asp?Event=40&amp;at1=45032&amp;at1name=Usain Bolt"><font size="2">100m</font></a></b></td></tr>
+<tr><td colspan="9">&nbsp;&nbsp;&nbsp;<b>races under 10 seconds (legal): 53</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr>
+<tr><td colspan="8"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=40&amp;ind=0">3 World Records </a></b></td></tr>
+<tr><td width="30"><span onclick="changeme('40 PB 0');" style="color: blue; text-decoration: none; cursor: pointer;">Outdoor</span></td><td>9.58&nbsp;&nbsp;&nbsp;+0.9&nbsp;<b>WR</b></td><td>Berlin</td><td align="right">16 Aug 2009</td></tr>
+<tr><td colspan="8"><div id="40 PB 0" style="display: none;"><table></table></div></td></tr><tr><td colspan="9" valign="top">&nbsp;</td></tr>
+<tr><td colspan="9" valign="top"><b><a target="_blank" style="text-decoration: none" href="headtohead.asp?Event=48&amp;at1=45032&amp;at1name=Usain Bolt"><font size="2">150m</font></a></b></td></tr>
+<tr><td colspan="9">Winstreak:&nbsp;1&nbsp;(finals)
+&nbsp;<span onclick="changeme('48');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan="8"><div id="48" style="display: none;"><table><tbody><tr><td colspan="8"><b>Winstreak: 1 (finals)</b></td></tr>
+<tr><td>15.28&nbsp;-0.9&nbsp;&nbsp;PB</td><td>Melbourne</td><td>11 Feb&nbsp;2017</td></tr>
+</tbody></table></div></td></tr><tr><td width="30"><span onclick="changeme('48 PB 0');" style="color: blue; text-decoration: none; cursor: pointer;">Outdoor</span></td><td>15.28&nbsp;&nbsp;-0.9&nbsp;<b></b></td><td>Melbourne</td><td align="right">11 Feb 2017</td></tr>
+<tr><td colspan="8"><div id="48 PB 0" style="display: none;"><table></table></div></td></tr><tr><td colspan="9" valign="top">&nbsp;</td></tr>
+<tr><td colspan="9" valign="top"><b><a target="_blank" style="text-decoration: none" href="headtohead.asp?Event=49&amp;at1=45032&amp;at1name=Usain Bolt"><font size="2">150m Straight</font></a></b></td></tr>
+<tr><td colspan="9">Winstreak:&nbsp;2&nbsp;(finals)
+&nbsp;<span onclick="changeme('49');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan="8"><div id="49" style="display: none;"><table><tbody><tr><td colspan="8"><b>Winstreak: 2 (finals)</b></td></tr>
+<tr><td>14.42&nbsp;&nbsp;+1.4&nbsp;&nbsp;SB</td><td>Rio de Janeiro</td><td>31 Mar&nbsp;2013</td></tr>
+<tr><td>14.35&nbsp;&nbsp;+1.1&nbsp;WB&nbsp;PB</td><td>Manchester</td><td>17 May&nbsp;2009</td></tr>
+</tbody></table></div></td></tr><tr><td colspan="8"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=49&amp;ind=0">1 World Best</a></b></td></tr>
+<tr><td width="30"><span onclick="changeme('49 PB 0');" style="color: blue; text-decoration: none; cursor: pointer;">Outdoor</span></td><td>14.35&nbsp;&nbsp;&nbsp;+1.1&nbsp;<b>WB</b></td><td>Manchester</td><td align="right">17 May 2009</td></tr>
+<tr><td colspan="8"><div id="49 PB 0" style="display: none;"><table></table></div></td></tr><tr><td colspan="9" valign="top">&nbsp;</td></tr>
+<tr><td colspan="9" valign="top"><b><a target="_blank" style="text-decoration: none" href="headtohead.asp?Event=50&amp;at1=45032&amp;at1name=Usain Bolt"><font size="2">200m</font></a></b></td></tr>
+<tr><td colspan="9">Winstreak:&nbsp;12&nbsp;(finals)
+&nbsp;<span onclick="changeme('50');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan="9"><b>races under 20.30 (legal): 67</b>&nbsp;&nbsp;&nbsp;<b> </b></td></tr><tr><td colspan="8"><div id="50" style="display: none;"><table><tbody><tr><td colspan="8"><b>Winstreak: 12 (finals)</b></td></tr>
+<tr><td>19.78&nbsp;-0.5&nbsp;&nbsp;</td><td>Rio de Janeiro</td><td>18 Aug&nbsp;2016</td></tr>
+<tr><td>19.89&nbsp;-0.3&nbsp;&nbsp;</td><td>London</td><td>22 Jul&nbsp;2016</td></tr>
+<tr><td>19.55&nbsp;-0.1&nbsp;&nbsp;SB</td><td>Beijing</td><td>27 Aug&nbsp;2015</td></tr>
+<tr><td>20.29&nbsp;-2.8&nbsp;&nbsp;</td><td>New York NY</td><td>13 Jun&nbsp;2015</td></tr>
+<tr><td>20.13&nbsp;&nbsp;+0.6&nbsp;&nbsp;</td><td>Ostrava</td><td>26 May&nbsp;2015</td></tr>
+<tr><td>20.20&nbsp;-0.2&nbsp;&nbsp;</td><td>Kingston</td><td>11 Apr&nbsp;2015</td></tr>
+<tr><td>19.66&nbsp;&nbsp;0.0&nbsp;&nbsp;SB</td><td>Moskva</td><td>17 Aug&nbsp;2013</td></tr>
+<tr><td>19.73&nbsp;&nbsp;+0.2&nbsp;&nbsp;</td><td>Paris</td><td>6 Jul&nbsp;2013</td></tr>
+<tr><td>19.79&nbsp;&nbsp;+1.7&nbsp;&nbsp;</td><td>Oslo</td><td>13 Jun&nbsp;2013</td></tr>
+<tr><td>19.66&nbsp;&nbsp;0.0&nbsp;&nbsp;</td><td>Zürich</td><td>30 Aug&nbsp;2012</td></tr>
+<tr><td>19.58&nbsp;&nbsp;+1.4&nbsp;&nbsp;</td><td>Lausanne</td><td>23 Aug&nbsp;2012</td></tr>
+<tr><td>19.32&nbsp;&nbsp;+0.4&nbsp;&nbsp;SB</td><td>London</td><td>9 Aug&nbsp;2012</td></tr>
+<tr><td colspan="8"><b>Last loss:</b></td></tr>
+<tr><td>19.83&nbsp;-0.5&nbsp;&nbsp;</td><td>Kingston</td><td>1 Jul&nbsp;2012</td></tr>
+</tbody></table></div></td></tr><tr><td colspan="8"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=50&amp;ind=0">2 World Records </a></b></td></tr>
+<tr><td width="30"><span onclick="changeme('50 PB 0');" style="color: blue; text-decoration: none; cursor: pointer;">Outdoor</span></td><td>19.19&nbsp;&nbsp;-0.3&nbsp;<b>WR</b></td><td>Berlin</td><td align="right">20 Aug 2009</td></tr>
+<tr><td colspan="8"><div id="50 PB 0" style="display: none;"><table></table></div></td></tr><tr><td colspan="9" valign="top">&nbsp;</td></tr>
+<tr><td colspan="9" valign="top"><b><a target="_blank" style="text-decoration: none" href="headtohead.asp?Event=60&amp;at1=45032&amp;at1name=Usain Bolt"><font size="2">300m</font></a></b></td></tr>
+<tr><td colspan="9">Winstreak:&nbsp;1&nbsp;(finals)
+&nbsp;<span onclick="changeme('60');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan="8"><div id="60" style="display: none;"><table><tbody><tr><td colspan="8"><b>Winstreak: 1 (finals)</b></td></tr>
+<tr><td>30.97&nbsp;&nbsp;&nbsp;AR&nbsp;PB</td><td>Ostrava</td><td>27 May&nbsp;2010</td></tr>
+</tbody></table></div></td></tr><tr><td width="30"><span onclick="changeme('60 PB 0');" style="color: blue; text-decoration: none; cursor: pointer;">Outdoor</span></td><td>30.97&nbsp;&nbsp;&nbsp;&nbsp;<b>AR</b></td><td>Ostrava</td><td align="right">27 May 2010</td></tr>
+<tr><td colspan="8"><div id="60 PB 0" style="display: none;"><table></table></div></td></tr><tr><td colspan="9" valign="top">&nbsp;</td></tr>
+<tr><td colspan="9" valign="top"><b><a target="_blank" style="text-decoration: none" href="headtohead.asp?Event=70&amp;at1=45032&amp;at1name=Usain Bolt"><font size="2">400m</font></a></b></td></tr>
+<tr><td colspan="9">Winstreak:&nbsp;1&nbsp;(finals)
+&nbsp;<span onclick="changeme('70');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan="8"><div id="70" style="display: none;"><table><tbody><tr><td colspan="8"><b>Winstreak: 1 (finals)</b></td></tr>
+<tr><td>46.38&nbsp;&nbsp;&nbsp;&nbsp;SB</td><td>Kingston</td><td>14 Mar&nbsp;2015</td></tr>
+<tr><td colspan="8"><b>Last loss:</b></td></tr>
+<tr><td>46.44&nbsp;&nbsp;&nbsp;&nbsp;SB</td><td>Mona</td><td>23 Mar&nbsp;2013</td></tr>
+</tbody></table></div></td></tr><tr><td width="30"><span onclick="changeme('70 PB 0');" style="color: blue; text-decoration: none; cursor: pointer;">Outdoor</span></td><td>45.28&nbsp;&nbsp;&nbsp;&nbsp;<b></b></td><td>Kingston</td><td align="right">5 May 2007</td></tr>
+<tr><td colspan="8"><div id="70 PB 0" style="display: none;"><table></table></div></td></tr><tr><td colspan="9" valign="top">&nbsp;</td></tr>
+<tr><td colspan="9" valign="top"><b><a target="_blank" style="text-decoration: none" href="headtohead.asp?Event=560&amp;at1=45032&amp;at1name=Usain Bolt"><font size="2">4 x 100m</font></a></b></td></tr>
+<tr><td colspan="8"><b><a target="_blank" style="text-decoration: none" href="wrm.php?event=560&amp;ind=0">3 World Records </a></b></td></tr>
+<tr><td width="30"><span onclick="changeme('560 PB 0');" style="color: blue; text-decoration: none; cursor: pointer;">Outdoor</span></td><td>38.70&nbsp;&nbsp;&nbsp;&nbsp;<b></b></td><td>Kingston</td><td align="right">24 Feb 2007</td></tr>
+<tr><td colspan="8"><div id="560 PB 0" style="display: none;"><table></table></div></td></tr><tr><td></td><td>37.46&nbsp;&nbsp;&nbsp;</td><td>London</td><td align="right">25 Jul 2009</td></tr>
+<tr><td></td><td>36.84&nbsp;&nbsp;&nbsp;</td><td>London</td><td align="right">11 Aug 2012</td></tr>
+<tr><td></td><td>37.75&nbsp;&nbsp;&nbsp;</td><td>London</td><td align="right">27 Jul 2013</td></tr>
+</tbody></table></div></div>
+<div class="center">
+<h1 onmousedown="show('averages')"><span id="averagesIcon">▲</span>AVERAGES &amp; 10 BEST RESULTS</h1><div id="averagesDiv" class="desktop"><hr><table valign="top" width="380"><tbody><tr><td colspan="8"><b>200m, 10 best results (legal):</b></td></tr>
+<tr><td>19.19&nbsp;&nbsp;&nbsp;-0.3</td><td>1</td><td>Berlin</td><td align="right">20 Aug 2009</td></tr>
+<tr><td>19.30&nbsp;&nbsp;&nbsp;-0.9</td><td>1</td><td>Beijing</td><td align="right">20 Aug 2008</td></tr>
+<tr><td>19.32&nbsp;&nbsp;&nbsp;+0.4</td><td>1</td><td>London</td><td align="right">9 Aug 2012</td></tr>
+<tr><td>19.40&nbsp;&nbsp;&nbsp;+0.8</td><td>1</td><td>Daegu</td><td align="right">3 Sep 2011</td></tr>
+<tr><td>19.55&nbsp;&nbsp;&nbsp;-0.1</td><td>1</td><td>Beijing</td><td align="right">27 Aug 2015</td></tr>
+<tr><td>19.56&nbsp;&nbsp;&nbsp;-0.8</td><td>1</td><td>Kingston</td><td align="right">1 May 2010</td></tr>
+<tr><td>19.57&nbsp;&nbsp;&nbsp;0.0</td><td>1</td><td>Bruxelles</td><td align="right">4 Sep 2009</td></tr>
+<tr><td>19.58&nbsp;&nbsp;&nbsp;+1.4</td><td>1</td><td>Lausanne</td><td align="right">23 Aug 2012</td></tr>
+<tr><td>19.59&nbsp;&nbsp;&nbsp;-0.9</td><td>1</td><td>Lausanne</td><td align="right">7 Jul 2009</td></tr>
+<tr><td>19.63&nbsp;&nbsp;&nbsp;-0.9</td><td>1</td><td>Lausanne</td><td align="right">2 Sep 2008</td></tr>
+<tr><td colspan="6">&nbsp;</td></tr><tr><td colspan="6">Average: 19.469</td></tr><tr><td colspan="6">&nbsp;</td></tr></tbody></table>
+<hr><table valign="top" width="380"><tbody><tr><td colspan="8"><b>100m, 10 best results (legal):</b></td></tr>
+<tr><td>9.58&nbsp;&nbsp;&nbsp;+0.9</td><td>1</td><td>Berlin</td><td align="right">16 Aug 2009</td></tr>
+<tr><td>9.63&nbsp;&nbsp;&nbsp;+1.5</td><td>1</td><td>London</td><td align="right">5 Aug 2012</td></tr>
+<tr><td>9.69&nbsp;&nbsp;&nbsp;0.0</td><td>1</td><td>Beijing</td><td align="right">16 Aug 2008</td></tr>
+<tr><td>9.72&nbsp;&nbsp;&nbsp;+1.7</td><td>1</td><td>New York NY</td><td align="right">31 May 2008</td></tr>
+<tr><td>9.76&nbsp;&nbsp;&nbsp;+1.8</td><td>1r2</td><td>Kingston</td><td align="right">3 May 2008</td></tr>
+<tr><td>9.76&nbsp;&nbsp;&nbsp;+1.3</td><td>1</td><td>Bruxelles</td><td align="right">16 Sep 2011</td></tr>
+<tr><td>9.76&nbsp;&nbsp;&nbsp;-0.1</td><td>1</td><td>Roma</td><td align="right">31 May 2012</td></tr>
+<tr><td>9.77&nbsp;&nbsp;&nbsp;-1.3</td><td>1</td><td>Bruxelles</td><td align="right">5 Sep 2008</td></tr>
+<tr><td>9.77&nbsp;&nbsp;&nbsp;-0.3</td><td>1</td><td>Moskva</td><td align="right">11 Aug 2013</td></tr>
+<tr><td>9.79&nbsp;&nbsp;&nbsp;-0.2</td><td>1</td><td>Paris</td><td align="right">17 Jul 2009</td></tr>
+<tr><td colspan="6">&nbsp;</td></tr><tr><td colspan="6">Average: 9.723</td></tr><tr><td colspan="6">&nbsp;</td></tr></tbody></table>
+<hr><table valign="top" width="380"><tbody><tr><td colspan="8"><b>4 x 100m, 10 best results (legal):</b></td></tr>
+<tr><td>36.84&nbsp;&nbsp;&nbsp;</td><td>1</td><td>London</td><td align="right">11 Aug 2012</td></tr>
+<tr><td>37.04&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Daegu</td><td align="right">4 Sep 2011</td></tr>
+<tr><td>37.27&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Rio de Janeiro</td><td align="right">19 Aug 2016</td></tr>
+<tr><td>37.31&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Berlin</td><td align="right">22 Aug 2009</td></tr>
+<tr><td>37.36&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Moskva</td><td align="right">18 Aug 2013</td></tr>
+<tr><td>37.36&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Beijing</td><td align="right">29 Aug 2015</td></tr>
+<tr><td>37.46&nbsp;&nbsp;&nbsp;</td><td>1</td><td>London</td><td align="right">25 Jul 2009</td></tr>
+<tr><td>37.58&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Glasgow</td><td align="right">2 Aug 2014</td></tr>
+<tr><td>37.68&nbsp;&nbsp;&nbsp;</td><td>2</td><td>Nassau</td><td align="right">2 May 2015</td></tr>
+<tr><td>37.70&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Zürich</td><td align="right">28 Aug 2009</td></tr>
+<tr><td colspan="6">&nbsp;</td></tr><tr><td colspan="6">Average: 37.36</td></tr><tr><td colspan="6">&nbsp;</td></tr></tbody></table>
+<hr><table valign="top" width="380"><tbody><tr><td colspan="8"><b>400m, 10 best results (legal):</b></td></tr>
+<tr><td>45.28&nbsp;&nbsp;&nbsp;</td><td>3r2</td><td>Kingston</td><td align="right">5 May 2007</td></tr>
+<tr><td>45.35&nbsp;&nbsp;&nbsp;</td><td>1-18</td><td>Kingston</td><td align="right">5 Apr 2003</td></tr>
+<tr><td>45.54&nbsp;&nbsp;&nbsp;</td><td>1r4</td><td>Kingston</td><td align="right">21 Feb 2009</td></tr>
+<tr><td>45.62&nbsp;&nbsp;&nbsp;</td><td>1rB</td><td>Baie-Mahault</td><td align="right">1 May 2007</td></tr>
+<tr><td>45.87&nbsp;&nbsp;&nbsp;</td><td>1r4</td><td>Kingston</td><td align="right">13 Feb 2010</td></tr>
+<tr><td>45.92&nbsp;&nbsp;&nbsp;</td><td>1r1</td><td>Kingston</td><td align="right">10 Feb 2007</td></tr>
+<tr><td>46.35&nbsp;&nbsp;&nbsp;</td><td>1-19</td><td>Port of Spain</td><td align="right">19 Apr 2003</td></tr>
+<tr><td>46.35&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Kingston</td><td align="right">14 Feb 2009</td></tr>
+<tr><td>46.38&nbsp;&nbsp;&nbsp;</td><td>1</td><td>Kingston</td><td align="right">14 Mar 2015</td></tr>
+<tr><td>46.44&nbsp;&nbsp;&nbsp;</td><td>2</td><td>Mona</td><td align="right">23 Mar 2013</td></tr>
+<tr><td colspan="6">&nbsp;</td></tr><tr><td colspan="6">Average: 45.91</td></tr><tr><td colspan="6">&nbsp;</td></tr></tbody></table>
+<hr><h3>Total results in db: 273</h3>
+<h4>By event: </h4><table>
+<tbody><tr><td align="right">100y:</td><td>2</td></tr>
+<tr><td align="right">100m:</td><td>86</td></tr>
+<tr><td align="right">150m:</td><td>1</td></tr>
+<tr><td align="right">150m Straight:</td><td>2</td></tr>
+<tr><td align="right">200m:</td><td>123</td></tr>
+<tr><td align="right">300m:</td><td>1</td></tr>
+<tr><td align="right">400m:</td><td>24</td></tr>
+<tr><td align="right">4 x 100m:</td><td>27</td></tr>
+<tr><td align="right">4 x 400m:</td><td>4</td></tr>
+<tr><td align="right">Medley Relay:</td><td>3</td></tr>
+</tbody></table></div></div></div>
+<div class="wrapright"><div class="right"><h1 id="seasonHead" onmousedown="show('season')"><span id="seasonIcon">▲</span>IN 2026</h1>
+<form name="jumppi9">
+<select name="menupi9" onchange="seasonRes(document.jumppi9.menupi9.options[document.jumppi9.menupi9.selectedIndex].value);" value="GO">
+<option>Choose another season</option>
+<option value="2017">2017</option>
+<option value="2016">2016</option>
+<option value="2015">2015</option>
+<option value="2014">2014</option>
+<option value="2013">2013</option>
+<option value="2012">2012</option>
+<option value="2011">2011</option>
+<option value="2010">2010</option>
+<option value="2009">2009</option>
+<option value="2008">2008</option>
+<option value="2007">2007</option>
+<option value="2006">2006</option>
+<option value="2005">2005</option>
+<option value="2004">2004</option>
+<option value="2003">2003</option>
+<option value="2002">2002</option>
+<option value="2001">2001</option>
+</select>
+</form>
+<p><font size="1">position in the world list in brackets following the season's best,<br>junior list position in <font color="green">green</font> and youth list position in <font color="orange">orange</font>.<br>
+help: click on competition name or Venue to see competition results.<br>
+help: click on placing to see event results in the competition.</font></p>
+<div class="desktop" id="seasonDiv">
+<style>
+tr.irri td{
+	font-style: italic;
+}
+</style>
+<table valign="top">
+<tbody><tr><td><b>No results during 2026. Last results for this athlete are from 2017.</b></td>
+</tr></tbody></table>
+</div>
+</div>
+<div class="right">
+<h1 onmousedown="show('worldlist')"><span id="worldlistIcon">▲</span>TOP 100 WORLD LIST POSITIONS</h1><table id="worldlistDiv" class="desktop" cellspacing="3">
+<tbody><tr><td><b>Season</b></td><td><b>Ind/Out</b></td><td>Event</td><td>Pos</td><td>Result</td></tr>
+<tr><td><b>2002</b></td><td><b>Outdoor</b></td><td>200m</td><td>58</td><td>20.58</td></tr>
+<tr><td><b>2003</b></td><td><b>Outdoor</b></td><td>200m</td><td>9</td><td>20.13</td></tr>
+<tr><td><b>2003</b></td><td><b>Outdoor</b></td><td>400m</td><td>46</td><td>45.35</td></tr>
+<tr><td><b>2004</b></td><td><b>Outdoor</b></td><td>200m</td><td>2</td><td>19.93</td></tr>
+<tr><td><b>2005</b></td><td><b>Outdoor</b></td><td>200m</td><td>3</td><td>19.99</td></tr>
+<tr><td><b>2006</b></td><td><b>Outdoor</b></td><td>200m</td><td>4</td><td>19.88</td></tr>
+<tr><td><b>2007</b></td><td><b>Outdoor</b></td><td>100m</td><td>12</td><td>10.03</td></tr>
+<tr><td><b>2007</b></td><td><b>Outdoor</b></td><td>200m</td><td>3</td><td>19.75</td></tr>
+<tr><td><b>2007</b></td><td><b>Outdoor</b></td><td>400m</td><td>33</td><td>45.28</td></tr>
+<tr><td><b>2008</b></td><td><b>Outdoor</b></td><td>100m</td><td>1</td><td>9.69</td></tr>
+<tr><td><b>2008</b></td><td><b>Outdoor</b></td><td>200m</td><td>1</td><td>19.30</td></tr>
+<tr><td><b>2009</b></td><td><b>Outdoor</b></td><td>100m</td><td>1</td><td>9.58</td></tr>
+<tr><td><b>2009</b></td><td><b>Outdoor</b></td><td>200m</td><td>1</td><td>19.19</td></tr>
+<tr><td><b>2009</b></td><td><b>Outdoor</b></td><td>400m</td><td>40</td><td>45.54</td></tr>
+<tr><td><b>2010</b></td><td><b>Outdoor</b></td><td>100m</td><td>3</td><td>9.82</td></tr>
+<tr><td><b>2010</b></td><td><b>Outdoor</b></td><td>200m</td><td>1</td><td>19.56</td></tr>
+<tr><td><b>2010</b></td><td><b>Outdoor</b></td><td>300m</td><td>1</td><td>30.97</td></tr>
+<tr><td><b>2010</b></td><td><b>Outdoor</b></td><td>400m</td><td>96</td><td>45.87</td></tr>
+<tr><td><b>2011</b></td><td><b>Outdoor</b></td><td>100m</td><td>1</td><td>9.76</td></tr>
+<tr><td><b>2011</b></td><td><b>Outdoor</b></td><td>200m</td><td>2</td><td>19.40</td></tr>
+<tr><td><b>2012</b></td><td><b>Outdoor</b></td><td>100m</td><td>1</td><td>9.63</td></tr>
+<tr><td><b>2012</b></td><td><b>Outdoor</b></td><td>200m</td><td>1</td><td>19.32</td></tr>
+<tr><td><b>2013</b></td><td><b>Outdoor</b></td><td>100m</td><td>1</td><td>9.77</td></tr>
+<tr><td><b>2013</b></td><td><b>Outdoor</b></td><td>200m</td><td>1</td><td>19.66</td></tr>
+<tr><td><b>2014</b></td><td><b>Outdoor</b></td><td>100m</td><td>15</td><td>9.98</td></tr>
+<tr><td><b>2015</b></td><td><b>Outdoor</b></td><td>100m</td><td>2</td><td>9.79</td></tr>
+<tr><td><b>2015</b></td><td><b>Outdoor</b></td><td>200m</td><td>1</td><td>19.55</td></tr>
+<tr><td><b>2016</b></td><td><b>Outdoor</b></td><td>100m</td><td>2</td><td>9.81</td></tr>
+<tr><td><b>2016</b></td><td><b>Outdoor</b></td><td>200m</td><td>3</td><td>19.78</td></tr>
+<tr><td><b>2017</b></td><td><b>Outdoor</b></td><td>100m</td><td>9</td><td>9.95</td></tr>
+<tr><td><b>2017</b></td><td><b>Outdoor</b></td><td>150m</td><td>2</td><td>15.28</td></tr>
+</tbody></table>
+</div><div class="right">
+<h1 onmousedown="show('winstreaks')"><span id="winstreaksIcon">▲</span>WINSTREAKS</h1><table id="winstreaksDiv" class="desktop">
+<tbody><tr><td colspan="8">&nbsp;</td></tr>
+<tr><td colspan="8"><b><font size="2">Significant winstreaks 100m<br>(at least 5 finals):</font></b></td></tr>
+<tr><td colspan="8"><b>Winstreak 1:</b>&nbsp;12&nbsp;(finals) 21 Jun 2013 -&gt; 11 Jun 2016 <span onclick="changeme('Winstreak140');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr>
+<tr><td colspan="8"><div id="Winstreak140" style="display: none;"><table><tbody><tr><td>1</td><td>9.88</td><td>&nbsp;</td><td>&nbsp;+1.0</td><td>&nbsp;1</td><td>&nbsp;</td><td>&nbsp;Kingston</td><td align="right">&nbsp;11 Jun 2016</td></tr>
+<tr><td>2</td><td>9.98</td><td>&nbsp;</td><td>&nbsp;-0.4</td><td>&nbsp;1</td><td>&nbsp;GSpike</td><td>&nbsp;Ostrava</td><td align="right">&nbsp;20 May 2016</td></tr>
+<tr><td>3</td><td>10.05</td><td>&nbsp;</td><td>&nbsp;+0.1</td><td>&nbsp;1</td><td>&nbsp;Cayman I</td><td>&nbsp;George Town</td><td align="right">&nbsp;14 May 2016</td></tr>
+<tr><td>4</td><td>9.79</td><td>&nbsp;</td><td>&nbsp;-0.5</td><td>&nbsp;1</td><td>&nbsp;WC</td><td>&nbsp;Beijing</td><td align="right">&nbsp;23 Aug 2015</td></tr>
+<tr><td>5</td><td>9.87</td><td>&nbsp;</td><td>&nbsp;-0.8</td><td>&nbsp;1</td><td>&nbsp;Sainsbur</td><td>&nbsp;London</td><td align="right">&nbsp;24 Jul 2015</td></tr>
+<tr><td>6</td><td>10.12</td><td>&nbsp;</td><td>&nbsp;-1.3</td><td>&nbsp;1</td><td>&nbsp;</td><td>&nbsp;Rio de Janeiro</td><td align="right">&nbsp;19 Apr 2015</td></tr>
+<tr><td>7</td><td>9.98</td><td>&nbsp;</td><td>&nbsp;-0.6</td><td>&nbsp;1</td><td>&nbsp;Skolimow</td><td>&nbsp;Warszawa</td><td align="right">&nbsp;23 Aug 2014</td></tr>
+<tr><td>8</td><td>9.80</td><td>&nbsp;</td><td>&nbsp;+0.6</td><td>&nbsp;1</td><td>&nbsp;VD</td><td>&nbsp;Bruxelles</td><td align="right">&nbsp;6 Sep 2013</td></tr>
+<tr><td>9</td><td>9.90</td><td>&nbsp;</td><td>&nbsp;-0.3</td><td>&nbsp;1</td><td>&nbsp;WK</td><td>&nbsp;Zürich</td><td align="right">&nbsp;29 Aug 2013</td></tr>
+<tr><td>10</td><td>9.77</td><td>&nbsp;</td><td>&nbsp;-0.3</td><td>&nbsp;1</td><td>&nbsp;WC</td><td>&nbsp;Moskva</td><td align="right">&nbsp;11 Aug 2013</td></tr>
+<tr><td>11</td><td>9.85</td><td>&nbsp;</td><td>&nbsp;+0.2</td><td>&nbsp;1</td><td>&nbsp;Sainsbur</td><td>&nbsp;London</td><td align="right">&nbsp;26 Jul 2013</td></tr>
+<tr><td>12</td><td>9.94</td><td>&nbsp;</td><td>&nbsp;-1.2</td><td>&nbsp;1</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;21 Jun 2013</td></tr>
+<tr><td colspan="8"><b>Streak breaking loss:</b></td></tr>
+<tr><td>&nbsp;</td><td>10.15</td><td>&nbsp;</td><td>&nbsp;+0.3</td><td>&nbsp;1h4</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;30 Jun 2016</td></tr>
+</tbody></table></div></td></tr>
+<tr><td colspan="8"><b>Winstreak 2:</b>&nbsp;6&nbsp;(finals) 13 Sep 2011 -&gt; 7 Jun 2012 <span onclick="changeme('Winstreak240');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr>
+<tr><td colspan="8"><div id="Winstreak240" style="display: none;"><table><tbody><tr><td>1</td><td>9.79</td><td>&nbsp;</td><td>&nbsp;+0.6</td><td>&nbsp;1</td><td>&nbsp;Bislett</td><td>&nbsp;Oslo</td><td align="right">&nbsp;7 Jun 2012</td></tr>
+<tr><td>2</td><td>9.76</td><td>&nbsp;</td><td>&nbsp;-0.1</td><td>&nbsp;1</td><td>&nbsp;GGala</td><td>&nbsp;Roma</td><td align="right">&nbsp;31 May 2012</td></tr>
+<tr><td>3</td><td>10.04</td><td>&nbsp;</td><td>&nbsp;-0.8</td><td>&nbsp;1</td><td>&nbsp;GSpike</td><td>&nbsp;Ostrava</td><td align="right">&nbsp;25 May 2012</td></tr>
+<tr><td>4</td><td>9.82</td><td>&nbsp;</td><td>&nbsp;+1.8</td><td>&nbsp;1</td><td>&nbsp;Jam Inv</td><td>&nbsp;Kingston</td><td align="right">&nbsp;5 May 2012</td></tr>
+<tr><td>5</td><td>9.76</td><td>&nbsp;</td><td>&nbsp;+1.3</td><td>&nbsp;1</td><td>&nbsp;VD</td><td>&nbsp;Bruxelles</td><td align="right">&nbsp;16 Sep 2011</td></tr>
+<tr><td>6</td><td>9.85</td><td>&nbsp;</td><td>&nbsp;+0.1</td><td>&nbsp;1</td><td>&nbsp;Hanzekov</td><td>&nbsp;Zagreb</td><td align="right">&nbsp;13 Sep 2011</td></tr>
+<tr><td colspan="8"><b>Streak breaking loss:</b></td></tr>
+<tr><td>&nbsp;</td><td>9.86</td><td>&nbsp;</td><td>&nbsp;+1.1</td><td>&nbsp;2</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;29 Jun 2012</td></tr>
+</tbody></table></div></td></tr>
+<tr><td colspan="8"><b>Winstreak 3:</b>&nbsp;14&nbsp;(finals) 16 Aug 2008 -&gt; 16 Jul 2010 <span onclick="changeme('Winstreak340');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr>
+<tr><td colspan="8"><div id="Winstreak340" style="display: none;"><table><tbody><tr><td>1</td><td>9.84</td><td>&nbsp;</td><td>&nbsp;-0.3</td><td>&nbsp;1</td><td>&nbsp;Areva</td><td>&nbsp;Paris</td><td align="right">&nbsp;16 Jul 2010</td></tr>
+<tr><td>2</td><td>9.82</td><td>&nbsp;</td><td>&nbsp;+0.5</td><td>&nbsp;1</td><td>&nbsp;Athl</td><td>&nbsp;Lausanne</td><td align="right">&nbsp;8 Jul 2010</td></tr>
+<tr><td>3</td><td>9.86</td><td>&nbsp;</td><td>&nbsp;+0.1</td><td>&nbsp;1</td><td>&nbsp;Colorful</td><td>&nbsp;Daegu</td><td align="right">&nbsp;19 May 2010</td></tr>
+<tr><td>4</td><td>9.81</td><td>&nbsp;</td><td>&nbsp;0.0</td><td>&nbsp;1</td><td>&nbsp;WK</td><td>&nbsp;Zürich</td><td align="right">&nbsp;28 Aug 2009</td></tr>
+<tr><td>5</td><td>9.58</td><td>&nbsp;WR</td><td>&nbsp;+0.9</td><td>&nbsp;1</td><td>&nbsp;WC</td><td>&nbsp;Berlin</td><td align="right">&nbsp;16 Aug 2009</td></tr>
+<tr><td>6</td><td>9.91</td><td>&nbsp;</td><td>&nbsp;-1.7</td><td>&nbsp;1</td><td>&nbsp;Aviva</td><td>&nbsp;London</td><td align="right">&nbsp;24 Jul 2009</td></tr>
+<tr><td>7</td><td>9.79</td><td>&nbsp;</td><td>&nbsp;-0.2</td><td>&nbsp;1</td><td>&nbsp;Areva</td><td>&nbsp;Paris</td><td align="right">&nbsp;17 Jul 2009</td></tr>
+<tr><td>8</td><td>9.86</td><td>&nbsp;</td><td>&nbsp;-0.2</td><td>&nbsp;1</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;27 Jun 2009</td></tr>
+<tr><td>9</td><td>9.77</td><td>&nbsp;</td><td>&nbsp;+2.1</td><td>&nbsp;1</td><td>&nbsp;GSpike</td><td>&nbsp;Ostrava</td><td align="right">&nbsp;17 Jun 2009</td></tr>
+<tr><td>10</td><td>10.00</td><td>&nbsp;</td><td>&nbsp;-0.9</td><td>&nbsp;1</td><td>&nbsp;Excellen</td><td>&nbsp;Toronto</td><td align="right">&nbsp;11 Jun 2009</td></tr>
+<tr><td>11</td><td>9.93</td><td>&nbsp;</td><td>&nbsp;+2.3</td><td>&nbsp;1r1</td><td>&nbsp;Classics</td><td>&nbsp;Spanish Town</td><td align="right">&nbsp;14 Mar 2009</td></tr>
+<tr><td>12</td><td>9.77</td><td>&nbsp;</td><td>&nbsp;-1.3</td><td>&nbsp;1</td><td>&nbsp;VD</td><td>&nbsp;Bruxelles</td><td align="right">&nbsp;5 Sep 2008</td></tr>
+<tr><td>13</td><td>9.83</td><td>&nbsp;</td><td>&nbsp;-0.5</td><td>&nbsp;1</td><td>&nbsp;WK</td><td>&nbsp;Zürich</td><td align="right">&nbsp;29 Aug 2008</td></tr>
+<tr><td>14</td><td>9.69</td><td>&nbsp;</td><td>&nbsp;0.0</td><td>&nbsp;1</td><td>&nbsp;OG</td><td>&nbsp;Beijing</td><td align="right">&nbsp;16 Aug 2008</td></tr>
+<tr><td colspan="8"><b>Streak breaking loss:</b></td></tr>
+<tr><td>&nbsp;</td><td>9.97</td><td>&nbsp;</td><td>&nbsp;0.0</td><td>&nbsp;2</td><td>&nbsp;DNG</td><td>&nbsp;Stockholm/S</td><td align="right">&nbsp;6 Aug 2010</td></tr>
+</tbody></table></div></td></tr>
+<tr><td colspan="8"><b>Winstreak 4:</b>&nbsp;7&nbsp;(finals) 18 Jul 2007 -&gt; 28 Jun 2008 <span onclick="changeme('Winstreak440');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr>
+<tr><td colspan="8"><div id="Winstreak440" style="display: none;"><table><tbody><tr><td>&nbsp;</td><td>9.89</td><td>&nbsp;</td><td>&nbsp;+0.4</td><td>&nbsp;2</td><td>&nbsp;DNG</td><td>&nbsp;Stockholm/S</td><td align="right">&nbsp;22 Jul 2008</td></tr>
+<tr><td>1</td><td>9.85</td><td>&nbsp;</td><td>&nbsp;-0.1</td><td>&nbsp;1</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;28 Jun 2008</td></tr>
+<tr><td>2</td><td>9.72</td><td>&nbsp;</td><td>&nbsp;+1.7</td><td>&nbsp;1</td><td>&nbsp;Reebok</td><td>&nbsp;New York NY</td><td align="right">&nbsp;31 May 2008</td></tr>
+<tr><td>3</td><td>9.92</td><td>&nbsp;</td><td>&nbsp;+0.6</td><td>&nbsp;1r2</td><td>&nbsp;HamptonG</td><td>&nbsp;Port of Spain</td><td align="right">&nbsp;17 May 2008</td></tr>
+<tr><td>4</td><td>9.76</td><td>&nbsp;</td><td>&nbsp;+1.8</td><td>&nbsp;1r2</td><td>&nbsp;Jamaica </td><td>&nbsp;Kingston</td><td align="right">&nbsp;3 May 2008</td></tr>
+<tr><td>5</td><td>10.03</td><td>&nbsp;</td><td>&nbsp;+1.8</td><td>&nbsp;1r1</td><td>&nbsp;Classics</td><td>&nbsp;Spanish Town</td><td align="right">&nbsp;8 Mar 2008</td></tr>
+<tr><td>6</td><td>10.03</td><td>&nbsp;</td><td>&nbsp;+0.7</td><td>&nbsp;1r1</td><td>&nbsp;Vard</td><td>&nbsp;Réthimno</td><td align="right">&nbsp;18 Jul 2007</td></tr>
+</tbody></table></div></td></tr>
+<tr><td colspan="8">&nbsp;</td></tr>
+<tr><td colspan="8"><b><font size="2">Significant winstreaks 200m<br>(at least 5 finals):</font></b></td></tr>
+<tr><td colspan="8"><b>Winstreak 1:</b>&nbsp;12&nbsp;(finals) 9 Aug 2012 -&gt; 18 Aug 2016 <span onclick="changeme('Winstreak150');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr>
+<tr><td colspan="8"><div id="Winstreak150" style="display: none;"><table><tbody><tr><td>1</td><td>19.78</td><td>&nbsp;</td><td>&nbsp;-0.5</td><td>&nbsp;1</td><td>&nbsp;OG</td><td>&nbsp;Rio de Janeiro</td><td align="right">&nbsp;18 Aug 2016</td></tr>
+<tr><td>2</td><td>19.89</td><td>&nbsp;</td><td>&nbsp;-0.3</td><td>&nbsp;1</td><td>&nbsp;Müller</td><td>&nbsp;London</td><td align="right">&nbsp;22 Jul 2016</td></tr>
+<tr><td>3</td><td>19.55</td><td>&nbsp;</td><td>&nbsp;-0.1</td><td>&nbsp;1</td><td>&nbsp;WC</td><td>&nbsp;Beijing</td><td align="right">&nbsp;27 Aug 2015</td></tr>
+<tr><td>4</td><td>20.29</td><td>&nbsp;</td><td>&nbsp;-2.8</td><td>&nbsp;1</td><td>&nbsp;adidas</td><td>&nbsp;New York NY</td><td align="right">&nbsp;13 Jun 2015</td></tr>
+<tr><td>5</td><td>20.13</td><td>&nbsp;</td><td>&nbsp;+0.6</td><td>&nbsp;1</td><td>&nbsp;GSpike</td><td>&nbsp;Ostrava</td><td align="right">&nbsp;26 May 2015</td></tr>
+<tr><td>6</td><td>20.20</td><td>&nbsp;</td><td>&nbsp;-0.2</td><td>&nbsp;1</td><td>&nbsp;Classic</td><td>&nbsp;Kingston</td><td align="right">&nbsp;11 Apr 2015</td></tr>
+<tr><td>7</td><td>19.66</td><td>&nbsp;</td><td>&nbsp;0.0</td><td>&nbsp;1</td><td>&nbsp;WC</td><td>&nbsp;Moskva</td><td align="right">&nbsp;17 Aug 2013</td></tr>
+<tr><td>8</td><td>19.73</td><td>&nbsp;</td><td>&nbsp;+0.2</td><td>&nbsp;1</td><td>&nbsp;Areva</td><td>&nbsp;Paris</td><td align="right">&nbsp;6 Jul 2013</td></tr>
+<tr><td>9</td><td>19.79</td><td>&nbsp;</td><td>&nbsp;+1.7</td><td>&nbsp;1</td><td>&nbsp;Bislett</td><td>&nbsp;Oslo</td><td align="right">&nbsp;13 Jun 2013</td></tr>
+<tr><td>10</td><td>19.66</td><td>&nbsp;</td><td>&nbsp;0.0</td><td>&nbsp;1</td><td>&nbsp;WK</td><td>&nbsp;Zürich</td><td align="right">&nbsp;30 Aug 2012</td></tr>
+<tr><td>11</td><td>19.58</td><td>&nbsp;</td><td>&nbsp;+1.4</td><td>&nbsp;1</td><td>&nbsp;Athletis</td><td>&nbsp;Lausanne</td><td align="right">&nbsp;23 Aug 2012</td></tr>
+<tr><td>12</td><td>19.32</td><td>&nbsp;</td><td>&nbsp;+0.4</td><td>&nbsp;1</td><td>&nbsp;OG</td><td>&nbsp;London</td><td align="right">&nbsp;9 Aug 2012</td></tr>
+</tbody></table></div></td></tr>
+<tr><td colspan="8"><b>Winstreak 2:</b>&nbsp;17&nbsp;(finals) 12 Jun 2008 -&gt; 3 Sep 2011 <span onclick="changeme('Winstreak250');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr>
+<tr><td colspan="8"><div id="Winstreak250" style="display: none;"><table><tbody><tr><td>1</td><td>19.40</td><td>&nbsp;</td><td>&nbsp;+0.8</td><td>&nbsp;1</td><td>&nbsp;WC</td><td>&nbsp;Daegu</td><td align="right">&nbsp;3 Sep 2011</td></tr>
+<tr><td>2</td><td>20.03</td><td>&nbsp;</td><td>&nbsp;-1.2</td><td>&nbsp;1</td><td>&nbsp;DNG</td><td>&nbsp;Stockholm/S</td><td align="right">&nbsp;29 Jul 2011</td></tr>
+<tr><td>3</td><td>20.03</td><td>&nbsp;</td><td>&nbsp;-0.6</td><td>&nbsp;1</td><td>&nbsp;Areva</td><td>&nbsp;Paris</td><td align="right">&nbsp;8 Jul 2011</td></tr>
+<tr><td>4</td><td>19.86</td><td>&nbsp;</td><td>&nbsp;+0.7</td><td>&nbsp;1</td><td>&nbsp;Bislett</td><td>&nbsp;Oslo</td><td align="right">&nbsp;9 Jun 2011</td></tr>
+<tr><td>5</td><td>19.76</td><td>&nbsp;</td><td>&nbsp;-0.8</td><td>&nbsp;1</td><td>&nbsp;Diamond</td><td>&nbsp;Shanghai</td><td align="right">&nbsp;23 May 2010</td></tr>
+<tr><td>6</td><td>19.56</td><td>&nbsp;</td><td>&nbsp;-0.8</td><td>&nbsp;1</td><td>&nbsp;</td><td>&nbsp;Kingston</td><td align="right">&nbsp;1 May 2010</td></tr>
+<tr><td>7</td><td>19.68</td><td>&nbsp;</td><td>&nbsp;-0.3</td><td>&nbsp;1</td><td>&nbsp;WAF</td><td>&nbsp;Thessaloníki</td><td align="right">&nbsp;13 Sep 2009</td></tr>
+<tr><td>8</td><td>19.57</td><td>&nbsp;</td><td>&nbsp;0.0</td><td>&nbsp;1</td><td>&nbsp;VD</td><td>&nbsp;Bruxelles</td><td align="right">&nbsp;4 Sep 2009</td></tr>
+<tr><td>9</td><td>19.19</td><td>&nbsp;WR</td><td>&nbsp;-0.3</td><td>&nbsp;1</td><td>&nbsp;WC</td><td>&nbsp;Berlin</td><td align="right">&nbsp;20 Aug 2009</td></tr>
+<tr><td>10</td><td>19.59</td><td>&nbsp;</td><td>&nbsp;-0.9</td><td>&nbsp;1</td><td>&nbsp;Athletis</td><td>&nbsp;Lausanne</td><td align="right">&nbsp;7 Jul 2009</td></tr>
+<tr><td>11</td><td>20.25</td><td>&nbsp;</td><td>&nbsp;-2.4</td><td>&nbsp;1</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;28 Jun 2009</td></tr>
+<tr><td>12</td><td>19.63</td><td>&nbsp;</td><td>&nbsp;-0.9</td><td>&nbsp;1</td><td>&nbsp;Athletis</td><td>&nbsp;Lausanne</td><td align="right">&nbsp;2 Sep 2008</td></tr>
+<tr><td>13</td><td>19.30</td><td>&nbsp;</td><td>&nbsp;-0.9</td><td>&nbsp;1</td><td>&nbsp;OG</td><td>&nbsp;Beijing</td><td align="right">&nbsp;20 Aug 2008</td></tr>
+<tr><td>14</td><td>19.76</td><td>&nbsp;</td><td>&nbsp;-0.4</td><td>&nbsp;1</td><td>&nbsp;Aviva</td><td>&nbsp;London</td><td align="right">&nbsp;26 Jul 2008</td></tr>
+<tr><td>15</td><td>19.67</td><td>&nbsp;</td><td>&nbsp;-0.5</td><td>&nbsp;1</td><td>&nbsp;Tsikliti</td><td>&nbsp;Athína</td><td align="right">&nbsp;13 Jul 2008</td></tr>
+<tr><td>16</td><td>19.97</td><td>&nbsp;</td><td>&nbsp;+1.7</td><td>&nbsp;1</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;29 Jun 2008</td></tr>
+<tr><td>17</td><td>19.83</td><td>&nbsp;</td><td>&nbsp;+0.3</td><td>&nbsp;1</td><td>&nbsp;GSpike</td><td>&nbsp;Ostrava</td><td align="right">&nbsp;12 Jun 2008</td></tr>
+<tr><td colspan="8"><b>Streak breaking loss:</b></td></tr>
+<tr><td>1</td><td>19.83</td><td>&nbsp;</td><td>&nbsp;-0.5</td><td>&nbsp;2</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;1 Jul 2012</td></tr>
+</tbody></table></div></td></tr>
+<tr><td colspan="8"><b>Winstreak 3:</b>&nbsp;5&nbsp;(finals) 9 Apr 2005 -&gt; 11 Jul 2005 <span onclick="changeme('Winstreak350');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr>
+<tr><td colspan="8"><div id="Winstreak350" style="display: none;"><table><tbody><tr><td>1</td><td>20.03</td><td>&nbsp;</td><td>&nbsp;+1.8</td><td>&nbsp;1</td><td>&nbsp;CAC</td><td>&nbsp;Nassau</td><td align="right">&nbsp;11 Jul 2005</td></tr>
+<tr><td>2</td><td>20.27</td><td>&nbsp;</td><td>&nbsp;+0.5</td><td>&nbsp;1</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;26 Jun 2005</td></tr>
+<tr><td>3</td><td>20.31</td><td>&nbsp;</td><td>&nbsp;-0.6</td><td>&nbsp;1</td><td>&nbsp;Reebok</td><td>&nbsp;New York NY</td><td align="right">&nbsp;11 Jun 2005</td></tr>
+<tr><td>4</td><td>20.14</td><td>&nbsp;</td><td>&nbsp;+0.9</td><td>&nbsp;1</td><td>&nbsp;</td><td>&nbsp;Kingston</td><td align="right">&nbsp;7 May 2005</td></tr>
+<tr><td>5</td><td>20.51</td><td>&nbsp;</td><td>&nbsp;+1.4</td><td>&nbsp;1r1</td><td>&nbsp;Seminole</td><td>&nbsp;Tallahassee FL</td><td align="right">&nbsp;9 Apr 2005</td></tr>
+<tr><td colspan="8"><b>Streak breaking loss:</b></td></tr>
+<tr><td>&nbsp;</td><td>19.99</td><td>&nbsp;</td><td>&nbsp;+1.8</td><td>&nbsp;2</td><td>&nbsp;Norw Uni</td><td>&nbsp;London</td><td align="right">&nbsp;22 Jul 2005</td></tr>
+</tbody></table></div></td></tr>
+<tr><td colspan="8"><b>Winstreak 4:</b>&nbsp;15&nbsp;(finals) 1 Apr 2002 -&gt; 11 Apr 2004 <span onclick="changeme('Winstreak450');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr>
+<tr><td colspan="8"><div id="Winstreak450" style="display: none;"><table><tbody><tr><td>1</td><td>19.93</td><td>&nbsp;WU20R</td><td>&nbsp;+1.4</td><td>&nbsp;1-19</td><td>&nbsp;CarG</td><td>&nbsp;Hamilton</td><td align="right">&nbsp;11 Apr 2004</td></tr>
+<tr><td>2</td><td>20.78</td><td>&nbsp;</td><td>&nbsp;+1.7</td><td>&nbsp;1-19</td><td>&nbsp;</td><td>&nbsp;Spanish Town</td><td align="right">&nbsp;13 Mar 2004</td></tr>
+<tr><td>3</td><td>20.13</td><td>&nbsp;</td><td>&nbsp;0.0</td><td>&nbsp;1-19</td><td>&nbsp;PanAmC</td><td>&nbsp;Bridgetown</td><td align="right">&nbsp;20 Jul 2003</td></tr>
+<tr><td>4</td><td>20.40</td><td>&nbsp;</td><td>&nbsp;-1.1</td><td>&nbsp;1-17</td><td>&nbsp;WY</td><td>&nbsp;Sherbrooke</td><td align="right">&nbsp;13 Jul 2003</td></tr>
+<tr><td>5</td><td>20.28</td><td>&nbsp;</td><td>&nbsp;+0.2</td><td>&nbsp;1</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;21 Jun 2003</td></tr>
+<tr><td>6</td><td>21.1h</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;</td><td>&nbsp;Spanish Town</td><td align="right">&nbsp;14 Jun 2003</td></tr>
+<tr><td>7</td><td>20.43</td><td>&nbsp;</td><td>&nbsp;-1.1</td><td>&nbsp;1-19</td><td>&nbsp;CarG</td><td>&nbsp;Port of Spain</td><td align="right">&nbsp;21 Apr 2003</td></tr>
+<tr><td>8</td><td>20.25</td><td>&nbsp;</td><td>&nbsp;+1.9</td><td>&nbsp;1-18</td><td>&nbsp;HS Ch</td><td>&nbsp;Kingston</td><td align="right">&nbsp;5 Apr 2003</td></tr>
+<tr><td>9</td><td>21.33</td><td>&nbsp;</td><td>&nbsp;+2.2</td><td>&nbsp;1-19</td><td>&nbsp;</td><td>&nbsp;Spanish Town</td><td align="right">&nbsp;1 Mar 2003</td></tr>
+<tr><td>10</td><td>20.3h</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;</td><td>&nbsp;Montego Bay</td><td align="right">&nbsp;18 Feb 2003</td></tr>
+<tr><td>11</td><td>20.61</td><td>&nbsp;</td><td>&nbsp;+0.9</td><td>&nbsp;1-19</td><td>&nbsp;WJ</td><td>&nbsp;Kingston</td><td align="right">&nbsp;19 Jul 2002</td></tr>
+<tr><td>12</td><td>20.61</td><td>&nbsp;</td><td>&nbsp;-0.4</td><td>&nbsp;1-17</td><td>&nbsp;CAC</td><td>&nbsp;Bridgetown</td><td align="right">&nbsp;7 Jul 2002</td></tr>
+<tr><td>13</td><td>21.13</td><td>&nbsp;</td><td>&nbsp;-0.7</td><td>&nbsp;1-19</td><td>&nbsp;NC</td><td>&nbsp;Kingston</td><td align="right">&nbsp;22 Jun 2002</td></tr>
+<tr><td>14</td><td>21.61</td><td>&nbsp;</td><td>&nbsp;-2.0</td><td>&nbsp;1-17</td><td>&nbsp;HS Ch</td><td>&nbsp;Kingston</td><td align="right">&nbsp;20 Apr 2002</td></tr>
+<tr><td>15</td><td>21.12</td><td>&nbsp;</td><td>&nbsp;-0.5</td><td>&nbsp;1-17</td><td>&nbsp;CarG</td><td>&nbsp;Nassau</td><td align="right">&nbsp;1 Apr 2002</td></tr>
+<tr><td colspan="8"><b>Streak breaking loss:</b></td></tr>
+<tr><td>&nbsp;</td><td>21.05</td><td>&nbsp;</td><td>&nbsp;0.0</td><td>&nbsp;5h4</td><td>&nbsp;OG</td><td>&nbsp;Athína</td><td align="right">&nbsp;24 Aug 2004</td></tr>
+</tbody></table></div></td></tr>
+<tr><td colspan="8">&nbsp;</td></tr>
+<tr><td colspan="8"><b><font size="2">Significant winstreaks 400m<br>(at least 5 finals):</font></b></td></tr>
+<tr><td colspan="8"><b>Winstreak 1:</b>&nbsp;5&nbsp;(finals) 26 Jan 2008 -&gt; 9 Feb 2013 <span onclick="changeme('Winstreak170');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr>
+<tr><td colspan="8"><div id="Winstreak170" style="display: none;"><table><tbody><tr><td>1</td><td>46.74</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1rC</td><td>&nbsp;Camperdo</td><td>&nbsp;Kingston</td><td align="right">&nbsp;9 Feb 2013</td></tr>
+<tr><td>2</td><td>45.87</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1r4</td><td>&nbsp;Camperdo</td><td>&nbsp;Kingston</td><td align="right">&nbsp;13 Feb 2010</td></tr>
+<tr><td>3</td><td>45.54</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1r4</td><td>&nbsp;UWI Inv</td><td>&nbsp;Kingston</td><td align="right">&nbsp;21 Feb 2009</td></tr>
+<tr><td>4</td><td>46.35</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;Camperdo</td><td>&nbsp;Kingston</td><td align="right">&nbsp;14 Feb 2009</td></tr>
+<tr><td>5</td><td>46.94</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1r10</td><td>&nbsp;Jackson</td><td>&nbsp;Kingston</td><td align="right">&nbsp;26 Jan 2008</td></tr>
+<tr><td colspan="8"><b>Streak breaking loss:</b></td></tr>
+<tr><td>&nbsp;</td><td>46.44</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;2</td><td>&nbsp;UWI Inv</td><td>&nbsp;Mona</td><td align="right">&nbsp;23 Mar 2013</td></tr>
+</tbody></table></div></td></tr>
+<tr><td colspan="8">&nbsp;</td></tr>
+<tr><td colspan="8"><b><font size="2">Significant winstreaks 4 x 100m<br>(at least 5 finals):</font></b></td></tr>
+<tr><td colspan="8"><b>Winstreak 1:</b>&nbsp;12&nbsp;(finals) 28 Feb 2009 -&gt; 2 Aug 2014 <span onclick="changeme('Winstreak1560');" style="color: blue; text-decoration: none; cursor: pointer;">Show/hide</span></td></tr>
+<tr><td colspan="8"><div id="Winstreak1560" style="display: none;"><table><tbody><tr><td>1</td><td>37.58</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;CWG</td><td>&nbsp;Glasgow</td><td align="right">&nbsp;2 Aug 2014</td></tr>
+<tr><td>2</td><td>37.36</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;WC</td><td>&nbsp;Moskva</td><td align="right">&nbsp;18 Aug 2013</td></tr>
+<tr><td>3</td><td>37.75</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;Sainsbur</td><td>&nbsp;London</td><td align="right">&nbsp;27 Jul 2013</td></tr>
+<tr><td>4</td><td>36.84</td><td>&nbsp;WR</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;OG</td><td>&nbsp;London</td><td align="right">&nbsp;11 Aug 2012</td></tr>
+<tr><td>5</td><td>37.82</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;Classic</td><td>&nbsp;Kingston</td><td align="right">&nbsp;14 Apr 2012</td></tr>
+<tr><td>6</td><td>37.04</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;WC</td><td>&nbsp;Daegu</td><td align="right">&nbsp;4 Sep 2011</td></tr>
+<tr><td>7</td><td>37.90</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;PennR</td><td>&nbsp;Philadelphia PA</td><td align="right">&nbsp;24 Apr 2010</td></tr>
+<tr><td>8</td><td>38.08</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;Gibson</td><td>&nbsp;Kingston</td><td align="right">&nbsp;27 Feb 2010</td></tr>
+<tr><td>9</td><td>37.70</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;WK</td><td>&nbsp;Zürich</td><td align="right">&nbsp;28 Aug 2009</td></tr>
+<tr><td>10</td><td>37.31</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;WC</td><td>&nbsp;Berlin</td><td align="right">&nbsp;22 Aug 2009</td></tr>
+<tr><td>11</td><td>37.46</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;Aviva</td><td>&nbsp;London</td><td align="right">&nbsp;25 Jul 2009</td></tr>
+<tr><td>12</td><td>38.10</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;1</td><td>&nbsp;Gibson</td><td>&nbsp;Kingston</td><td align="right">&nbsp;28 Feb 2009</td></tr>
+<tr><td colspan="8"><b>Streak breaking loss:</b></td></tr>
+<tr><td>&nbsp;</td><td>38.29</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;2</td><td>&nbsp;GibsonR</td><td>&nbsp;Kingston</td><td align="right">&nbsp;28 Feb 2015</td></tr>
+</tbody></table></div></td></tr>
+</tbody></table>
+</div></div></div>
+</div>
+
+
+</body></html>
