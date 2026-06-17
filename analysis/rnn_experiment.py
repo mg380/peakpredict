@@ -218,20 +218,59 @@ def make_tensors(samples, st: dict):
             torch.tensor(np.array(targets), dtype=torch.float32))
 
 
+DEFAULT_CFG = {
+    "rnn_type": "lstm", "hidden": 24, "num_layers": 1, "bidirectional": False,
+    "dropout": 0.3, "head_dim": 32, "lr": 1e-3, "weight_decay": 1e-4,
+    "batch_size": 64, "epochs": 200, "patience": 20,
+}
+
+
+def start_experiment(params: dict | None = None, tags: list[str] | None = None):
+    """Open a Comet experiment if COMET_API_KEY is configured, else return None."""
+    from peakpredict.common.config import get_secret
+
+    key = get_secret("COMET_API_KEY", required=False)
+    if not key:
+        return None
+    from comet_ml import Experiment
+
+    exp = Experiment(
+        api_key=key,
+        project_name=get_secret("COMET_PROJECT", required=False) or "peakpredict-rnn",
+        workspace=get_secret("COMET_WORKSPACE", required=False),
+        display_summary_level=0, auto_metric_logging=False, auto_param_logging=False,
+    )
+    if params:
+        exp.log_parameters(params)
+    for t in tags or []:
+        exp.add_tag(t)
+    return exp
+
+
 class PeakRNN(nn.Module):
-    def __init__(self, n_seq: int, n_static: int, hidden: int = 24, dropout: float = 0.3):
+    def __init__(self, n_seq: int, n_static: int, cfg: dict):
         super().__init__()
-        self.lstm = nn.LSTM(n_seq, hidden, batch_first=True)
+        rnn_cls = nn.GRU if cfg["rnn_type"] == "gru" else nn.LSTM
+        self.is_lstm = cfg["rnn_type"] != "gru"
+        self.bidir = bool(cfg["bidirectional"])
+        self.rnn = rnn_cls(
+            n_seq, cfg["hidden"], num_layers=cfg["num_layers"], batch_first=True,
+            bidirectional=self.bidir, dropout=cfg["dropout"] if cfg["num_layers"] > 1 else 0.0,
+        )
+        out_h = cfg["hidden"] * (2 if self.bidir else 1)
         self.head = nn.Sequential(
-            nn.Linear(hidden + n_static, 32), nn.ReLU(), nn.Dropout(dropout), nn.Linear(32, 1)
+            nn.Linear(out_h + n_static, cfg["head_dim"]), nn.ReLU(),
+            nn.Dropout(cfg["dropout"]), nn.Linear(cfg["head_dim"], 1),
         )
 
     def forward(self, seq, lengths, static):
         packed = nn.utils.rnn.pack_padded_sequence(
             seq, lengths.cpu(), batch_first=True, enforce_sorted=False
         )
-        _, (h, _) = self.lstm(packed)
-        return self.head(torch.cat([h[-1], static], dim=1)).squeeze(1)
+        out = self.rnn(packed)
+        h_n = out[1][0] if self.is_lstm else out[1]  # [num_layers*dirs, B, hidden]
+        last = torch.cat([h_n[-2], h_n[-1]], dim=1) if self.bidir else h_n[-1]
+        return self.head(torch.cat([last, static], dim=1)).squeeze(1)
 
 
 def _split(pids, seed, test_frac=0.25, val_frac=0.2):
@@ -253,35 +292,40 @@ def _mae(model, tensors, st) -> float:
     return float(np.abs(pred - true).mean())
 
 
-def train_rnn(samples, train_p, val_p, test_p, seed, epochs) -> float:
+def train_rnn(samples, train_p, val_p, test_p, seed, cfg=None, comet=None):
+    """Train one config; returns (test_mae, best_val_mae). Logs to Comet if given."""
+    cfg = {**DEFAULT_CFG, **(cfg or {})}
     torch.manual_seed(seed)
     tr = [s for s in samples if s["pid"] in train_p]
     va = [s for s in samples if s["pid"] in val_p]
     te = [s for s in samples if s["pid"] in test_p]
     st = _stats(tr)
     T_tr, T_va, T_te = make_tensors(tr, st), make_tensors(va, st), make_tensors(te, st)
-    model = PeakRNN(T_tr[0].shape[2], T_tr[2].shape[1])
-    opt = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
+    model = PeakRNN(T_tr[0].shape[2], T_tr[2].shape[1], cfg)
+    opt = torch.optim.Adam(model.parameters(), lr=cfg["lr"], weight_decay=cfg["weight_decay"])
     loss_fn = nn.MSELoss()
+    bs = cfg["batch_size"]
     best_val, best_state, patience, n = float("inf"), None, 0, len(tr)
-    for _ in range(epochs):
+    for epoch in range(cfg["epochs"]):
         model.train()
         perm = torch.randperm(n)
-        for j in range(0, n, 64):
-            idx = perm[j : j + 64]
+        for j in range(0, n, bs):
+            idx = perm[j : j + bs]
             opt.zero_grad()
             loss_fn(model(T_tr[0][idx], T_tr[1][idx], T_tr[2][idx]), T_tr[3][idx]).backward()
             opt.step()
         v = _mae(model, T_va, st)
+        if comet is not None:
+            comet.log_metric("val_mae", v, epoch=epoch)
         if v < best_val - 1e-4:
             best_val, patience = v, 0
             best_state = {k: t.clone() for k, t in model.state_dict().items()}
         else:
             patience += 1
-            if patience >= 20:
+            if patience >= cfg["patience"]:
                 break
     model.load_state_dict(best_state)
-    return _mae(model, T_te, st)
+    return _mae(model, T_te, st), best_val
 
 
 def ridge_eval(processed, test_p):
@@ -320,13 +364,15 @@ def main(argv: list[str] | None = None) -> int:
           f"{challenger}={sets[challenger][0]['seq'].shape[1]}")
 
     rows = []
+    cfg = {"epochs": args.epochs}
     for i in range(args.repeats):
-        tr, va, te = _split(pids, args.seed + i)
+        sd = args.seed + i
+        tr, va, te = _split(pids, sd)
         rid = ridge_eval(args.processed, te)
         rows.append({
             "ridge": rid["ridge"], "base": rid["base"],
-            "rnn_score": train_rnn(sets["base"], tr, va, te, args.seed + i, args.epochs),
-            "rnn_alt": train_rnn(sets[challenger], tr, va, te, args.seed + i, args.epochs),
+            "rnn_score": train_rnn(sets["base"], tr, va, te, sd, cfg)[0],
+            "rnn_alt": train_rnn(sets[challenger], tr, va, te, sd, cfg)[0],
         })
     df = pd.DataFrame(rows)
     print(f"\nHELD-OUT MAE over {args.repeats} seeds (years):")

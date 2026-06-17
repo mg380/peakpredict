@@ -21,7 +21,7 @@ peakpredict-enrich = "peakpredict.enrich.wikidata:main"
 scraper = ["selenium>=4.20", "beautifulsoup4>=4.12", "requests>=2.31"]
 pipeline = ["statsmodels>=0.14", "scikit-learn>=1.4"]
 dashboard = ["streamlit>=1.40", "plotly>=5.20", "streamlit-authenticator>=0.3"]
-experimental = ["torch>=2.2"]  # RNN experiment (analysis/rnn_experiment.py)
+experimental = ["torch>=2.2", "comet_ml>=3.5"]  # RNN experiment + sweep tracking
 dev = ["pytest>=8", "ruff>=0.6"]
 
 [build-system]
