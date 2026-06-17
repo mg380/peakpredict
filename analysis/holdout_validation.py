@@ -38,8 +38,14 @@ def _naive_vertex(group: pd.DataFrame, k: int, fallback: float) -> float:
     return pred if PLAUSIBLE[0] <= pred <= PLAUSIBLE[1] else fallback
 
 
-def run(processed: str = "data/processed", seed: int = 42, test_frac: float = 0.25) -> None:
+def run(
+    processed: str = "data/processed", seed: int = 42, test_frac: float = 0.25,
+    no_physical: bool = False,
+) -> None:
     features = read_parquet(f"{processed}/features.parquet")
+    if no_physical:  # ablate physical features to isolate their contribution
+        from peakpredict.pipeline.model import PHYSICAL
+        features[PHYSICAL] = float("nan")
     season_bests = read_parquet(f"{processed}/season_bests.parquet")
     athletes = read_parquet(f"{processed}/athletes.parquet").set_index("pid")
     sb_groups = {
@@ -118,8 +124,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--processed", default="data/processed")
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--test-frac", type=float, default=0.25)
+    p.add_argument("--no-physical", action="store_true", help="ablate height/weight features")
     args = p.parse_args(argv)
-    run(args.processed, args.seed, args.test_frac)
+    run(args.processed, args.seed, args.test_frac, args.no_physical)
     return 0
 
 
