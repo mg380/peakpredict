@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 
+import comet_ml  # noqa: F401 - must import before torch so Comet can instrument it
 import numpy as np
 import pandas as pd
 import torch
