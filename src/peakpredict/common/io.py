@@ -27,13 +27,16 @@ RAW_DDL: tuple[str, ...] = (
     "CREATE SCHEMA IF NOT EXISTS raw;",
     """
     CREATE TABLE IF NOT EXISTS raw.athlete (
-        pid        INTEGER PRIMARY KEY,
-        name       TEXT,
-        country    TEXT,
-        sex        SMALLINT,          -- 1 = men, 2 = women
-        dob        DATE,
-        url        TEXT,
-        scraped_at TIMESTAMP
+        pid             INTEGER PRIMARY KEY,
+        name            TEXT,
+        country         TEXT,
+        sex             SMALLINT,          -- 1 = men, 2 = women
+        dob             DATE,
+        url             TEXT,
+        height_cm       DOUBLE,            -- static physical profile (source-tagged)
+        weight_kg       DOUBLE,
+        physical_source TEXT,              -- 'tilastopaja' | 'wikidata' | ...
+        scraped_at      TIMESTAMP
     );
     """,
     """
@@ -85,6 +88,12 @@ def init_raw_store(con: duckdb.DuckDBPyConnection) -> None:
     """Create all raw tables if they do not already exist (idempotent)."""
     for stmt in RAW_DDL:
         con.execute(stmt)
+    # migrate older stores that predate the physical-profile columns
+    for col, typ in (("height_cm", "DOUBLE"), ("weight_kg", "DOUBLE"), ("physical_source", "TEXT")):
+        try:
+            con.execute(f"ALTER TABLE raw.athlete ADD COLUMN {col} {typ}")
+        except duckdb.Error:
+            pass  # column already exists
 
 
 def write_parquet(df: pd.DataFrame, path: Path | str) -> Path:

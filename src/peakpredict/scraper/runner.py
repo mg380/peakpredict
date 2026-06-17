@@ -20,7 +20,7 @@ from selenium.common.exceptions import WebDriverException
 from ..common.event_maps import event_name
 from ..common.io import RAW_DB_PATH, connect, init_raw_store
 from ..common.logging import get_logger
-from .career import scrape_career
+from .career import scrape_athlete
 from .roster import scrape_roster
 from .session import SessionManager
 
@@ -132,11 +132,24 @@ def _is_session_dead(exc: Exception) -> bool:
     return any(marker in msg for marker in _SESSION_DEAD_MARKERS)
 
 
+def _update_physical(con, pid: int, profile: dict) -> None:
+    """Write tilastopaja-profile height/weight (overrides other sources where present)."""
+    h, w = profile.get("height_cm"), profile.get("weight_kg")
+    if h is None and w is None:
+        return
+    con.execute(
+        "UPDATE raw.athlete SET height_cm = COALESCE(?, height_cm), "
+        "weight_kg = COALESCE(?, weight_kg), physical_source = 'tilastopaja' WHERE pid = ?",
+        [h, w, pid],
+    )
+
+
 def _scrape_one(con, session, pid: int, sex: int) -> str:
     """Scrape+store one athlete. Returns 'done', 'failed', or 'session_dead'."""
     try:
-        rows = scrape_career(session, pid, sex)
+        rows, profile = scrape_athlete(session, pid, sex)
         upsert_performances(con, rows)
+        _update_physical(con, pid, profile)
         _mark_state(con, pid, "done", None)
         log.info("athlete %s -> %d performances", pid, len(rows))
         return "done"

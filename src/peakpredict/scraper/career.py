@@ -107,3 +107,11 @@ def scrape_career(session, pid: int, sex: int) -> list[dict]:
     """Fetch and parse one athlete's career page."""
     html = session.get_page(session.athlete_url(pid, sex))
     return parse_career(html, pid)
+
+
+def scrape_athlete(session, pid: int, sex: int) -> tuple[list[dict], dict]:
+    """Fetch the athlete page once; return (performances, physical profile)."""
+    from .profile import parse_profile
+
+    html = session.get_page(session.athlete_url(pid, sex))
+    return parse_career(html, pid), parse_profile(html)

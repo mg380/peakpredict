@@ -93,9 +93,9 @@ def test_ingest_careers_recovers_from_dead_session(tmp_path, monkeypatch):
         calls["n"] += 1
         if calls["n"] == 1:
             raise WebDriverException("invalid session id")  # browser crashes once
-        return [_perf(pid)]
+        return [_perf(pid)], {"height_cm": 180.0, "weight_kg": 70.0}
 
-    monkeypatch.setattr(runner, "scrape_career", fake_scrape)
+    monkeypatch.setattr(runner, "scrape_athlete", fake_scrape)
 
     class FakeSession:
         def __init__(self):
