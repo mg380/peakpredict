@@ -164,14 +164,12 @@ def _scrape_one(con, session, pid: int, sex: int) -> str:
 
 
 def _recover_session(session) -> bool:
-    """Tear down and re-authenticate a dead Selenium session."""
+    """Recreate the browser, reusing the session cookies where possible (minimises logins)."""
     try:
-        session.close()
-        session.login()
-        log.warning("re-authenticated after a browser session failure")
+        session.recycle()
         return True
     except Exception as exc:  # noqa: BLE001
-        log.error("re-authentication failed: %s", exc)
+        log.error("session recovery failed: %s", exc)
         return False
 
 

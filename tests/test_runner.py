@@ -99,19 +99,19 @@ def test_ingest_careers_recovers_from_dead_session(tmp_path, monkeypatch):
 
     class FakeSession:
         def __init__(self):
-            self.logins = 0
+            self.recycles = 0
 
         def close(self):
             pass
 
-        def login(self):
-            self.logins += 1
+        def recycle(self):
+            self.recycles += 1
             return self
 
     sess = FakeSession()
     done = runner.ingest_careers(con, sess, throttle=0, limit=None)
     assert done == 1  # recovered and succeeded on retry
-    assert sess.logins == 1  # re-authenticated exactly once
+    assert sess.recycles == 1  # recovered the session exactly once (no extra login)
     assert con.execute("SELECT status FROM raw.scrape_state WHERE pid=1").fetchone()[0] == "done"
     con.close()
 
