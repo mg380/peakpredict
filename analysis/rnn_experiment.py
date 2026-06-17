@@ -93,6 +93,30 @@ def build_base_samples(processed: str) -> list[dict]:
     return out
 
 
+def build_raw_samples(processed: str) -> list[dict]:
+    """Feed the RAW mark (no derived score) + event per-timestep, so the model
+    must learn any event-relative structure itself."""
+    feats = read_parquet(f"{processed}/features.parquet")
+    sb = read_parquet(f"{processed}/season_bests.parquet")
+    groups = {k: g.sort_values("age") for k, g in sb.groupby(["pid", "event_id", "sex"])}
+    out = []
+    for r in feats.itertuples(index=False):
+        g = groups.get((r.pid, r.event_id, r.sex))
+        if g is None:
+            continue
+        obs = g.iloc[: r.cutoff_k]
+        ev = [1.0 if r.event_id == e else 0.0 for e in EVENTS]
+        seq = np.column_stack([
+            (obs["age"].to_numpy(float) - 24) / 6,
+            (obs["mark"].to_numpy(float) - 25) / 15,  # raw seconds, fixed global affine scale
+            np.tile(ev, (len(obs), 1)),
+        ]).astype(np.float32)
+        s = _make_sample(r.pid, r.event_id, r.sex, seq, r.height_cm, r.weight_kg, r.peak_age)
+        s["static_cat"] = np.array([*ev, 1.0 if r.sex == 1 else 0.0], dtype=np.float32)
+        out.append(s)
+    return out
+
+
 def build_enriched_samples(processed: str, db_path: str) -> list[dict]:
     import duckdb
 
@@ -280,14 +304,20 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--epochs", type=int, default=200)
     p.add_argument("--repeats", type=int, default=5)
+    p.add_argument("--variant", choices=["raw", "enriched"], default="raw",
+                   help="challenger to compare against the score RNN")
     args = p.parse_args(argv)
 
-    base = build_base_samples(args.processed)
-    enriched = build_enriched_samples(args.processed, args.db)
-    pids = sorted({s["pid"] for s in base})
-    print(f"samples: {len(base)} | athletes: {len(pids)} | "
-          f"seq dims base={base[0]['seq'].shape[1]} enriched={enriched[0]['seq'].shape[1]} | "
-          f"static enriched={len(enriched[0]['static_cat']) + 4}")
+    builders = {"base": build_base_samples, "raw": build_raw_samples}
+    if args.variant == "enriched":
+        builders = {"base": build_base_samples,
+                    "enriched": lambda pr: build_enriched_samples(pr, args.db)}
+    sets = {name: fn(args.processed) for name, fn in builders.items()}
+    challenger = next(k for k in sets if k != "base")
+    pids = sorted({s["pid"] for s in sets["base"]})
+    print(f"samples: {len(sets['base'])} | athletes: {len(pids)} | "
+          f"seq dims base={sets['base'][0]['seq'].shape[1]} "
+          f"{challenger}={sets[challenger][0]['seq'].shape[1]}")
 
     rows = []
     for i in range(args.repeats):
@@ -295,18 +325,18 @@ def main(argv: list[str] | None = None) -> int:
         rid = ridge_eval(args.processed, te)
         rows.append({
             "ridge": rid["ridge"], "base": rid["base"],
-            "rnn_base": train_rnn(base, tr, va, te, args.seed + i, args.epochs),
-            "rnn_enriched": train_rnn(enriched, tr, va, te, args.seed + i, args.epochs),
+            "rnn_score": train_rnn(sets["base"], tr, va, te, args.seed + i, args.epochs),
+            "rnn_alt": train_rnn(sets[challenger], tr, va, te, args.seed + i, args.epochs),
         })
     df = pd.DataFrame(rows)
     print(f"\nHELD-OUT MAE over {args.repeats} seeds (years):")
     for col, label in [("base", "B0 population mean"), ("ridge", "B2 ridge"),
-                       ("rnn_base", "RNN base (age,score)"),
-                       ("rnn_enriched", "RNN enriched (+9 feats)")]:
+                       ("rnn_score", "RNN base (age, score)"),
+                       ("rnn_alt", f"RNN {challenger}")]:
         print(f"  {label:26} {df[col].mean():.3f} +/- {df[col].std():.3f}")
-    win = int((df["rnn_enriched"] < df["rnn_base"]).sum())
-    print(f"\n  enriched beat base RNN in {win}/{args.repeats} seeds; "
-          f"delta {(df['rnn_base'] - df['rnn_enriched']).mean():+.3f}y")
+    win = int((df["rnn_alt"] < df["rnn_score"]).sum())
+    print(f"\n  {challenger} beat score-RNN in {win}/{args.repeats} seeds; "
+          f"delta {(df['rnn_score'] - df['rnn_alt']).mean():+.3f}y")
     return 0
 
 
