@@ -1,11 +1,13 @@
-"""RNN experiment — does a sequence model beat the Ridge baseline?
+"""RNN experiment — base vs feature-enriched sequence model, vs Ridge.
 
-Predicts peak age from the early-career (age, score) SEQUENCE plus static inputs
-(event, sex, height, weight), and is judged on the SAME athlete-grouped held-out
-split as the Ridge model. Per the ML spec, the RNN is exploratory: it is only
-worth adopting if it actually beats Ridge here.
+Builds two sequence representations and judges both on the SAME athlete-grouped
+held-out split as Ridge:
+  base      : per-season (age, score)            + static (event, sex, height, weight)
+  enriched  : per-season (age, score, wind, percentile-vs-population-at-age,
+              season volume, competition tier, finishing place, indoor, month)
+              + static (event, sex, height, weight, country)
 
-Run: python analysis/rnn_experiment.py  [--epochs 200] [--seed 42]
+Run: python analysis/rnn_experiment.py [--epochs 200] [--seed 42] [--repeats 5]
 """
 
 from __future__ import annotations
@@ -17,71 +19,185 @@ import pandas as pd
 import torch
 from torch import nn
 
-from peakpredict.common.io import read_parquet
+from peakpredict.common.io import RAW_DB_PATH, read_parquet
+from peakpredict.pipeline.aggregates import build_population_aggregates
 from peakpredict.pipeline.model import NUMERIC, GroupMeanBaseline, PooledRidge
 
 EVENTS = ["40", "50", "70"]
-MAX_LEN = 7  # cutoffs are 3/5/7 -> sequence length <= 7
+MAX_LEN = 7
+_PCT_LEVELS = np.array([0.1, 0.25, 0.5, 0.75, 0.9])
+_GLOBAL = {"OG", "WC", "WI", "WCH", "WIC"}
+_CONTINENTAL = {"EC", "CWG", "CC", "AC", "ASC", "PANAM", "ECP", "EJ", "WJ", "WY", "WYC", "WUG"}
+_NATIONAL = {"NC", "NCAA", "OT", "NC-J", "SEC", "BIG"}
 
 
-def build_samples(processed: str):
+def competition_tier(comp) -> int:
+    c = ("" if comp is None else str(comp)).strip().upper()
+    if c in _GLOBAL:
+        return 3
+    if c in _CONTINENTAL:
+        return 2
+    if c in _NATIONAL or c.startswith("NC") or c.startswith("BIG"):
+        return 1
+    return 0
+
+
+def _pct_lookup(season_bests: pd.DataFrame):
+    agg = build_population_aggregates(season_bests)
+    lut: dict = {}
+    for r in agg.itertuples(index=False):
+        vals = np.array([r.p10, r.p25, r.p50, r.p75, r.p90], dtype=float)
+        if np.all(np.diff(vals) >= 0):
+            lut[(r.event_id, int(r.sex), int(r.age_bin))] = vals
+
+    def pct(event_id, sex, age, score) -> float:
+        vals = lut.get((event_id, int(sex), int(round(age))))
+        return 0.5 if vals is None else float(np.interp(score, vals, _PCT_LEVELS))
+
+    return pct
+
+
+def _country_onehot(country, top: list[str]) -> list[float]:
+    vec = [0.0] * (len(top) + 1)
+    if country in top:
+        vec[top.index(country)] = 1.0
+    else:
+        vec[-1] = 1.0  # "other"
+    return vec
+
+
+def _make_sample(pid, event_id, sex, seq, height, weight, peak_age) -> dict:
+    return {"pid": int(pid), "event_id": event_id, "sex": int(sex),
+            "seq": np.asarray(seq, dtype=np.float32), "height_cm": height,
+            "weight_kg": weight, "peak_age": float(peak_age),
+            "static_cat": None}
+
+
+def build_base_samples(processed: str) -> list[dict]:
     feats = read_parquet(f"{processed}/features.parquet")
     sb = read_parquet(f"{processed}/season_bests.parquet")
     groups = {k: g.sort_values("age") for k, g in sb.groupby(["pid", "event_id", "sex"])}
-    samples = []
-    for i, r in enumerate(feats.itertuples(index=False)):
+    out = []
+    for r in feats.itertuples(index=False):
         g = groups.get((r.pid, r.event_id, r.sex))
         if g is None:
             continue
         obs = g.iloc[: r.cutoff_k]
-        seq = np.stack([obs["age"].to_numpy(float), obs["score"].to_numpy(float)], axis=1)
-        samples.append({
-            "row": i, "pid": int(r.pid), "event_id": r.event_id, "sex": int(r.sex),
-            "seq": seq, "height_cm": r.height_cm, "weight_kg": r.weight_kg,
-            "peak_age": float(r.peak_age),
-        })
-    return feats, samples
+        seq = np.stack([(obs["age"].to_numpy(float) - 24) / 6, obs["score"].to_numpy(float)], 1)
+        s = _make_sample(r.pid, r.event_id, r.sex, seq, r.height_cm, r.weight_kg, r.peak_age)
+        s["static_cat"] = np.array(
+            [*[1.0 if r.event_id == e else 0.0 for e in EVENTS], 1.0 if r.sex == 1 else 0.0],
+            dtype=np.float32,
+        )
+        out.append(s)
+    return out
+
+
+def build_enriched_samples(processed: str, db_path: str) -> list[dict]:
+    import duckdb
+
+    feats = read_parquet(f"{processed}/features.parquet")
+    sb = read_parquet(f"{processed}/season_bests.parquet")
+    pct = _pct_lookup(sb)
+
+    con = duckdb.connect(str(db_path), read_only=True)
+    perf = con.execute(
+        "SELECT pid, event_id, indoor, perf_date, mark, wind, competition, round_pos "
+        "FROM raw.performance WHERE event_id IN ('40','50','70')"
+    ).df()
+    countries = con.execute(
+        "SELECT pid, country FROM raw.athlete WHERE country IS NOT NULL"
+    ).df().set_index("pid")["country"].to_dict()
+    top_countries = con.execute(
+        "SELECT country FROM raw.athlete WHERE country IS NOT NULL "
+        "GROUP BY country ORDER BY count(*) DESC LIMIT 10"
+    ).df()["country"].tolist()
+    con.close()
+
+    perf = perf[perf["mark"].notna() & perf["perf_date"].notna()]
+    perf = perf[perf["wind"].isna() | (perf["wind"] <= 2.0)]
+    perf["perf_date"] = pd.to_datetime(perf["perf_date"])
+    perf["year"] = perf["perf_date"].dt.year
+    perf["tier"] = perf["competition"].map(competition_tier)
+    perf["place"] = perf["round_pos"].astype(str).str.extract(r"^(\d+)").astype(float)
+    gb = perf.groupby(["pid", "event_id", "year"])
+    ctx = gb.agg(volume=("mark", "size"), tier=("tier", "max")).reset_index()
+    best_cols = ["pid", "event_id", "year", "indoor", "perf_date", "place"]
+    best = perf.loc[gb["mark"].idxmin(), best_cols]
+    best["month"] = best["perf_date"].dt.month
+    ctx = ctx.merge(best[["pid", "event_id", "year", "indoor", "place", "month"]],
+                    on=["pid", "event_id", "year"])
+
+    enr = sb.merge(ctx, left_on=["pid", "event_id", "season"],
+                   right_on=["pid", "event_id", "year"], how="left")
+    enr["pct"] = [pct(e, s, a, sc) for e, s, a, sc in
+                  zip(enr["event_id"], enr["sex"], enr["age"], enr["score"], strict=False)]
+    cols = ["age", "score", "wind", "pct", "volume", "tier", "place", "indoor", "month"]
+    groups = {k: g.sort_values("age") for k, g in enr.groupby(["pid", "event_id", "sex"])}
+
+    out = []
+    for r in feats.itertuples(index=False):
+        g = groups.get((r.pid, r.event_id, r.sex))
+        if g is None:
+            continue
+        obs = g.iloc[: r.cutoff_k][cols].copy()
+        seq = np.stack([
+            (obs["age"].to_numpy(float) - 24) / 6,
+            obs["score"].to_numpy(float),
+            np.nan_to_num(obs["wind"].to_numpy(float)) / 2,
+            obs["pct"].to_numpy(float) - 0.5,
+            np.minimum(obs["volume"].fillna(1).to_numpy(float), 20) / 10,
+            obs["tier"].fillna(0).to_numpy(float) / 3,
+            1.0 / np.clip(obs["place"].fillna(20).to_numpy(float), 1, 20),
+            obs["indoor"].fillna(False).astype(float).to_numpy(),
+            (obs["month"].fillna(6).to_numpy(float) - 6) / 3,
+        ], axis=1)
+        s = _make_sample(r.pid, r.event_id, r.sex, seq, r.height_cm, r.weight_kg, r.peak_age)
+        s["static_cat"] = np.array(
+            [*[1.0 if r.event_id == e else 0.0 for e in EVENTS], 1.0 if r.sex == 1 else 0.0,
+             *_country_onehot(countries.get(r.pid), top_countries)],
+            dtype=np.float32,
+        )
+        out.append(s)
+    return out
 
 
 def _stats(samples) -> dict:
     h = np.array([s["height_cm"] for s in samples], float)
     w = np.array([s["weight_kg"] for s in samples], float)
     t = np.array([s["peak_age"] for s in samples], float)
-    return {
-        "h_med": np.nanmedian(h), "h_std": np.nanstd(h[~np.isnan(h)]) or 1.0,
-        "w_med": np.nanmedian(w), "w_std": np.nanstd(w[~np.isnan(w)]) or 1.0,
-        "t_mean": t.mean(), "t_std": t.std() or 1.0,
-    }
+    return {"h_med": np.nanmedian(h), "h_std": np.nanstd(h[~np.isnan(h)]) or 1.0,
+            "w_med": np.nanmedian(w), "w_std": np.nanstd(w[~np.isnan(w)]) or 1.0,
+            "t_mean": t.mean(), "t_std": t.std() or 1.0}
 
 
 def make_tensors(samples, st: dict):
+    n_seq = samples[0]["seq"].shape[1]
     seqs, lengths, statics, targets = [], [], [], []
     for s in samples:
-        seq = s["seq"].astype(np.float32).copy()
-        seq[:, 0] = (seq[:, 0] - 24.0) / 6.0  # scale age; score already standardized
+        seq = s["seq"]
         length = len(seq)
-        seqs.append(np.vstack([seq, np.zeros((MAX_LEN - length, 2), np.float32)]))
+        seqs.append(np.vstack([seq, np.zeros((MAX_LEN - length, n_seq), np.float32)]))
         lengths.append(length)
         h, w = s["height_cm"], s["weight_kg"]
         hm, wm = float(pd.isna(h)), float(pd.isna(w))
         h = st["h_med"] if pd.isna(h) else h
         w = st["w_med"] if pd.isna(w) else w
-        onehot = [1.0 if s["event_id"] == e else 0.0 for e in EVENTS]
-        statics.append([*onehot, 1.0 if s["sex"] == 1 else 0.0,
-                        (h - st["h_med"]) / st["h_std"], (w - st["w_med"]) / st["w_std"], hm, wm])
+        statics.append(np.concatenate([
+            s["static_cat"],
+            [(h - st["h_med"]) / st["h_std"], (w - st["w_med"]) / st["w_std"], hm, wm],
+        ]))
         targets.append((s["peak_age"] - st["t_mean"]) / st["t_std"])
-    return (
-        torch.tensor(np.array(seqs), dtype=torch.float32),
-        torch.tensor(lengths, dtype=torch.int64),
-        torch.tensor(np.array(statics), dtype=torch.float32),
-        torch.tensor(np.array(targets), dtype=torch.float32),
-    )
+    return (torch.tensor(np.array(seqs), dtype=torch.float32),
+            torch.tensor(lengths, dtype=torch.int64),
+            torch.tensor(np.array(statics), dtype=torch.float32),
+            torch.tensor(np.array(targets), dtype=torch.float32))
 
 
 class PeakRNN(nn.Module):
-    def __init__(self, n_static: int, hidden: int = 24, dropout: float = 0.3):
+    def __init__(self, n_seq: int, n_static: int, hidden: int = 24, dropout: float = 0.3):
         super().__init__()
-        self.lstm = nn.LSTM(2, hidden, batch_first=True)
+        self.lstm = nn.LSTM(n_seq, hidden, batch_first=True)
         self.head = nn.Sequential(
             nn.Linear(hidden + n_static, 32), nn.ReLU(), nn.Dropout(dropout), nn.Linear(32, 1)
         )
@@ -105,7 +221,7 @@ def _split(pids, seed, test_frac=0.25, val_frac=0.2):
     return set(rest[n_val:].tolist()), set(rest[:n_val].tolist()), test
 
 
-def _mae(model, tensors, st):
+def _mae(model, tensors, st) -> float:
     model.eval()
     with torch.no_grad():
         pred = model(tensors[0], tensors[1], tensors[2]).numpy() * st["t_std"] + st["t_mean"]
@@ -113,30 +229,24 @@ def _mae(model, tensors, st):
     return float(np.abs(pred - true).mean())
 
 
-def run(processed: str = "data/processed", seed: int = 42, epochs: int = 200) -> None:
+def train_rnn(samples, train_p, val_p, test_p, seed, epochs) -> float:
     torch.manual_seed(seed)
-    feats, samples = build_samples(processed)
-    pids = {s["pid"] for s in samples}
-    train_p, val_p, test_p = _split(pids, seed)
     tr = [s for s in samples if s["pid"] in train_p]
     va = [s for s in samples if s["pid"] in val_p]
     te = [s for s in samples if s["pid"] in test_p]
     st = _stats(tr)
     T_tr, T_va, T_te = make_tensors(tr, st), make_tensors(va, st), make_tensors(te, st)
-
-    model = PeakRNN(n_static=T_tr[2].shape[1])
+    model = PeakRNN(T_tr[0].shape[2], T_tr[2].shape[1])
     opt = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
     loss_fn = nn.MSELoss()
-    best_val, best_state, patience = float("inf"), None, 0
-    n = len(tr)
+    best_val, best_state, patience, n = float("inf"), None, 0, len(tr)
     for _ in range(epochs):
         model.train()
         perm = torch.randperm(n)
         for j in range(0, n, 64):
             idx = perm[j : j + 64]
             opt.zero_grad()
-            out = model(T_tr[0][idx], T_tr[1][idx], T_tr[2][idx])
-            loss_fn(out, T_tr[3][idx]).backward()
+            loss_fn(model(T_tr[0][idx], T_tr[1][idx], T_tr[2][idx]), T_tr[3][idx]).backward()
             opt.step()
         v = _mae(model, T_va, st)
         if v < best_val - 1e-4:
@@ -147,50 +257,56 @@ def run(processed: str = "data/processed", seed: int = 42, epochs: int = 200) ->
             if patience >= 20:
                 break
     model.load_state_dict(best_state)
+    return _mae(model, T_te, st)
 
-    rnn_mae = _mae(model, T_te, st)
 
-    # Ridge + baseline on the SAME test athletes, trained on train+val
+def ridge_eval(processed, test_p):
+    feats = read_parquet(f"{processed}/features.parquet")
     nontest = feats[~feats["pid"].isin(test_p)]
     test_rows = feats[feats["pid"].isin(test_p)]
-    ridge = PooledRidge().fit(nontest)
-    base = GroupMeanBaseline().fit(nontest)
-
-    def tab_mae(model_):
-        err = []
-        for r in test_rows.itertuples(index=False):
-            f = {k: getattr(r, k) for k in NUMERIC}
-            err.append(model_.predict_one(f, r.event_id, int(r.sex))[0] - r.peak_age)
-        return float(np.abs(err).mean())
-
-    return {"base": tab_mae(base), "ridge": tab_mae(ridge), "rnn": rnn_mae,
-            "n_test": len(te), "splits": (len(train_p), len(val_p), len(test_p))}
+    models = {"base": GroupMeanBaseline().fit(nontest), "ridge": PooledRidge().fit(nontest)}
+    out = {}
+    for name, m in models.items():
+        err = [m.predict_one({k: getattr(r, k) for k in NUMERIC}, r.event_id, int(r.sex))[0]
+               - r.peak_age for r in test_rows.itertuples(index=False)]
+        out[name] = float(np.abs(err).mean())
+    return out
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(description="RNN vs Ridge on the held-out split")
+    p = argparse.ArgumentParser(description="RNN base vs enriched vs Ridge")
     p.add_argument("--processed", default="data/processed")
+    p.add_argument("--db", default=str(RAW_DB_PATH))
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--epochs", type=int, default=200)
-    p.add_argument("--repeats", type=int, default=1, help="run N seeds and aggregate")
+    p.add_argument("--repeats", type=int, default=5)
     args = p.parse_args(argv)
-    results = [run(args.processed, args.seed + i, args.epochs) for i in range(args.repeats)]
-    if args.repeats == 1:
-        r = results[0]
-        print(f"\nRNN EXPERIMENT (seed={args.seed}; held-out split)")
-        print(f"train/val/test athletes: {r['splits']} | test preds: {r['n_test']}\n")
-        print(f"  B0 population mean   MAE {r['base']:.2f}y")
-        print(f"  B2 ridge             MAE {r['ridge']:.2f}y")
-        print(f"  B4 RNN (seq+static)  MAE {r['rnn']:.2f}y")
-    else:
-        ridge = np.array([r["ridge"] for r in results])
-        rnn = np.array([r["rnn"] for r in results])
-        wins = int((rnn < ridge).sum())
-        print(f"\nRNN vs RIDGE over {args.repeats} seeds (held-out MAE, years):")
-        print(f"  ridge  {ridge.mean():.2f} +/- {ridge.std():.2f}")
-        print(f"  RNN    {rnn.mean():.2f} +/- {rnn.std():.2f}")
-        delta = (ridge - rnn).mean()
-        print(f"  RNN beat ridge in {wins}/{args.repeats} seeds; mean delta {delta:+.2f}y")
+
+    base = build_base_samples(args.processed)
+    enriched = build_enriched_samples(args.processed, args.db)
+    pids = sorted({s["pid"] for s in base})
+    print(f"samples: {len(base)} | athletes: {len(pids)} | "
+          f"seq dims base={base[0]['seq'].shape[1]} enriched={enriched[0]['seq'].shape[1]} | "
+          f"static enriched={len(enriched[0]['static_cat']) + 4}")
+
+    rows = []
+    for i in range(args.repeats):
+        tr, va, te = _split(pids, args.seed + i)
+        rid = ridge_eval(args.processed, te)
+        rows.append({
+            "ridge": rid["ridge"], "base": rid["base"],
+            "rnn_base": train_rnn(base, tr, va, te, args.seed + i, args.epochs),
+            "rnn_enriched": train_rnn(enriched, tr, va, te, args.seed + i, args.epochs),
+        })
+    df = pd.DataFrame(rows)
+    print(f"\nHELD-OUT MAE over {args.repeats} seeds (years):")
+    for col, label in [("base", "B0 population mean"), ("ridge", "B2 ridge"),
+                       ("rnn_base", "RNN base (age,score)"),
+                       ("rnn_enriched", "RNN enriched (+9 feats)")]:
+        print(f"  {label:26} {df[col].mean():.3f} +/- {df[col].std():.3f}")
+    win = int((df["rnn_enriched"] < df["rnn_base"]).sum())
+    print(f"\n  enriched beat base RNN in {win}/{args.repeats} seeds; "
+          f"delta {(df['rnn_base'] - df['rnn_enriched']).mean():+.3f}y")
     return 0
 
 
