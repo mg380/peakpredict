@@ -56,7 +56,7 @@ def test_publish_writes_complete_bundle(tmp_path):
     manifest = json.loads((out / "manifest.json").read_text())
     assert manifest["version"] == "vtest"
     assert manifest["events"] == ["40", "50", "70"]
-    assert manifest["schema_version"] == "1"
+    assert manifest["schema_version"] == "2"
 
     # the bundled predictor loads and produces a finite, bounded prediction
     bundle = joblib.load(out / "predictor.pkl")

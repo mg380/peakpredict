@@ -13,7 +13,7 @@ import pandas as pd
 
 from ..common.schemas import FeatureSchema, FieldSpec
 
-FEATURE_SCHEMA_VERSION = "1"
+FEATURE_SCHEMA_VERSION = "2"  # v2 adds static physical features (height/weight)
 DEFAULT_CUTOFFS = (3, 5, 7)
 
 # Engineered model features (computed from the first-k season-bests).
@@ -30,15 +30,24 @@ _FIELDS: tuple[tuple[str, str, str], ...] = (
     ("score_std", "float", "std of observed score (consistency)"),
 )
 
+# Static physical features (per athlete; often missing -> imputed by the model).
+_PHYSICAL_FIELDS: tuple[tuple[str, str, str], ...] = (
+    ("height_cm", "float", "athlete height in cm (static; may be missing)"),
+    ("weight_kg", "float", "athlete weight in kg (static; may be missing)"),
+)
 
 FEATURE_NAMES: tuple[str, ...] = tuple(n for n, _, _ in _FIELDS)
+PHYSICAL_NAMES: tuple[str, ...] = tuple(n for n, _, _ in _PHYSICAL_FIELDS)
 
 
 def feature_schema() -> FeatureSchema:
-    """The versioned schema describing the engineered model features."""
+    """The versioned schema describing all model input features (engineered + physical)."""
     return FeatureSchema(
         schema_version=FEATURE_SCHEMA_VERSION,
-        fields=[FieldSpec(name=n, dtype=d, description=desc) for n, d, desc in _FIELDS],
+        fields=[
+            FieldSpec(name=n, dtype=d, description=desc)
+            for n, d, desc in (*_FIELDS, *_PHYSICAL_FIELDS)
+        ],
     )
 
 
@@ -74,13 +83,15 @@ def compute_features(obs: pd.DataFrame) -> dict:
 def build_features(
     scored_season_bests: pd.DataFrame,
     labels: pd.DataFrame,
+    physical: pd.DataFrame | None = None,
     cutoffs: tuple[int, ...] = DEFAULT_CUTOFFS,
 ) -> pd.DataFrame:
     """Training table: leakage-safe features at each cutoff, joined to the label.
 
     For every labelled career and each cutoff ``k`` (when the athlete has >= k
-    seasons), compute features from the first ``k`` season-bests and attach the
-    full-career ``peak_age`` label.
+    seasons), compute features from the first ``k`` season-bests, attach the
+    full-career ``peak_age`` label, and the athlete's static physical attributes
+    (``physical`` = DataFrame with pid/height_cm/weight_kg; NaN where unknown).
     """
     lab = labels.set_index(["pid", "event_id", "sex"])["peak_age"]
     rows: list[dict] = []
@@ -105,4 +116,12 @@ def build_features(
                 }
             )
             rows.append(feats)
-    return pd.DataFrame(rows)
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return df
+    if physical is not None:
+        df = df.merge(physical[["pid", *PHYSICAL_NAMES]], on="pid", how="left")
+    else:
+        for col in PHYSICAL_NAMES:
+            df[col] = np.nan
+    return df

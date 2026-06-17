@@ -58,6 +58,8 @@ class UploadedAthlete(BaseModel):
     sex: int
     event_id: str
     results: list[UploadedResult] = Field(min_length=1)
+    height_cm: float | None = None  # optional static physical attributes
+    weight_kg: float | None = None
 
     @field_validator("sex")
     @classmethod

@@ -159,6 +159,9 @@ def page_upload(art: service.Artifacts) -> None:
     c1, c2 = st.columns(2)
     event = c1.selectbox("Event", EVENTS, format_func=_event_label, key="up_event")
     sex = SEXES[c2.selectbox("Sex", list(SEXES), key="up_sex")]
+    p1, p2 = st.columns(2)
+    height = p1.number_input("Height (cm, optional)", 0.0, 260.0, 0.0, step=1.0) or None
+    weight = p2.number_input("Weight (kg, optional)", 0.0, 250.0, 0.0, step=1.0) or None
     theme.eyebrow("enter results")
     st.caption("Age in years, mark, optional wind. Add a row per season.")
     starter = pd.DataFrame(
@@ -177,7 +180,9 @@ def page_upload(art: service.Artifacts) -> None:
             for r in edited.itertuples()
             if float(r.mark) > 0
         ]
-        athlete = UploadedAthlete(sex=sex, event_id=event, results=results)
+        athlete = UploadedAthlete(
+            sex=sex, event_id=event, results=results, height_cm=height, weight_kg=weight
+        )
     except (ValidationError, ValueError) as exc:
         st.error(f"Please fix the input: {exc}")
         return

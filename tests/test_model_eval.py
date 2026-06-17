@@ -21,7 +21,10 @@ def make_features(n=40, seed=0, signal=False):
                     "current_age": 17.0 + k, "current_best_score": cbs,
                     "span_observed": float(k), "progression_rate": float(rng.normal(0.2, 0.1)),
                     "recent_slope": float(rng.normal(0.1, 0.1)), "mean_score": float(rng.normal()),
-                    "score_std": abs(float(rng.normal(0, 0.2))), "peak_age": peak,
+                    "score_std": abs(float(rng.normal(0, 0.2))),
+                    "height_cm": float(rng.normal(180, 8)) if rng.random() > 0.3 else float("nan"),
+                    "weight_kg": float(rng.normal(72, 8)) if rng.random() > 0.3 else float("nan"),
+                    "peak_age": peak,
                 }
             )
     return pd.DataFrame(rows)

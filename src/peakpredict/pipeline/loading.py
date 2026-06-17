@@ -11,5 +11,7 @@ def load_raw(con: duckdb.DuckDBPyConnection) -> tuple[pd.DataFrame, pd.DataFrame
     perf = con.execute(
         "SELECT pid, event_id, indoor, perf_date, mark, wind FROM raw.performance"
     ).df()
-    ath = con.execute("SELECT pid, sex, dob, name, country FROM raw.athlete").df()
+    ath = con.execute(
+        "SELECT pid, sex, dob, name, country, height_cm, weight_kg FROM raw.athlete"
+    ).df()
     return perf, ath

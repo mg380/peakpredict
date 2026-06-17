@@ -14,9 +14,11 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from .features import FEATURE_NAMES
+from .features import FEATURE_NAMES, PHYSICAL_NAMES
 
-NUMERIC = list(FEATURE_NAMES)
+ENGINEERED = list(FEATURE_NAMES)       # always present, no missing
+PHYSICAL = list(PHYSICAL_NAMES)        # height/weight, often missing -> imputed
+NUMERIC = ENGINEERED + PHYSICAL
 CATEGORICAL = ["event_id", "sex"]
 TARGET = "peak_age"
 Z80 = 1.2816  # ~80% normal interval
@@ -60,13 +62,24 @@ class PooledRidge:
 
     def _build(self):
         from sklearn.compose import ColumnTransformer
+        from sklearn.impute import SimpleImputer
         from sklearn.linear_model import Ridge
         from sklearn.pipeline import Pipeline
         from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+        # physical features are often missing -> median-impute (per train fold) and
+        # add a missing-indicator so the model can distinguish imputed from real
+        physical = Pipeline(
+            [
+                ("impute", SimpleImputer(strategy="median", add_indicator=True,
+                                         keep_empty_features=True)),
+                ("scale", StandardScaler()),
+            ]
+        )
         pre = ColumnTransformer(
             [
-                ("num", StandardScaler(), NUMERIC),
+                ("eng", StandardScaler(), ENGINEERED),
+                ("phys", physical, PHYSICAL),
                 ("cat", OneHotEncoder(handle_unknown="ignore"), CATEGORICAL),
             ]
         )
@@ -89,7 +102,9 @@ class PooledRidge:
         return self
 
     def predict_one(self, feats: dict, event_id: str, sex: int) -> tuple[float, float, float]:
-        row = {**{k: feats[k] for k in NUMERIC}, "event_id": event_id, "sex": int(sex)}
+        # physical features may be absent at inference (None/missing) -> NaN, imputed
+        row = {k: (np.nan if feats.get(k) is None else feats.get(k)) for k in NUMERIC}
+        row["event_id"], row["sex"] = event_id, int(sex)
         p = float(self.pipe.predict(pd.DataFrame([row]))[0])
         return p, p - Z80 * self.resid_std, p + Z80 * self.resid_std
 

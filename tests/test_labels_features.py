@@ -50,8 +50,10 @@ def test_features_are_leakage_safe():
     assert k3["cutoff_age"] == sb.sort_values("age")["age"].iloc[2]
 
 
-def test_compute_features_keys_match_schema():
+def test_compute_features_keys_are_in_schema():
     obs = pd.DataFrame({"age": [20.0, 21.0, 22.0], "score": [1.0, 1.5, 1.2]})
     feats = compute_features(obs)
     schema_fields = {f.name for f in feature_schema().fields}
-    assert set(feats) == schema_fields
+    # compute_features yields the engineered subset; physical fields are attached separately
+    assert set(feats) <= schema_fields
+    assert {"height_cm", "weight_kg"} <= schema_fields

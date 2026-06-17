@@ -131,6 +131,8 @@ def predict_uploaded(
     if len(series) < MIN_POINTS:
         return _flag("insufficient"), series
     feats = compute_features(series)
+    feats["height_cm"] = athlete.height_cm  # static physical inputs (None -> imputed)
+    feats["weight_kg"] = athlete.weight_kg
     peak_age, lo, hi = art.predictor["model"].predict_one(feats, athlete.event_id, int(athlete.sex))
     # the peak window is curvature-derived; only defined when the fit has an interior max,
     # otherwise leave it undefined rather than conflating it with the prediction interval

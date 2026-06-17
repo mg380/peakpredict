@@ -37,7 +37,8 @@ def build_processed(db_path: str | Path = RAW_DB_PATH, out_dir: Path = PROCESSED
     normalizer = fit_normalizer(season_bests)
     scored = add_scores(season_bests, normalizer)
     labels = build_labels(scored)
-    features = build_features(scored, labels)
+    physical = athletes[["pid", "height_cm", "weight_kg"]]
+    features = build_features(scored, labels, physical=physical)
 
     athletes_dir = (
         athletes[athletes["pid"].isin(scored["pid"].unique())][["pid", "name", "country", "sex"]]
