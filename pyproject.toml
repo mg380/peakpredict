@@ -22,7 +22,7 @@ scraper = ["selenium>=4.20", "beautifulsoup4>=4.12", "requests>=2.31"]
 pipeline = ["statsmodels>=0.14", "scikit-learn>=1.4", "torch>=2.2"]  # torch: RNN rung
 dashboard = ["streamlit>=1.40", "plotly>=5.20", "streamlit-authenticator>=0.3", "torch>=2.2"]
 experimental = ["comet_ml>=3.5"]  # RNN sweep/optimizer experiment tracking
-dev = ["pytest>=8", "ruff>=0.6"]
+dev = ["pytest>=8", "ruff>=0.6", "kaleido>=0.2"]  # kaleido: render docs/ figures to PNG
 
 [build-system]
 requires = ["setuptools>=68"]
