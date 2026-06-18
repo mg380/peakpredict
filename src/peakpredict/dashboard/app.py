@@ -19,12 +19,11 @@ from pydantic import ValidationError
 # Absolute imports: Streamlit runs this file as a standalone script, so it is not
 # loaded as part of the package and cannot use relative imports.
 from peakpredict.common.event_maps import SUPPORTED_V1_EVENTS, event_name
-from peakpredict.common.schemas import PeakPrediction, UploadedAthlete, UploadedResult
+from peakpredict.common.schemas import UploadedAthlete, UploadedResult
 from peakpredict.dashboard import service, theme
 from peakpredict.dashboard.auth import require_auth
 from peakpredict.dashboard.charting import hero_chart
 from peakpredict.pipeline.features import compute_features
-from peakpredict.pipeline.trajectory import fit_trajectory
 
 EVENTS = sorted(SUPPORTED_V1_EVENTS)
 SEXES = {"Men": 1, "Women": 2}
@@ -50,17 +49,6 @@ def _load(bundle_path: str) -> service.Artifacts:
 
 def _event_label(event_id: str) -> str:
     return f"{event_name(event_id)} ({event_id})"
-
-
-def _descriptive_prediction(series: pd.DataFrame) -> PeakPrediction | None:
-    fit = fit_trajectory(series["age"].to_numpy(), series["score"].to_numpy())
-    if fit is None or not fit.has_interior_max:
-        return None
-    return PeakPrediction(
-        peak_age=fit.peak_age, interval_lo=fit.window_lo, interval_hi=fit.window_hi,
-        peak_score=fit.peak_score, window_lo=fit.window_lo, window_hi=fit.window_hi,
-        confidence="ok",
-    )
 
 
 def _filter_roster(df: pd.DataFrame) -> pd.DataFrame:
@@ -89,6 +77,16 @@ def _filter_roster(df: pd.DataFrame) -> pd.DataFrame:
     return service.apply_directory_filters(df, **f)
 
 
+@st.cache_data(show_spinner="Projecting peaks…")
+def _predicted_peaks(_art: service.Artifacts, version: str, event: str, sex: int) -> dict:
+    """Cache the roster's peak projections per (bundle, event, sex).
+
+    ``_art`` is excluded from the cache key by its leading underscore; ``version``
+    keys the cache so publishing a new bundle invalidates it.
+    """
+    return service.predicted_directory_peaks(_art, event, sex)
+
+
 def page_explore(art: service.Artifacts) -> None:
     st.header("Explore athletes")
     c1, c2, c3, c4 = st.columns(4)
@@ -97,7 +95,8 @@ def page_explore(art: service.Artifacts) -> None:
     sort_by = c3.selectbox("Sort by", list(service.DIRECTORY_SORTS))
     query = c4.text_input("Search name")
 
-    directory = service.athlete_directory(art, event, sex, sort_by)
+    predicted = _predicted_peaks(art, art.manifest["version"], event, sex)
+    directory = service.athlete_directory(art, event, sex, sort_by, predicted=predicted)
     if query:
         directory = directory[directory["name"].str.contains(query, case=False, na=False)]
     directory = _filter_roster(directory)
@@ -107,14 +106,26 @@ def page_explore(art: service.Artifacts) -> None:
 
     # browse the full roster: click a row to view that athlete
     theme.eyebrow("roster")
-    st.caption(f"{len(directory)} athletes — click a row to view")
+    st.caption(
+        f"{len(directory)} athletes — click a row to view. "
+        "Peak age is the measured value, or *(in brackets)* the model's projection "
+        "for athletes who haven't peaked yet."
+    )
     selection = st.dataframe(
         directory,
         hide_index=True,
         width="stretch",
         on_select="rerun",
         selection_mode="single-row",
-        column_config={"pid": None},  # hide the internal id column
+        column_config={
+            "pid": None,  # hide the internal id column
+            "peak_age": None,  # numeric, drives sort/filter; shown via peak_age_display
+            "peak_kind": None,
+            "seasons": "Seasons",
+            "best_score": st.column_config.NumberColumn("Best score", format="%.2f"),
+            "best_time": st.column_config.NumberColumn("Best time (s)", format="%.2f"),
+            "peak_age_display": "Peak age",
+        },
     )
     rows = selection.selection.rows if selection and selection.selection else []
     chosen = directory.iloc[rows[0] if rows else 0]
@@ -124,7 +135,11 @@ def page_explore(art: service.Artifacts) -> None:
     if series.empty:
         st.warning("No performances for this athlete in the selected event.")
         return
-    pred = _descriptive_prediction(series) if len(series) >= service.MIN_POINTS else None
+    pred = (
+        service.peak_for_series(art, series, event, sex)
+        if len(series) >= service.MIN_POINTS
+        else None
+    )
     overlay = service.population_overlay(art, event, sex)
 
     left, right = st.columns([3, 2], gap="large")
@@ -136,12 +151,15 @@ def page_explore(art: service.Artifacts) -> None:
         st.metric("Seasons", len(series))
         st.metric("Age range", f"{series['age'].min():.0f}-{series['age'].max():.0f}")
         st.metric("Best score", f"{series['score'].max():.2f}")
-        if pred:
-            st.metric("Est. peak age", f"{pred.peak_age:.1f}y")
-        elif len(series) < service.MIN_POINTS:
-            st.info("Too few seasons to fit a reliable peak.")
+        if pred and pred.kind == "actual":
+            st.metric("Actual peak age", f"{pred.peak_age:.1f}y")
+            st.caption("✓ already peaked — observed in career data")
+        elif pred:  # kind == "predicted"
+            st.metric("Predicted peak age", f"{pred.peak_age:.1f}y")
+            band = f"{pred.interval_lo:.1f}–{pred.interval_hi:.1f}"
+            st.caption(f"not yet peaked — projected ({band})")
         else:
-            st.info("No clear interior peak observed yet.")
+            st.info("Too few seasons to fit a reliable peak.")
 
     if len(series) >= service.MIN_POINTS:
         feats = compute_features(series)
@@ -163,11 +181,18 @@ def page_upload(art: service.Artifacts) -> None:
     height = p1.number_input("Height (cm, optional)", 0.0, 260.0, 0.0, step=1.0) or None
     weight = p2.number_input("Weight (kg, optional)", 0.0, 250.0, 0.0, step=1.0) or None
     theme.eyebrow("enter results")
-    st.caption("Age in years, mark, optional wind. Add a row per season.")
+    st.caption("Age in years, race time in seconds, optional wind. Add a row per season.")
     starter = pd.DataFrame(
         {"age": [18.0, 19.0, 20.0], "mark": [0.0, 0.0, 0.0], "wind": [None, None, None]}
     )
-    edited = st.data_editor(starter, num_rows="dynamic", width="stretch")
+    edited = st.data_editor(
+        starter, num_rows="dynamic", width="stretch",
+        column_config={
+            "age": st.column_config.NumberColumn("Age (yrs)"),
+            "mark": st.column_config.NumberColumn("Time (s)"),  # raw mark, labelled as a time
+            "wind": st.column_config.NumberColumn("Wind (m/s)"),
+        },
+    )
 
     if not st.button("Predict peak"):
         return
@@ -199,11 +224,19 @@ def page_upload(art: service.Artifacts) -> None:
         st.warning("Inputs fall outside the model's training range — shown with low confidence.")
 
     overlay = service.population_overlay(art, event, sex)
-    theme.eyebrow("projection")
+    already_peaked = pred.kind == "actual"
+    theme.eyebrow("result" if already_peaked else "projection")
+    if already_peaked:
+        st.caption("This athlete has **already peaked** — showing the observed peak from the data.")
     st.plotly_chart(hero_chart(series, pred, overlay, title=""), width="stretch")
     cols = st.columns(3)
-    cols[0].metric("Predicted peak age", f"{pred.peak_age:.1f}y")
-    cols[1].metric("80% interval", f"{pred.interval_lo:.1f}-{pred.interval_hi:.1f}")
+    cols[0].metric(
+        "Actual peak age" if already_peaked else "Predicted peak age", f"{pred.peak_age:.1f}y"
+    )
+    cols[1].metric(
+        "Peak window" if already_peaked else "80% interval",
+        f"{pred.interval_lo:.1f}-{pred.interval_hi:.1f}",
+    )
     cols[2].metric("Confidence", pred.confidence)
 
 

@@ -26,3 +26,4 @@ __pycache__/
 # --- editor / OS / session ---
 .DS_Store
 .Q/
+.claude/

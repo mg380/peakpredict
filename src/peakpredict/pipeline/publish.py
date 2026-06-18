@@ -40,11 +40,47 @@ def _git_commit() -> str:
         return "unknown"
 
 
+# predictor ladder, simplest first; ties on MAE go to the simpler model
+_LADDER = ("baseline", "ridge", "rnn")
+
+
 def _select_primary(report: dict) -> str:
-    ridge, base = report.get("ridge"), report.get("baseline")
-    if isinstance(ridge, dict) and isinstance(base, dict):
-        return "ridge" if ridge["mae"] <= base["mae"] else "baseline"
-    return "baseline"
+    """Adopt the lowest-MAE rung available; break ties toward the simpler model."""
+    scored = [
+        (report[name]["mae"], rank, name)
+        for rank, name in enumerate(_LADDER)
+        if isinstance(report.get(name), dict) and "mae" in report[name]
+    ]
+    return min(scored)[2] if scored else "baseline"
+
+
+def _train_rnn_rung(features, season_bests, report: dict):
+    """Train the RNN rung and record its held-out report; return it, or None.
+
+    Skipped (the ladder falls back to the tabular rungs) when the dataset is too
+    small to train a useful sequence model or when torch is unavailable.
+    """
+    from .rnn import RNN_MIN_ATHLETES
+
+    if features["pid"].nunique() < RNN_MIN_ATHLETES:
+        log.info("RNN rung skipped: < %d athletes", RNN_MIN_ATHLETES)
+        return None
+    try:
+        from .rnn import RNNPredictor
+
+        rnn = RNNPredictor().fit(features, season_bests)
+    except Exception as exc:  # torch missing, training failure -> ship without the rung
+        log.warning("RNN rung skipped: %s", exc)
+        return None
+    if rnn.cv_report is not None:
+        report["rnn"] = {**rnn.cv_report,
+                         "skill_vs_baseline": _skill(rnn.cv_report["mae"], report)}
+    return rnn
+
+
+def _skill(mae: float, report: dict) -> float:
+    base = report.get("baseline", {}).get("mae") or 1.0
+    return float((base - mae) / base)
 
 
 def publish(
@@ -58,8 +94,14 @@ def publish(
     features = read_parquet(processed_dir / "features.parquet")
 
     report = temporal_evaluate(features)
+    rnn = _train_rnn_rung(features, season_bests, report)
     primary = _select_primary(report)
-    model = PooledRidge().fit(features) if primary == "ridge" else GroupMeanBaseline().fit(features)
+    if primary == "rnn":
+        model = rnn
+    elif primary == "ridge":
+        model = PooledRidge().fit(features)
+    else:
+        model = GroupMeanBaseline().fit(features)
 
     indicators = compute_indicators(features)
     aggregates = build_population_aggregates(season_bests)

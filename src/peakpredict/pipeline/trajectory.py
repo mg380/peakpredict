@@ -56,8 +56,11 @@ def fit_trajectory(ages, scores, tau: float = DEFAULT_TAU) -> TrajectoryFit | No
     vertex = -b / (2 * a)
     base.peak_age = vertex
     base.peak_score = a * vertex * vertex + b * vertex + c
+    # near-peak window = ages whose fitted score is within tau of the peak. A
+    # nearly-flat parabola (|a| -> 0) makes this half-width explode, so clamp it
+    # to the observed range: we can't assert "near peak" at ages we never saw.
     half = math.sqrt(tau / (-a))
-    base.window_lo = vertex - half
-    base.window_hi = vertex + half
+    base.window_lo = max(age_min, vertex - half)
+    base.window_hi = min(age_max, vertex + half)
     base.has_interior_max = age_min < vertex < age_max
     return base

@@ -15,6 +15,7 @@ from peakpredict.dashboard.service import (
     load_bundle,
     population_overlay,
     predict_uploaded,
+    predicted_directory_peaks,
     upload_to_series,
 )
 from peakpredict.pipeline.publish import publish
@@ -44,6 +45,26 @@ def test_predict_uploaded_ok(bundle):
     pred, series = predict_uploaded(bundle, UploadedAthlete(sex=2, event_id="70", results=results))
     assert len(series) == 4
     assert pred.confidence in ("ok", "low", "out_of_distribution")
+
+
+def test_already_peaked_returns_actual_peak(bundle):
+    # 400m times that fall then rise -> score rises then falls -> observed interior peak
+    marks = [(19, 53.5), (20, 52.5), (21, 51.5), (22, 51.7), (23, 52.6), (24, 53.6)]
+    results = [UploadedResult(age=a, mark=m) for a, m in marks]
+    pred, _ = predict_uploaded(bundle, UploadedAthlete(sex=2, event_id="70", results=results))
+    assert pred.kind == "actual"
+    assert 20.0 < pred.peak_age < 23.0  # the observed turn, within the data range
+    import math
+    assert math.isfinite(pred.window_lo) and math.isfinite(pred.window_hi)
+
+
+def test_still_rising_returns_predicted_peak(bundle):
+    # monotonically improving 400m times -> no interior max -> forward projection
+    marks = [(18, 54.0), (19, 53.0), (20, 52.0), (21, 51.0)]
+    results = [UploadedResult(age=a, mark=m) for a, m in marks]
+    pred, _ = predict_uploaded(bundle, UploadedAthlete(sex=2, event_id="70", results=results))
+    assert pred.kind == "predicted"
+    assert pred.interval_lo < pred.peak_age < pred.interval_hi
 
 
 def test_predict_insufficient(bundle):
@@ -90,10 +111,38 @@ def test_explore_series_and_overlay(bundle):
     assert not population_overlay(bundle, "70", 2).empty
 
 
+def test_predicted_peaks_fill_unlabelled_in_directory(bundle):
+    # drop one athlete's measured peak -> they become a "predicted" row
+    pid = int(bundle.labels["pid"].iloc[0])
+    bundle.labels = bundle.labels[bundle.labels["pid"] != pid].reset_index(drop=True)
+
+    preds = predicted_directory_peaks(bundle, "70", 2)
+    assert pid in preds and 10.0 < preds[pid] < 45.0  # model produced a plausible projection
+
+    d = athlete_directory(bundle, "70", 2, "Name (A–Z)", predicted=preds)
+    row = d[d["pid"] == pid].iloc[0]
+    assert row["peak_kind"] == "predicted"
+    assert row["peak_age_display"].startswith("(") and row["peak_age_display"].endswith(")")
+    # a measured athlete renders plainly, no brackets
+    actual = d[d["peak_kind"] == "actual"].iloc[0]
+    assert "(" not in actual["peak_age_display"]
+
+
+def test_directory_without_predictions_marks_all_actual(bundle):
+    d = athlete_directory(bundle, "70", 2)  # no predicted dict
+    assert set(d["peak_kind"]) <= {"actual", ""}
+    assert (~d["peak_age_display"].str.contains(r"\(", regex=True)).all()
+
+
 def test_athlete_directory_lists_and_sorts(bundle):
     d = athlete_directory(bundle, "70", 2, "Name (A–Z)")
     assert not d.empty
-    assert list(d.columns) == ["name", "country", "seasons", "best_score", "peak_age", "pid"]
+    assert list(d.columns) == [
+        "name", "country", "seasons", "best_score", "best_time",
+        "peak_age_display", "peak_age", "peak_kind", "pid",
+    ]
+    # best_time is the fastest raw mark (400m: lowest seconds) for each athlete
+    assert (d["best_time"] > 0).all()
     assert set(d["pid"]) == set(bundle.season_bests[bundle.season_bests["sex"] == 2]["pid"])
     # name sort is ascending
     assert list(d["name"]) == sorted(d["name"])

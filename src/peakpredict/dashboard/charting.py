@@ -79,26 +79,47 @@ def hero_chart(
                 fillcolor=COL_PEAK_WINDOW, line_width=0,
             )
         if math.isfinite(prediction.peak_age):
+            # observed peak = solid "PEAK"; forward projection = dashed "PROJECTED PEAK"
+            actual = getattr(prediction, "kind", "predicted") == "actual"
+            label = "PEAK" if actual else "PROJECTED PEAK"
             fig.add_vline(
-                x=prediction.peak_age, line={"color": COL_PEAK, "width": 2},
-                annotation_text=f"PEAK ~{prediction.peak_age:.1f}y",
+                x=prediction.peak_age,
+                line={"color": COL_PEAK, "width": 2, "dash": "solid" if actual else "dash"},
+                annotation_text=f"{label} ~{prediction.peak_age:.1f}y",
                 annotation_position="top",
                 annotation_font_color=COL_PEAK,
                 annotation_font_size=12,
                 annotation_font_family=_MONO,
             )
 
+    # frame the age axis to actual content (observed ages, population overlay, and
+    # any finite predicted-peak markers) so an outlier value can't stretch it
+    x_vals = [float(a) for a in series["age"]]
+    if overlay is not None and len(overlay):
+        x_vals += [float(a) for a in overlay["age_bin"]]
+    if prediction is not None:
+        x_vals += [v for v in (prediction.peak_age, prediction.window_lo, prediction.window_hi)
+                   if v is not None and math.isfinite(v)]
+    x_range = None
+    if x_vals:
+        lo, hi = min(x_vals), max(x_vals)
+        pad = max(0.5, 0.04 * (hi - lo))
+        x_range = [lo - pad, hi + pad]
+
+    xaxis = {
+        "title": {"text": "AGE (YEARS)",
+                  "font": {"size": 11, "color": _MUTED, "family": _MONO}},
+        "gridcolor": _GRID, "zeroline": False, "showline": True, "linecolor": _GRID,
+        "ticks": "outside", "tickcolor": _GRID,
+    }
+    if x_range is not None:
+        xaxis["range"] = x_range
     layout = {
         "template": "plotly_white",
         "font": {"family": _FONT, "color": _INK, "size": 13},
         "paper_bgcolor": "rgba(0,0,0,0)",
         "plot_bgcolor": "rgba(0,0,0,0)",
-        "xaxis": {
-            "title": {"text": "AGE (YEARS)",
-                      "font": {"size": 11, "color": _MUTED, "family": _MONO}},
-            "gridcolor": _GRID, "zeroline": False, "showline": True, "linecolor": _GRID,
-            "ticks": "outside", "tickcolor": _GRID,
-        },
+        "xaxis": xaxis,
         "yaxis": {
             "title": {
                 "text": "PERFORMANCE SCORE · HIGHER = BETTER",

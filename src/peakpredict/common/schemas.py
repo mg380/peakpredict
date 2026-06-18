@@ -23,6 +23,11 @@ Confidence = Literal[
     "unsupported_event",
 ]
 
+# Whether a peak is observed history or a forward projection:
+#   "actual"    -> the athlete has already peaked (observed interior max)
+#   "predicted" -> not yet peaked; the model projects when they will
+PeakKind = Literal["actual", "predicted"]
+
 
 class PerformanceRow(BaseModel):
     """One parsed performance from an athlete's career page (raw store row)."""
@@ -86,6 +91,7 @@ class PeakPrediction(BaseModel):
     window_lo: float
     window_hi: float
     confidence: Confidence
+    kind: PeakKind = "predicted"
 
 
 class FieldSpec(BaseModel):

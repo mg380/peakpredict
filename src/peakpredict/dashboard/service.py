@@ -17,6 +17,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from ..common.event_maps import is_lower_better
 from ..common.io import read_parquet
 from ..common.normalization import ZScoreNormalizer
 from ..common.schemas import PeakPrediction, UploadedAthlete
@@ -120,32 +121,63 @@ def upload_to_series(art: Artifacts, athlete: UploadedAthlete) -> pd.DataFrame:
     return pd.DataFrame(rows).sort_values("age").reset_index(drop=True)
 
 
+def _model_peak(
+    art: Artifacts, series: pd.DataFrame, event_id: str, sex: int, height_cm, weight_kg
+) -> tuple[float, float, float]:
+    """Forward peak-age prediction (peak, lo, hi) from whichever model the bundle ships."""
+    model = art.predictor["model"]
+    if art.predictor.get("primary") == "rnn":
+        # sequence model scores the observed (age, score) series directly
+        return model.predict_series(series, event_id, int(sex), height_cm, weight_kg)
+    feats = compute_features(series)
+    feats["height_cm"] = height_cm  # static physical inputs (None -> imputed)
+    feats["weight_kg"] = weight_kg
+    return model.predict_one(feats, event_id, int(sex))
+
+
+def peak_for_series(
+    art: Artifacts, series: pd.DataFrame, event_id: str, sex: int,
+    height_cm=None, weight_kg=None,
+) -> PeakPrediction:
+    """Resolve an athlete's peak from their normalized (age, score) series.
+
+    If the observed trajectory already turned over (an interior maximum), the
+    peak is *history* — report the observed peak (``kind="actual"``). Otherwise
+    the athlete is still ascending, so report the model's forward projection
+    (``kind="predicted"``). Callers must ensure ``len(series) >= MIN_POINTS``.
+    """
+    best_score = float(series["score"].max())
+    fit = fit_trajectory(series["age"].to_numpy(), series["score"].to_numpy())
+    if fit is not None and fit.has_interior_max:
+        # already peaked: the peak age is observed, the window is its near-peak band
+        return PeakPrediction(
+            peak_age=float(fit.peak_age),
+            interval_lo=float(fit.window_lo), interval_hi=float(fit.window_hi),
+            peak_score=best_score,
+            window_lo=float(fit.window_lo), window_hi=float(fit.window_hi),
+            confidence="ok", kind="actual",
+        )
+    # not yet peaked: project forward with the model; no observed window to draw
+    peak_age, lo, hi = _model_peak(art, series, event_id, sex, height_cm, weight_kg)
+    return PeakPrediction(
+        peak_age=peak_age, interval_lo=lo, interval_hi=hi, peak_score=best_score,
+        window_lo=float("nan"), window_hi=float("nan"),
+        confidence=_confidence(peak_age, lo, hi, len(series)), kind="predicted",
+    )
+
+
 def predict_uploaded(
     art: Artifacts, athlete: UploadedAthlete
 ) -> tuple[PeakPrediction, pd.DataFrame]:
-    """Predict an uploaded athlete's peak; returns (prediction, normalized series)."""
+    """Resolve an uploaded athlete's peak; returns (prediction, normalized series)."""
     # event/sex absent from the bundle -> cannot score (distinct from too-few points)
     if not art.normalizer.has(athlete.event_id, int(athlete.sex)):
         return _flag("unsupported_event"), pd.DataFrame(columns=_EMPTY_SERIES_COLS)
     series = upload_to_series(art, athlete)
     if len(series) < MIN_POINTS:
         return _flag("insufficient"), series
-    feats = compute_features(series)
-    feats["height_cm"] = athlete.height_cm  # static physical inputs (None -> imputed)
-    feats["weight_kg"] = athlete.weight_kg
-    peak_age, lo, hi = art.predictor["model"].predict_one(feats, athlete.event_id, int(athlete.sex))
-    # the peak window is curvature-derived; only defined when the fit has an interior max,
-    # otherwise leave it undefined rather than conflating it with the prediction interval
-    fit = fit_trajectory(series["age"].to_numpy(), series["score"].to_numpy())
-    if fit is not None and fit.has_interior_max:
-        window_lo, window_hi = float(fit.window_lo), float(fit.window_hi)
-    else:
-        window_lo = window_hi = float("nan")
-    pred = PeakPrediction(
-        peak_age=peak_age, interval_lo=lo, interval_hi=hi,
-        peak_score=float(series["score"].max()),
-        window_lo=window_lo, window_hi=window_hi,
-        confidence=_confidence(peak_age, lo, hi, len(series)),
+    pred = peak_for_series(
+        art, series, athlete.event_id, int(athlete.sex), athlete.height_cm, athlete.weight_kg
     )
     return pred, series
 
@@ -161,29 +193,85 @@ DIRECTORY_SORTS: dict[str, tuple[str, bool]] = {
 }
 
 
+# numeric peak_age drives sort/filter; peak_age_display is the bracketed render
+_DIRECTORY_COLS = [
+    "name", "country", "seasons", "best_score", "best_time",
+    "peak_age_display", "peak_age", "peak_kind", "pid",
+]
+
+
+def predicted_directory_peaks(art: Artifacts, event_id: str, sex: int) -> dict[int, float]:
+    """Model-projected peak age for (event, sex) careers that have no measured peak.
+
+    These are athletes still ascending (no observed interior maximum, hence no
+    label). Returns ``{pid: predicted_peak_age}``. Batched so the whole roster is
+    one forward pass; callers should cache per (bundle, event, sex).
+    """
+    g = art.season_bests
+    g = g[(g["event_id"] == event_id) & (g["sex"] == sex)]
+    if g.empty:
+        return {}
+    lab = art.labels
+    labelled = set(lab[(lab["event_id"] == event_id) & (lab["sex"] == sex)]["pid"])
+    items, pids = [], []
+    for pid, career in g.groupby("pid"):
+        if pid in labelled or len(career) < MIN_POINTS:
+            continue
+        items.append((career.sort_values("age")[["age", "score"]], event_id, int(sex), None, None))
+        pids.append(int(pid))
+    if not items:
+        return {}
+    model = art.predictor["model"]
+    if art.predictor.get("primary") == "rnn":
+        ages = model.predict_series_batch(items)
+    else:  # tabular predictor: one feature-row prediction per career
+        ages = [_model_peak(art, it[0], event_id, sex, None, None)[0] for it in items]
+    return {pid: float(a) for pid, a in zip(pids, ages, strict=True)}
+
+
 def athlete_directory(
-    art: Artifacts, event_id: str, sex: int, sort_by: str = "Name (A–Z)"
+    art: Artifacts, event_id: str, sex: int, sort_by: str = "Name (A–Z)",
+    predicted: dict[int, float] | None = None,
 ) -> pd.DataFrame:
     """All athletes for an (event, sex) with summary stats, sorted for browsing.
 
-    Columns: name, country, seasons, best_score, peak_age, pid.
+    ``best_time`` is the athlete's fastest raw mark (seconds). ``peak_age`` is the
+    measured peak where observed, else the model projection from ``predicted``;
+    ``peak_kind`` ("actual"/"predicted") and ``peak_age_display`` (projections
+    shown in brackets) let the UI distinguish the two.
     """
     sb = art.season_bests
     g = sb[(sb["event_id"] == event_id) & (sb["sex"] == sex)]
     if g.empty:
-        return pd.DataFrame(columns=["name", "country", "seasons", "best_score", "peak_age", "pid"])
+        return pd.DataFrame(columns=_DIRECTORY_COLS)
+    # best raw time is the fastest mark for time events (lowest), slowest otherwise
+    best_mark = ("mark", "min") if is_lower_better(event_id) else ("mark", "max")
     agg = (
-        g.groupby("pid").agg(seasons=("season", "count"), best_score=("score", "max")).reset_index()
+        g.groupby("pid")
+        .agg(seasons=("season", "count"), best_score=("score", "max"), best_time=best_mark)
+        .reset_index()
     )
     agg = agg.merge(art.athletes[["pid", "name", "country"]], on="pid", how="left")
     lab = art.labels
     lab = lab[(lab["event_id"] == event_id) & (lab["sex"] == sex)][["pid", "peak_age"]]
     agg = agg.merge(lab, on="pid", how="left")
     agg["best_score"] = agg["best_score"].round(2)
+    agg["best_time"] = agg["best_time"].round(2)
     agg["peak_age"] = agg["peak_age"].round(1)
+    # measured peak -> "actual"; fill the rest from the model projection -> "predicted"
+    agg["peak_kind"] = np.where(agg["peak_age"].notna(), "actual", "")
+    if predicted:
+        proj = agg["pid"].map(predicted).round(1)
+        fill = agg["peak_age"].isna() & proj.notna()
+        agg.loc[fill, "peak_age"] = proj[fill]
+        agg.loc[fill, "peak_kind"] = "predicted"
+    agg["peak_age_display"] = [
+        "" if pd.isna(v) else (f"{v:.1f}" if k == "actual" else f"({v:.1f})")
+        for v, k in zip(agg["peak_age"], agg["peak_kind"], strict=True)
+    ]
     col, ascending = DIRECTORY_SORTS.get(sort_by, ("name", True))
     agg = agg.sort_values(col, ascending=ascending, na_position="last").reset_index(drop=True)
-    return agg[["name", "country", "seasons", "best_score", "peak_age", "pid"]]
+    return agg[_DIRECTORY_COLS]
 
 
 def apply_directory_filters(

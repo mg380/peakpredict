@@ -1262,6 +1262,7 @@ dashboard = [
     { name = "plotly" },
     { name = "streamlit" },
     { name = "streamlit-authenticator" },
+    { name = "torch" },
 ]
 dev = [
     { name = "pytest" },
@@ -1269,11 +1270,11 @@ dev = [
 ]
 experimental = [
     { name = "comet-ml" },
-    { name = "torch" },
 ]
 pipeline = [
     { name = "scikit-learn" },
     { name = "statsmodels" },
+    { name = "torch" },
 ]
 scraper = [
     { name = "beautifulsoup4" },
@@ -1299,7 +1300,8 @@ requires-dist = [
     { name = "statsmodels", marker = "extra == 'pipeline'", specifier = ">=0.14" },
     { name = "streamlit", marker = "extra == 'dashboard'", specifier = ">=1.40" },
     { name = "streamlit-authenticator", marker = "extra == 'dashboard'", specifier = ">=0.3" },
-    { name = "torch", marker = "extra == 'experimental'", specifier = ">=2.2" },
+    { name = "torch", marker = "extra == 'dashboard'", specifier = ">=2.2" },
+    { name = "torch", marker = "extra == 'pipeline'", specifier = ">=2.2" },
 ]
 provides-extras = ["scraper", "pipeline", "dashboard", "experimental", "dev"]
 

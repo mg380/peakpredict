@@ -57,6 +57,25 @@ def test_age_is_computed():
     assert 20.0 < row["age"] < 21.0  # born 2000, perf mid-2020
 
 
+def test_implausible_age_rows_dropped():
+    from peakpredict.pipeline.season_best import AGE_BOUNDS
+
+    athletes = pd.DataFrame([{"pid": 1, "sex": 1, "dob": date(1935, 10, 15)}])
+    perf = pd.DataFrame(
+        [
+            # legal, age ~21 -> kept
+            {"pid": 1, "event_id": "40", "indoor": False, "perf_date": date(1956, 6, 1),
+             "mark": 10.2, "wind": 1.0},
+            # stray far-future date -> age ~86 -> dropped (the Bobby Morrow case)
+            {"pid": 1, "event_id": "40", "indoor": False, "perf_date": date(2022, 3, 30),
+             "mark": 10.4, "wind": None},
+        ]
+    )
+    sb = build_season_bests(perf, athletes)
+    assert list(sb["season"]) == [1956]
+    assert sb["age"].between(*AGE_BOUNDS).all()
+
+
 def test_add_scores_drops_unfittable_groups():
     from peakpredict.pipeline.normalize import add_scores, fit_normalizer
 

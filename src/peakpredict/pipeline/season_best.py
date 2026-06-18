@@ -12,6 +12,10 @@ import pandas as pd
 from ..common.event_maps import SUPPORTED_V1_EVENTS, is_lower_better
 
 LEGAL_WIND_MAX = 2.0
+# Plausible competitive age. Marks computed outside this band come from a bad
+# dob or perf_date (the source has stray far-future/typo dates, e.g. a 1950s
+# athlete with a 2022 record). Such rows wreck the trajectory fit, so drop them.
+AGE_BOUNDS = (8.0, 55.0)
 
 
 def build_season_bests(perf: pd.DataFrame, athletes: pd.DataFrame) -> pd.DataFrame:
@@ -31,6 +35,7 @@ def build_season_bests(perf: pd.DataFrame, athletes: pd.DataFrame) -> pd.DataFra
     df["dob"] = pd.to_datetime(df["dob"])
     df["season"] = df["perf_date"].dt.year
     df["age"] = (df["perf_date"] - df["dob"]).dt.days / 365.25
+    df = df[df["age"].between(*AGE_BOUNDS)]  # guard against bad dob/perf_date
 
     # direction-aware ordering: lower-better -> ascending; pick the best per group
     df["_ord"] = [
