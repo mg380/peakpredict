@@ -27,3 +27,6 @@ __pycache__/
 .DS_Store
 .Q/
 .claude/
+
+# local AI-assistant guidance (kept on disk, out of version control)
+CLAUDE.md
